@@ -1,4 +1,4 @@
-# Pipeline de dados para prestacão de contas
+# Pipeline de dados para prestação de contas
 
 **Descrição:** Pipeline de prestação de contas da FINATEC
 
