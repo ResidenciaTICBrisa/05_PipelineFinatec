@@ -1,13 +1,13 @@
-# Acompanhamento de alunos em treinamento
+# Pipeline de dados para prestacão de contas
 
-**Descrição:** Construir uma solução de BigData (ou IA) que recebe os dados de histórico, desempenho e participação dos alunos de programas de capacitação técnica com o intuito de prever problemas futuros com base nos dados armazenado (desistência, inadimplência, reprovação etc.)
+**Descrição:** Pipeline de prestação de contas da FINATEC
 
-**Resultados esperados:** Uma solução capaz de prever o comportamento futuro dos alunos em programa de capacitação técnica com base no seu comportamento inicial.
+**Resultados esperados:** Sistema para visualização do fluxo de prestação de contas
 
-**Habilidades necessárias/preferenciais:** Programação em Python, conhecimento de machine learning e/ouBigData
+**Habilidades necessárias/preferenciais:** Lógica de programação
 
-**Mentores:** Brisa
+**Mentores:** FINATEC - Luíza
 
-**Tamanho do projeto:**  Médio/Grande
+**Tamanho do projeto:**  Médio
 
-**Dificuldade:** Médio.
+**Dificuldade:** Fácil.
