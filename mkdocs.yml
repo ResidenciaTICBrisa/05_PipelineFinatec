@@ -1,8 +1,8 @@
 site_name: Pipeline Finatec
 
-repo_name: 'Treinamento Mkdocs'
+repo_name: 'Pipeline Finatecs'
 repo_url: https://github.com/ResidenciaTICBrisa/05_PipelineFinatec/
-site_url: https://raqueleucaria.github.io/mkdocs/
+site_url: https://raqueleucaria.github.io/05_PipelineFinatec/
 edit_uri: edit/main/docs/
 
 theme:
