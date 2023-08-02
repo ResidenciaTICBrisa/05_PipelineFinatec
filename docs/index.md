@@ -18,39 +18,39 @@
     <table>
     <tr>
         <th>Foto</th>
-        <th>Nome</th>
+        <th>Nome/Github</th>
+        <th>E-mail</th>
         <th>Papel</th>
-        <th>Contato</th>
     </tr>
     <tr>
         <td><img alt="hemanoel" src="https://avatars.githubusercontent.com/u/88113694?v=4" style="border-radius:50%" width="50"></td>
         <td><a href="https://github.com/hemanoelbritoF">Hemanoel Brito</a></td>
-        <td>Devops/Arquitetura</td>
         <td>hemanoel003@gmail.com</td>
+        <td><b>Devops/Arquitetura</b><br>Estudando e garantindo que a automação do projeto esta adequada. </td>
     </tr>
     <tr>
         <td><img alt="isaac" src="https://avatars.githubusercontent.com/u/90662483?v=4" style="border-radius:50%" width="50"></td>
         <td><a href="https://github.com/IsaacLusca">Isaac Lucas</a></td>
-        <td>Líder Técnico</td>
         <td>isaaclucas.bezerra@gmail.com</td>
+        <td><b>Líder Técnico</b><br>Estudo prévio para passar o conhecimento (garimpando tutoriais, treinamentos, documentando decisões técnicas)<br></td>
     </tr>
     <tr>
         <td><img alt="jennifer" src="https://avatars.githubusercontent.com/u/120498502?v=4" style="border-radius:50%" width="50"></td>
         <td><a href="https://github.com/cansancaojennifer">Jennifer Costa</a></td>
-        <td>Scrum Master</td>
         <td>cansancaojennifer@gmail.com</td>
+        <td><b>Scrum Master</b><br>Garantir os rituais como sprint, review e a daily. <br>Todo mundo commitando no git, etc.</td>
     </tr>
     <tr>
         <td><img alt="pedro" src="https://avatars.githubusercontent.com/u/78980796?v=4" style="border-radius:50%" width="50"></td>
         <td><a href="https://github.com/pedrobarbosaocb">Pedro Barbosa</a></td>
-        <td>Product Manager</td>
         <td>pedrobarbosaocb@gmail.com</td>
+        <td><b>Product Manager</b><br>Detalhamento do Roadmap - Garantir a ligação com as issues, organização...<br>Marcar reuniões com os stakeholders</td>
     </tr>
     <tr>
         <td><img alt="raquel" src="https://avatars.githubusercontent.com/u/81540491?v=4" style="border-radius:50%" width="50"></td>
         <td><a href="https://github.com/raqueleucaria">Raquel Eucaria</a></td>
-        <td>Community Manager</td>
         <td>raqueleucaria@gmail.com</td>
+        <td><b>Community Manager</b><br>Garantir a comunicação com externa do projeto - Gitpage, front...</td>
     </tr>
     </table>
 </div>
