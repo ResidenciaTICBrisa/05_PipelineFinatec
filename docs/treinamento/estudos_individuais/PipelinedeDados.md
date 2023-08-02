@@ -1,6 +1,6 @@
 
 ### Descrição
-- Treinamento relacionado a [Issue #4](https://github.com/ResidenciaTICBrisa/05_PipelineFinatec/issues/4)
+- Estudo individual a [Issue #4](https://github.com/ResidenciaTICBrisa/05_PipelineFinatec/issues/4)
 - Estudo do funcionamento e criação de Pipelines de Dados.
 
 

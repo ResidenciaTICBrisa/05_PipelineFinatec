@@ -1,5 +1,5 @@
 ### Descrição
-- Treinamento relacionado a [Issue #2](https://github.com/ResidenciaTICBrisa/05_PipelineFinatec/issues/2)
+- Estudo individual relacionado a [Issue #2](https://github.com/ResidenciaTICBrisa/05_PipelineFinatec/issues/2)
 - Estudo de linguagens e frameworks (Ex.: Python, Angular) que mais se adequam ao projeto.
 
 ### Tarefas
