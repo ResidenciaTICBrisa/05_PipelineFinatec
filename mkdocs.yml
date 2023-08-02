@@ -1,4 +1,4 @@
-site_name: Pipeline Finatec
+site_name: TIC Brisa - Grupo 5
 
 repo_name: 'Pipeline Finatecs'
 repo_url: https://github.com/ResidenciaTICBrisa/05_PipelineFinatec/
@@ -51,3 +51,14 @@ theme:
 
 nav:
   - Home: index.md
+  - Atas: 
+    - 11/07 - Reunião Grupo: atas/07-11.md
+    - 20/07 - Reunião 2 FINATEC: atas/07-20.md
+    - 27/07 - Reunião TI (cancelada): atas/07-27.md
+    - 01/08 - Reunião TI : atas/08-01.md
+  - Planejamento:
+    - Escopo: planejamento/escopo.md
+    - Metodologia: planejamento/metodologia.md
+    - Tecnologias: planejamento/tecnologias.md
+    - Heatmap: planejamento/heatmap.md
+  - Treinamento: treinamento/issues.md
