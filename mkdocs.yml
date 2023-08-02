@@ -63,7 +63,9 @@ nav:
     - Heatmap: planejamento/heatmap.md
   - Treinamento: 
     - Issues: treinamento/issues.md
-    - Linguagens e frameworks: treinamento/linguagem_framework.md
-    - Metodologias: treinamento/metodologias.md
-    - Pipeline de Dados: treinamento/PipelinedeDados.md
     - Documentação: treinamento/documentacao.md
+    - Estudos Individuais:
+      - Linguagens e frameworks: treinamento/estudos_individuais/linguagem_framework.md
+      - Metodologias: treinamento/estudos_individuais/metodologias.md
+      - Pipeline de Dados: treinamento/estudos_individuais/PipelinedeDados.md
+    
