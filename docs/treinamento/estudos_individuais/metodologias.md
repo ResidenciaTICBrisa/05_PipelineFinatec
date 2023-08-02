@@ -1,6 +1,6 @@
 
 ### Descrição
-- Treinamento relacionado a [Issue #3](https://github.com/ResidenciaTICBrisa/05_PipelineFinatec/issues/3)
+- Estudo individual a [Issue #3](https://github.com/ResidenciaTICBrisa/05_PipelineFinatec/issues/3)
 - Estudo de metodologias (Ex.: XP, Scrum) que mais se adequam ao projeto.
 
 ### Tarefas
