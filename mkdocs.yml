@@ -62,8 +62,9 @@ nav:
     - Tecnologias: planejamento/tecnologias.md
     - Heatmap: planejamento/heatmap.md
   - Treinamento: 
-    - Issues: treinamento/issues.md
-    - Documentação: treinamento/documentacao.md
+    - Introdução: treinamento/introducao.md
+    - Treinamentos: 
+      - Mkdocs: treinamento/treinamentos/mkdocs.md
     - Estudos Individuais:
       - Linguagens e frameworks: treinamento/estudos_individuais/linguagem_framework.md
       - Metodologias: treinamento/estudos_individuais/metodologias.md
