@@ -61,9 +61,9 @@ nav:
     - Metodologia: planejamento/metodologia.md
     - Tecnologias: planejamento/tecnologias.md
     - Heatmap: planejamento/heatmap.md
-  - Treinamento: treinamento/issues.md
+  - Treinamento: 
     - Issues: treinamento/issues.md
-    - Linguagens e frameworks: linguagem_framework.md
-    - Metodologias: metodologias.md
-    - Pipeline de Dados: PipelinedeDados.md
-    - Documentação: documentacao.md
+    - Linguagens e frameworks: treinamento/linguagem_framework.md
+    - Metodologias: treinamento/metodologias.md
+    - Pipeline de Dados: treinamento/PipelinedeDados.md
+    - Documentação: treinamento/documentacao.md

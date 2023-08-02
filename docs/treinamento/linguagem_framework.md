@@ -47,3 +47,7 @@ Para Pipeline de Dados, algumas das principais linguagens de programação para 
 - ChatterBot: Contruior chatbots que aprendem com a interação com os usuários;
 - NLTK: Plataforma para construir programas em Python que trabalham com dados de linguagem humana
 - Bot Framework: SDK (Kit de desenvolvimento de software - ferramentas de desenvolvimento instalado por um pacote) para criar bots sofisticados.
+
+|    Data    | Data Prevista de Revisão | Versão |      Descrição       |                                                                Autor                                                                 |               Revisor               |
+| :--------: | :----------------------: | :----: | :------------------: | :----------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------: |
+| 30/06/2023 |        03/07/2023        |  1.0   | Criação do documento | [Isaac](https://github.com/IsaacLusca) | [Hemanoel](https://github.com/hemanoelbritoF) |
