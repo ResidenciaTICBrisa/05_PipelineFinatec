@@ -6,7 +6,7 @@
 
 ## Pipeline
 
-Estudo individual realizado seguindo o tutorial https://www.youtube.com/watch?v=uhQ54Dgp6To&ab_channel=tuplespectra.  
+Estudo individual realizado seguindo o [tutorial](https://www.youtube.com/watch?v=uhQ54Dgp6To&ab_channel=tuplespectra).  
 
 O tutorial consistia em ensinar como construir e automatizar um processo ETL que pudesse extrair dados de uma API de dados meteorológicos, transformá-los  e carregá-los em um bucket S3 usando o Apache Airflow. (O Apache Airflow é uma plataforma de código aberto usada para criar, agendar e monitorar fluxos de trabalho (workflows) de dados. É uma ferramenta popular na área de engenharia de dados e amplamente utilizada para automatizar e orquestrar processos de extração, transformação e carga de dados (ETL), além de outras tarefas relacionadas ao processamento de dados.)
 
