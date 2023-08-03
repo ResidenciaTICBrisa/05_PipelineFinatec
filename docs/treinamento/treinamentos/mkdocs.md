@@ -68,7 +68,12 @@ Os fluxos de trabalho são definidos no .github/workflowsdiretório de um reposi
 ![image](https://github.com/ResidenciaTICBrisa/05_PipelineFinatec/assets/81540491/586682bd-caae-4f5d-b7ee-2f6480cf9843)
 
 
+## Vídeo tutorial
+[![](https://markdown-videos.vercel.app/youtube/MF3WPhaa1jU)](https://youtu.be/MF3WPhaa1jU)
+
+
+
 ## Histórico de Versão
 |  Data  | Versão | Descrição | Autor  |  Revisor  |Issue|
 |------- | ------ |---------- | ------ | --------- |-----|
-| 30/06/2023 |     1.0   | Criação do documento | [Raquel](https://github.com/cansancaojennifer)  | [Hemanoel](https://github.com/hemanoelbritoF) |[#7](https://github.com/ResidenciaTICBrisa/05_PipelineFinatec/issues/7)|
+| 30/06/2023 |     1.0   | Criação do documento | [Raquel](https://github.com/raqueleucaria)  | [Hemanoel](https://github.com/hemanoelbritoF) |[#7](https://github.com/ResidenciaTICBrisa/05_PipelineFinatec/issues/7)|

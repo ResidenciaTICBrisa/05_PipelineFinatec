@@ -1,14 +1,13 @@
-### Descrição
-- Estudo individual relacionado a [Issue #2](https://github.com/ResidenciaTICBrisa/05_PipelineFinatec/issues/2)
+# Linguagens e Frameworks
+
+
 - Estudo de linguagens e frameworks (Ex.: Python, Angular) que mais se adequam ao projeto.
 
-### Tarefas
-- [x] Realizar o estudo individual;
-- [x] Propor as linguagens e frameworks a serem utilizados.
 
 
 
-# Linguagem
+
+## Linguagem
 
 Para Pipeline de Dados, algumas das principais linguagens de programação para trabalhar quando se trata de dados financeiros são:
 
@@ -48,6 +47,10 @@ Para Pipeline de Dados, algumas das principais linguagens de programação para 
 - NLTK: Plataforma para construir programas em Python que trabalham com dados de linguagem humana
 - Bot Framework: SDK (Kit de desenvolvimento de software - ferramentas de desenvolvimento instalado por um pacote) para criar bots sofisticados.
 
-|    Data    | Data Prevista de Revisão | Versão |      Descrição       |                                                                Autor                                                                 |               Revisor               |
-| :--------: | :----------------------: | :----: | :------------------: | :----------------------------------------------------------------------------------------------------------------------------------: | :---------------------------------: |
-| 30/06/2023 |        03/07/2023        |  1.0   | Criação do documento | [Isaac](https://github.com/IsaacLusca) | [Hemanoel](https://github.com/hemanoelbritoF) |
+
+
+
+## Histórico de Versão
+|  Data  | Versão | Descrição | Autor  |  Revisor  |Issue|
+|------- | ------ |---------- | ------ | --------- |-----|
+| 30/06/2023 |     1.0   | Criação do documento |  [Isaac](https://github.com/IsaacLusca) | [Hemanoel](https://github.com/hemanoelbritoF) |[#2](https://github.com/ResidenciaTICBrisa/05_PipelineFinatec/issues/2)|
