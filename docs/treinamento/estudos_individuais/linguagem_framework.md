@@ -5,8 +5,6 @@
 
 
 
-
-
 ## Linguagem
 
 Para Pipeline de Dados, algumas das principais linguagens de programação para trabalhar quando se trata de dados financeiros são:
@@ -43,7 +41,7 @@ Para Pipeline de Dados, algumas das principais linguagens de programação para 
 ### Outras bibliotecas Python
 
 - spaCy: Biblioteca para processamento de linguagem natural
-- ChatterBot: Contruior chatbots que aprendem com a interação com os usuários;
+- ChatterBot: Construir chatbots que aprendem com a interação com os usuários;
 - NLTK: Plataforma para construir programas em Python que trabalham com dados de linguagem humana
 - Bot Framework: SDK (Kit de desenvolvimento de software - ferramentas de desenvolvimento instalado por um pacote) para criar bots sofisticados.
 

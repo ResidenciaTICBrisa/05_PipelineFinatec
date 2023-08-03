@@ -1,13 +1,9 @@
 # Metodologias
 
-### Descrição
+
 - Estudo de metodologias (Ex.: XP, Scrum) que mais se adequam ao projeto.
 
-
-
-
-
-Estudo de algumas metodologias: https://docs.google.com/document/d/1BoPRcTD0yqj-_wJ99G1iltqR0MnARAas2wuX-kgXeAI/edit?usp=sharing
+Estudo de algumas [metodologias](https://docs.google.com/document/d/1BoPRcTD0yqj-_wJ99G1iltqR0MnARAas2wuX-kgXeAI/edit?usp=sharing)
 
 
 
