@@ -1,4 +1,4 @@
-site_name: TIC Brisa - Grupo 5
+site_name: Pipeline Finatec
 
 repo_name: 'Pipeline Finatecs'
 repo_url: https://github.com/ResidenciaTICBrisa/05_PipelineFinatec/
@@ -70,3 +70,4 @@ nav:
       - Pipeline de Dados: treinamento/estudos_individuais/PipelinedeDados.md
       - Fundamentos de Banco de Dados: treinamento/estudos_individuais/fundamentosBD.md
     
+
