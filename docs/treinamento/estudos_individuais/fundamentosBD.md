@@ -469,4 +469,15 @@ No terminal:
 10. `sudo apt-get update`
 11. `sudo apt-get upgrade`
 12. Reinicia o PC
+
+## Qual BD escolher?
+Conforme o conteúdo estudo e colocado neste documento, o uso de um banco de dados é essencial, considerando que evitaria redundância e retrabalha no projeto.
+
+Acredito que as melhores opções são o MySQL e o PostegreSQL por serem BD de dados opensource, relacionais que permitem que tenhamos multiusuários ao BD. Considerando que teriamos um administrador e diferentes funcionários da FINATEC que fariam uma consulta. Além disso, esses sistemas relacionais já possuem controle de acesso e demais funções que iriam facilitar no desenvolvimento, além dadocumentação disponível que auxiliaria.
+
+Na última reunião o pessoal da TI passou a informação de que já existe um BD próprio, assim, não teríamos que construir um do zero mais. No dia 09/08 iremos visitar a FINATEC e conhecer os sistemas e o pessoal. Assim, o estudo do BD deve focar na requisição e não mais na construção.
     
+## Histórico de Versão
+|  Data  | Versão | Descrição | Autor  |  Revisor  |Issue|
+|------- | ------ |---------- | ------ | --------- |-----|
+| 30/06/2023 |     1.0   | Criação do documento |  [Raquel](https://github.com/raqueleucaria) | [Hemanoel](https://github.com/hemanoelbritoF)|[#22](https://github.com/ResidenciaTICBrisa/05_PipelineFinatec/issues/22)|
