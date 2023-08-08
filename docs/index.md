@@ -1,5 +1,7 @@
+
 # Pipeline Finatec
 ![logo-finatec](https://www.finatec.org.br/wp-content/themes/finatec/images/empty.png)
+
 ## Sobre
 - **Descrição:** Pipeline de prestação de contas da FINATEC
 
@@ -64,3 +66,4 @@
 | ---- | ------ | ----------| ------- | --------- |
 | 10/07/2023 |       1.0   | Criação do documento | [Raquel](https://github.com/raqueleucaria) | [Pedro](https://github.com/pedrobarbosaocb) |
 | 02/08/2023 |       2.0   | Papéis dos membros | [Raquel](https://github.com/raqueleucaria) | [Pedro](https://github.com/pedrobarbosaocb) |
+
