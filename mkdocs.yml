@@ -52,6 +52,7 @@ theme:
 nav:
   - Home: index.md
   - Atas: 
+    - 06/29 - Reunião Grupo: atas/06-29.md
     - 11/07 - Reunião Grupo: atas/07-11.md
     - 20/07 - Reunião 2 FINATEC: atas/07-20.md
     - 27/07 - Reunião TI (cancelada): atas/07-27.md
