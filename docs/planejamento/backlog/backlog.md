@@ -45,4 +45,4 @@
 
 | Data | Versão | Descrição | Autor | Revisor | Issue |
 | --- | --- | --- | --- | --- | --- |
-| 12/08/2023 | 1.0 | Criação do documento |  [Isaac](https://github.com/IsaacLusca), [Hemanoel](https://github.com/hemanoelbritoF) | [Pedro](https://github.com/pedrobarbosaocb) |[#35](https://github.com/ResidenciaTICBrisa/05_PipelineFinatec/issues/35)|
+| 12/08/2023 | 1.0 | Criação do documento |  [Isaac](https://github.com/IsaacLusca), [Hemanoel](https://github.com/hemanoelbritoF) | [Raquel](https://github.com/raqueleucaria) |[#35](https://github.com/ResidenciaTICBrisa/05_PipelineFinatec/issues/35)|
