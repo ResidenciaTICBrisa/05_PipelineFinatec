@@ -40,7 +40,7 @@ A definir com a FINATEC dia 09/08
 
 A definir com a FINATEC dia 09/08
 
-## Fluxograma
+# Fluxograma
 ![fluxograma](assets/fluxograma.png)
 
 ## Histórico de Versão
