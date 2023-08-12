@@ -53,6 +53,7 @@ nav:
   - Home: index.md
   - Planejamento:
     - Metodologia: planejamento/metodologia.md
+    - Backlog: planejamento/backlog/backlog.md
     - Escopo: planejamento/escopo.md
     - Fluxograma: planejamento/fluxograma.md
     - Requisitos:
