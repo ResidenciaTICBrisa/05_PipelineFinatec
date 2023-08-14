@@ -45,7 +45,7 @@ def pegar_caminho(nome_arquivo):
 
     return caminho
 
-def preenche_cell(planilha, celula, text):
+def preenche_planilha(planilha, celulas):
 
     caminho = pegar_caminho(planilha)
 
@@ -54,16 +54,23 @@ def preenche_cell(planilha, celula, text):
 
     sheet = workbook.active
 
-    cell = sheet[celula]
-    cell.value = f'{text}'
+    for celula, text in celulas:
+        cell = sheet[celula]
+        cell.value = f'{text}'
 
-    planilha_preenchida = pegar_caminho('preenchido-'+planilha)
+    planilha_preenchida = pegar_caminho('preenchido-' + planilha)
 
     workbook.save(planilha_preenchida)
+
+    print('arquivo salvo em ' + planilha_preenchida)
     
 
 
-preenche_cell('FUNDEP.xlsx', 'C3', 'FUNDEP')
+celulas_preenchidas = [['C3', 'Fundep'], ['C4', 'Projeto X'], ['C5', 'Suellen'], ['F3', 'Suellen'], ['C7', 'Testando Item']]
+
+preenche_planilha('FUNDEP.xlsx', celulas_preenchidas)
+
+
 
 
     
