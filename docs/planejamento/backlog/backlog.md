@@ -9,14 +9,15 @@
 |Ordenação das tabelas |Seleção de projeto| <b>[US03]</b> Eu, como usuário, quero ordenar a lista de planilhas por financiador para direcionar minha busca.|
 |Ordenação das tabelas  |Ordenar por prazo| <b>[US04]</b> Eu, como usuário, quero ordenar a lista de planilhas por prazo para facilitar na organização|  
 |Ordenação das tabelas |Ordenar por ID| <b>[US05]</b> Eu, como usuário, quero ordenar as opções por ID do projeto para facilidade de acesso|    
-|Navegação e Interface |Buscar por texto| <b>[US06]</b> Eu, como usuário, quero buscar as planilhas por texto digitado para encontrar o que preciso de forma rápida|  
-|Navegação e Interface |Seleção de projeto| <b>[US07]</b> Eu, como usuário, quero selecionar o projeto para que seja preenchido na planilha modelo|  
-|Validação |Dados Vazios| <b>[US08]</b> Eu, como usuário, quero saber todos os dados não preenchidos, indicando quais são os campos vazios para saber o que necessita ser preenchido manualmente| 
-|Exportar dados    |Exportar xlsx| <b>[US09]</b> Eu, como usuário, quero exportar a planilha no formato xlsx  para compartilhar ou manipular os dados em programas externos|  
-|Exportar dados  |Exportar pdf| <b>[US010]</b> Eu, como usuário, quero exportar a planilha no formato pdf para fins de documentação ou apresentação|  
-|Navegação e Interface | Resumo de especificidades| <b>[US011]</b> Eu, como usuário, quero visualizar os detalhes de uma planilha específica para entender melhor seu conteúdo e propósito|  
-| Navegação e Interface |Visualizar histórico| <b>[US012]</b> Eu, como usuário, quero visualizar o histórico de exportações para ter o controle passado de exportações realizadas|  
-|Navegação e Interface |Pré-visualização das informações| <b>[US013]</b> Eu, como usuário, quero ter uma maneira de reportar algum erro para garantir a integridade das tabelas| 
+|Ordenação das tabelas |Ordenar por nome| <b>[US06]</b> Eu, como usuário, quero ordenar as opções por nome do projeto para facilitar a busca|    
+|Navegação e Interface |Buscar por texto| <b>[US07]</b> Eu, como usuário, quero buscar as planilhas por texto digitado para encontrar o que preciso de forma rápida|  
+|Navegação e Interface |Seleção de projeto| <b>[US08]</b> Eu, como usuário, quero selecionar o projeto para que seja preenchido na planilha modelo|  
+|Validação |Dados Vazios| <b>[US09]</b> Eu, como usuário, quero saber todos os dados não preenchidos, indicando quais são os campos vazios para saber o que necessita ser preenchido manualmente| 
+|Exportar dados    |Exportar xlsx| <b>[US10]</b> Eu, como usuário, quero exportar a planilha no formato xlsx  para compartilhar ou manipular os dados em programas externos|  
+|Exportar dados  |Exportar pdf| <b>[US011]</b> Eu, como usuário, quero exportar a planilha no formato pdf para fins de documentação ou apresentação|  
+|Navegação e Interface | Resumo de especificidades| <b>[US012]</b> Eu, como usuário, quero visualizar os detalhes de uma planilha específica para entender melhor seu conteúdo e propósito|  
+| Navegação e Interface |Visualizar histórico| <b>[US013]</b> Eu, como usuário, quero visualizar o histórico de exportações para ter o controle passado de exportações realizadas|  
+|Navegação e Interface |Pré-visualização das informações| <b>[US014]</b> Eu, como usuário, quero ter uma maneira de reportar algum erro para garantir a integridade das tabelas| 
 
 
 
