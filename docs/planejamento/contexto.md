@@ -18,7 +18,7 @@
 
 ### Configuração Individualizada das Tabelas
 
-<p style="text-indent: 25px;text-align: justify;">A personalização de cada tabela deve corresponder aos requisitos específicos dos financiadores, por ser um processo manual pode ser um processo demorado e propenso a erros. A equipe deve garantir a configuração precisa e abrangente de cada tabela, considerando campos, formatos e detalhes específicos.
+<p style="text-indent: 25px;text-align: justify;">A personalização de cada tabela deve corresponder aos requisitos específicos dos financiadores, por ser um processo manual pode ser um processo demorado e propenso a erros. A equipe deve garantir a configuração precisa e abrangente de cada tabela, considerando campos, formatos e detalhes específicos.</p>
 
 
 ### Complexidade das Regras de Negócio
@@ -29,9 +29,9 @@
 
 <p style="text-indent: 25px;text-align: justify;">À medida que a Finatec cresce e assume novos projetos, a solução de automação de prestação de contas deve ser capaz de lidar com um volume crescente de dados, sendo necessario garantir que a aplicação seja estável, tanto em termos de processamento quanto de armazenamento. </p>
 
- ### Dados Sensiveis
+### Dados Sensiveis
 
-<p style="text-indent: 25px;text-align: justify;"> A equipe tem o desafio da necessidade de manter a conformidade com regulamentações de privacidade de dados, como o LGPD, e garantir a segurança das informações sensíveis durante todo o fluxo de trabalho, desde a coleta até a geração de relatórios.
+<p style="text-indent: 25px;text-align: justify;"> A equipe tem o desafio da necessidade de manter a conformidade com regulamentações de privacidade de dados, como o LGPD, e garantir a segurança das informações sensíveis durante todo o fluxo de trabalho, desde a coleta até a geração de relatórios.</p>
 
 ## Tecnologias Utilizadas
 

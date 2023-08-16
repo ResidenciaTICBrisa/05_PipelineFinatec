@@ -56,6 +56,7 @@ nav:
     - Backlog: planejamento/backlog/backlog.md
     - Escopo: planejamento/escopo.md
     - Fluxograma: planejamento/fluxograma.md
+    - Contexto: planejamento/contexto.md
     - Requisitos:
       - Elicitação: planejamento/requisitos/elicitacao.md
       - Priorização: planejamento/requisitos/priorizacao.md
