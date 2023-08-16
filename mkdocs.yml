@@ -63,7 +63,6 @@ nav:
     - Metodologia: planejamento/metodologia.md
     - Tecnologias: planejamento/tecnologias.md
     - Heatmap: planejamento/heatmap.md
-    - RoadMap: planejamento/roadmap.md
   - Treinamento: 
     - Treinamentos: 
       - Mkdocs: treinamento/treinamentos/mkdocs.md
