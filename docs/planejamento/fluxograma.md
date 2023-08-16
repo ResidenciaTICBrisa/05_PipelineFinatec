@@ -1,4 +1,5 @@
 #  Fluxograma
+![](./assets/fluxograma.png)
 site_url: https://lucid.app/lucidchart/6b6fe627-0fa8-42c1-aa44-12c21d6b4925/edit?viewport_loc=161%2C79%2C1381%2C691%2C0_0&invitationId=inv_2fac3edd-2581-4500-89fc-1e2a3c9203ce
 
 ## Histórico de Versão:
