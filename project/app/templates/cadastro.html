@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutomaTEC</title>
+</head>
+
+<body>
+    <div>
+        <form action="{% url 'cadastro' %}" method="POST">{% csrf_token %}
+            <h1>AutomaTEC</h1>
+            
+            Usuário<br> <input type="text" name="usuario">
+            <br>Senha<br> <input type="password" name="senha">
+            <br><input type="submit" value="cadastrar">
+        </form>
+        <p>Possui uma conta? <a href="/login/">logar</a></p>
+    </div>
+</body>
+</html>
