@@ -42,4 +42,4 @@ def projeto(request):
     # if request.user.is_authenticated:
     #     return HttpResponse('Projetos')
     # else:
-    return HttpResponse('Projeto.')
+    return render(request, 'projeto.html')

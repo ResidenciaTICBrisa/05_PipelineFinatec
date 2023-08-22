@@ -124,3 +124,7 @@ h1 {
 .otherLogin{
     font-size: 12px;
 }
+
+.placeholder option{
+    color: black;
+}
