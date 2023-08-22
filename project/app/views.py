@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as login_a
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
 
 def cadastro(request):
     if request.method == "GET":
@@ -20,7 +21,7 @@ def cadastro(request):
         user = User.objects.create_user(username=usuario, password=senha)
         user.save()
 
-        return HttpResponse('Usuário cadastrado com sucesso!')
+        return HttpResponseRedirect('/')
 
 def login(request):
     if request.method =="GET":
@@ -33,11 +34,11 @@ def login(request):
 
         if user:
             login_a(request, user)
-            return HttpResponse('Login realizado com sucesso!')
+            return HttpResponseRedirect ('projeto/')
         else:
             return HttpResponse('Usuário ou senha inválido.')
 
-@login_required(login_url="/login/")
+@login_required(login_url="/")
 def projeto(request):
     # if request.user.is_authenticated:
     #     return HttpResponse('Projetos')
