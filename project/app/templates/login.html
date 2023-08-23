@@ -84,6 +84,9 @@
                 </div>
                 <input type="submit" value="Entrar" class="button-submit">
             </form>
+            {% if error_message %}
+            <p class="error">{{ error_message }}</p>
+            {% endif %}
             <p class="otherLogin">Não possui uma conta? <a href="/cadastro/" class="link">criar</a></p>
         </div>
     </content>

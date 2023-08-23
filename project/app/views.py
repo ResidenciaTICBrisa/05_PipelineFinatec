@@ -18,7 +18,8 @@ def cadastro(request):
         user = User.objects.filter(username=usuario).first()
 
         if user:
-            return HttpResponse('Usuário ja existe')
+            error_message = 'Usuário já existe'
+            return render(request, 'cadastro.html', {'error_message': error_message})
 
         user = User.objects.create_user(username=usuario, password=senha)
         user.save()
@@ -38,7 +39,8 @@ def login(request):
             login_a(request, user)
             return HttpResponseRedirect ('projeto/')
         else:
-            return HttpResponse('Usuário ou senha inválido.')
+            error_message = 'Usuário ou senha inválido.'
+            return render(request, 'login.html', {'error_message': error_message})
 
 @login_required(login_url="/")
 def projeto(request):
