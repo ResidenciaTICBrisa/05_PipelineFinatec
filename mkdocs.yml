@@ -52,16 +52,16 @@ theme:
 nav:
   - Home: index.md
   - Planejamento:
-    - Backlog: planejamento/backlog/backlog.md
-    - Escopo: planejamento/escopo.md
-    - Fluxograma: planejamento/fluxograma.md
     - Contexto: planejamento/contexto.md
+    - Fluxograma: planejamento/fluxograma.md
     - Requisitos:
       - Elicitação: planejamento/requisitos/elicitacao.md
       - Priorização: planejamento/requisitos/priorizacao.md
+    - Backlog: planejamento/backlog/backlog.md
+    # - Escopo: planejamento/escopo.md
     #- Tecnologias: planejamento/tecnologias.md
     - RoadMap: planejamento/roadmap.md
-    - Story Mapping: planejamento/StoryMapping.md
+    # - Story Mapping: planejamento/StoryMapping.md
   - Treinamento: 
     - Treinamentos: 
       - Mkdocs: treinamento/treinamentos/mkdocs.md

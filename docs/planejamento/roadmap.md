@@ -25,4 +25,7 @@ O RoadMap é criado inicialmente pelo grupo no Figma, para ter uma visão melhor
 | Data | Versão | Descrição | Autor | Revisor | Issue |
 | --- | --- | --- | --- | --- | --- |
 | 16/08/2023 | 1.0 | Criação do documento | [Pedro](https://github.com/pedrobarbosaocb) | [Raquel](https://github.com/raqueleucaria) | [#37](https://github.com/ResidenciaTICBrisa/05_PipelineFinatec/issues/37) |
+| 23/08/2023 | 2.0 | Atualização do documento |[Raquel](https://github.com/raqueleucaria) |   [Pedro](https://github.com/pedrobarbosaocb) | [#37](https://github.com/ResidenciaTICBrisa/05_PipelineFinatec/issues/37)  |
+
+
 
