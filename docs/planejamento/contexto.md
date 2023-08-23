@@ -34,14 +34,13 @@
 <p style="text-indent: 25px;text-align: justify;"> A equipe tem o desafio da necessidade de manter a conformidade com regulamentações de privacidade de dados, como o LGPD, e garantir a segurança das informações sensíveis durante todo o fluxo de trabalho, desde a coleta até a geração de relatórios.</p>
 
 ## Tecnologias Utilizadas
-- Django
-  - Django,foi escolhido por que é um framework web de alto nível voltado para o desenvolvimento de aplicativos da web robustos e oferecer uma infraestrutura eficaz na construção de sites.
+* Django
+  * Django,foi escolhido por que é um framework web de alto nível voltado para o desenvolvimento de aplicativos da web robustos e oferecer uma infraestrutura eficaz na construção de sites.
+* SQL Server - Banco de dados
+  * O SQL Server é o gerenciador de banco de dados já utilizado pelo cliente , garantindo compatibilidade e facilitando a integração dos dados do sistema com a solução de automatização.
 
-- SQL Server - Banco de dados
-  -  O SQL Server é o gerenciador de banco de dados já utilizado pelo cliente , garantindo compatibilidade e facilitando a integração dos dados do sistema com a solução de automatização.
-
-- OpenPyXL 
- - O OpenPyXL será empregado para automatizar o processo de manejo de tabelas, oferecendo as ferramentas necessárias para automatizar tarefas de manipulação de planilhas, permitindo a criação, modificação e análise de arquivos Excel.
+* OpenPyXL 
+  * O OpenPyXL será empregado para automatizar o processo de manejo de tabelas, oferecendo as ferramentas necessárias para automatizar tarefas de manipulação de planilhas, permitindo a criação, modificação e análise de arquivos Excel.
 
 
 
