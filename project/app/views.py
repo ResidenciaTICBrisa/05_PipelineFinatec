@@ -5,6 +5,8 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as login_a
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
+from django.contrib.auth import logout
 
 def cadastro(request):
     if request.method == "GET":
@@ -44,3 +46,7 @@ def projeto(request):
     #     return HttpResponse('Projetos')
     # else:
     return render(request, 'projeto.html')
+
+def custom_logout(request):
+    logout(request)
+    return redirect('/')

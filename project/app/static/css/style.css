@@ -128,3 +128,12 @@ h1 {
 .placeholder option{
     color: black;
 }
+
+.logout{
+    flex-shrink: 0;
+    border-radius: 20px;
+    border: 1px solid #bcbcbc;
+    background: rgba(0, 0, 0, 0);
+    padding: 10px 20px;
+    color: #ffffff;
+}
