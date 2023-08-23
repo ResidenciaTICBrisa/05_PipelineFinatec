@@ -38,7 +38,8 @@ def login(request):
             login_a(request, user)
             return HttpResponseRedirect ('projeto/')
         else:
-            return HttpResponse('Usuário ou senha inválido.')
+            error_message = 'Usuário ou senha inválido.'
+            return render(request, 'login.html', {'error_message': error_message})
 
 @login_required(login_url="/")
 def projeto(request):
