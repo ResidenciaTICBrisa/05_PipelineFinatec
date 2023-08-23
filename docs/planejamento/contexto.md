@@ -35,12 +35,11 @@
 
 ## Tecnologias Utilizadas
 * Django
-  * Django,foi escolhido por que é um framework web de alto nível voltado para o desenvolvimento de aplicativos da web robustos e oferecer uma infraestrutura eficaz na construção de sites.
+  Django,foi escolhido por que é um framework web de alto nível voltado para o desenvolvimento de aplicativos da web robustos e oferecer uma infraestrutura eficaz na construção de sites.
 * SQL Server - Banco de dados
-  * O SQL Server é o gerenciador de banco de dados já utilizado pelo cliente , garantindo compatibilidade e facilitando a integração dos dados do sistema com a solução de automatização.
-
+  O SQL Server é o gerenciador de banco de dados já utilizado pelo cliente , garantindo compatibilidade e facilitando a integração dos dados do sistema com a solução de automatização.
 * OpenPyXL 
-  * O OpenPyXL será empregado para automatizar o processo de manejo de tabelas, oferecendo as ferramentas necessárias para automatizar tarefas de manipulação de planilhas, permitindo a criação, modificação e análise de arquivos Excel.
+  O OpenPyXL será empregado para automatizar o processo de manejo de tabelas, oferecendo as ferramentas necessárias para automatizar tarefas de manipulação de planilhas, permitindo a criação, modificação e análise de arquivos Excel.
 
 
 
