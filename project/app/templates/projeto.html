@@ -66,9 +66,11 @@
         <h1>Sistema de prestação automático</h1>
     </header>
 
-    <div class="logout">
-        <a href="{% url 'logout' %}">SAIR</a>
-    </div>
+        <form action="{% url 'logout' %}" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="button-logout">Sair</button>
+        </form>
+
 
     <content class="content">
         <div class="container">

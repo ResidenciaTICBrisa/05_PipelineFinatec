@@ -70,7 +70,7 @@ h1 {
     width: 100%;
 }
 
-.inputGroup{
+.inputGroup {
     display: flex;
     flex-direction: column;
     gap: 1em;
@@ -121,19 +121,34 @@ h1 {
     color: #bcbcbc;
 }
 
-.otherLogin{
+.otherLogin {
     font-size: 12px;
 }
 
-.placeholder option{
+.placeholder option {
     color: black;
 }
 
-.logout{
-    flex-shrink: 0;
+.button-logout{
+    color: #004661;
+    background: #ffffff;
+    border: none;
     border-radius: 20px;
-    border: 1px solid #bcbcbc;
-    background: rgba(0, 0, 0, 0);
     padding: 10px 20px;
-    color: #ffffff;
+    width: 10%;
+    font-weight: 600;
+    transition: 0.3s;
+    cursor: pointer;
+    position: absolute;
+    right: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;
 }
+
+.button-logout:hover {
+    background: #FF3838;
+    color: #FFF;
+}
+
