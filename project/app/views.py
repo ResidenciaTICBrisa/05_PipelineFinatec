@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.http.response import HttpResponse
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as login_a
@@ -7,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.shortcuts import redirect
 from django.contrib.auth import logout
+from django.contrib.auth.password_validation import validate_password
 
 def cadastro(request):
     if request.method == "GET":
@@ -14,6 +14,13 @@ def cadastro(request):
     else:
         usuario = request.POST.get('usuario')
         senha = request.POST.get('senha')
+
+        # Valida a senha de acordo com as regras do Django
+        try:
+            validate_password(senha, user=User)
+        except Exception as e:
+            error_message = ', '.join(e.messages)
+            return render(request, 'cadastro.html', {'error_message': error_message})
 
         user = User.objects.filter(username=usuario).first()
 
@@ -25,7 +32,7 @@ def cadastro(request):
         user.save()
 
         return HttpResponseRedirect('/')
-
+    
 def login(request):
     if request.method =="GET":
         return render(request, 'login.html')

@@ -77,15 +77,28 @@ DATABASES = {
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        # 'OPTIONS': {
+        #     'message': "A senha é similar as informações do usuário.",
+        # },
     },
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        # 'OPTIONS': {
+        #     'min_length': 8,
+        #     'message': "A senha deve ter pelo menos %(min_length)d caracteres.",
+        # },
     },
     {
         'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        # 'OPTIONS': {
+        #     'message': "A senha é muito simples.",
+        # },
     },
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        # 'OPTIONS': {
+        #     'message': "A senha não pode conter apenas números.",
+        # },
     },
 ]
 
