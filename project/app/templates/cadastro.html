@@ -83,8 +83,12 @@
                 </div>
                 <input type="submit" value="Cadastrar" class="button-submit">
             </form>
-            {% if error_message %}
-            <p class="error">{{ error_message }}</p>
+            {% if error_messages %}
+                <ul class="error-list">
+                    {% for message in error_messages %}
+                        <li class="error">{{ message }}</li>
+                    {% endfor %}
+                </ul>
             {% endif %}
             <p class="otherLogin">Possui uma conta? <a href="/" class="link">Logar</a></p>
         </div>

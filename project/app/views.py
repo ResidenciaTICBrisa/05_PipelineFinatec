@@ -15,18 +15,17 @@ def cadastro(request):
         usuario = request.POST.get('usuario')
         senha = request.POST.get('senha')
 
-        # Valida a senha de acordo com as regras do Django
         try:
             validate_password(senha, user=User)
         except Exception as e:
-            error_message = ', '.join(e.messages)
-            return render(request, 'cadastro.html', {'error_message': error_message})
+            error_messages = e.messages
+            return render(request, 'cadastro.html', {'error_messages': error_messages})
 
         user = User.objects.filter(username=usuario).first()
 
         if user:
-            error_message = 'Usuário já existe'
-            return render(request, 'cadastro.html', {'error_message': error_message})
+            error_messages = ['Usuário já existe']
+            return render(request, 'cadastro.html', {'error_messages': error_messages})
 
         user = User.objects.create_user(username=usuario, password=senha)
         user.save()
