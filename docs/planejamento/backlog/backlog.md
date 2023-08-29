@@ -37,7 +37,7 @@ Critérios de aceitação:
     - Caso negativo: Exibir mensagem de erro;
     - Caso positivo: O usuário deve ser autenticado e direcionado para a tela principal do sistema;
 
-### **US02 **
+### **US02**
 **Eu, como usuário, quero poder selecionar o template** 
 
 Critérios de aceitação:
