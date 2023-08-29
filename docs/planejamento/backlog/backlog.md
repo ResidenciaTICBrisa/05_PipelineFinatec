@@ -26,7 +26,7 @@
 * <b>Administrador:</b> Responsável por adicionar tabelas novas e configurar suas regras, garantindo que a solução atenda às necessidades da Finatec.
 * <b>Usuário:</b> Indiviudo que realizará automação para gerar relatórios precisos e analisar dados financeiros, visando otimizar os processos de prestação de contas . 
   
-### **US01 **
+### **US01**
 **Eu, como usuário, quero ser capaz de acessar o sistema com login e senha para acessar a aplicação.**
 
 Critérios de aceitação:
@@ -46,7 +46,7 @@ Critérios de aceitação:
   - O sistema deve impedir a seleção do template se o não houver um projeto selecionado;
   - O sistema deve possuir uma lista com todos os templates.
 
-### **US03 **
+### **US03**
 **Eu, como usuário, quero ordenar a lista de projetos por diferentes critérios para orientar e otimizar minha busca.**
 
 Critérios de aceitação:
@@ -55,14 +55,14 @@ Critérios de aceitação:
   - As ordenações devem ser tanto em ordem crescente quanto decrescente;
   - As ordenações das datas devem ser possível pela ultima data de atualização ?
 
-### **US04 **
+### **US04**
 **Eu, como usuário, quero filtrar a lista de projetos através de diferentes parâmetros para facilitar na organização.**
 
 Critérios de aceitação:
 
   - Filtrar por: Nome do financiador; Período de vigência; Data de Assinatura (mês); Data de Encerramento; Período de despesa.
 
-### **US05 **
+### **US05**
 **Eu, como administrador, quero ser capaz de acessar o sistema, através de login e senha específico para obter privilégios de administração.**
 
 Critérios de aceitação:
@@ -73,7 +73,7 @@ Critérios de aceitação:
     - Caso negativo: Exibir mensagem de erro;
     - Caso positivo: O usuário deve ser autenticado e direcionado para a tela principal do sistema;
 
-### **US06 **
+### **US06**
 **Eu, como administrador, quero ser capaz de adicionar novos templates para tornar o sistema escalável**
 
 Critérios de aceitação:
@@ -92,7 +92,7 @@ Critérios de aceitação:
   - O sistema deverá validar os campos de entrada, garantindo que não estejam errados ou vazios, onde:
   - Deverá exibir uma mensagem de erro caso tenha algo errado
 
-### **US08 **
+### **US08**
 **Eu, como usuário, quero saber todos os dados não preenchidos, indicando quais são os campos vazios para saber o que necessita ser preenchido manualmente**
 
 Critérios de aceitação:
@@ -108,7 +108,7 @@ Critérios de aceitação:
   - O sistema deve exibir uma animação que foi exportado com sucesso
   - O sistema deve exibir uma animação de carregamento enquanto a planilha é preenchida.
 
-### **US10 **
+### **US10**
 **Eu, como usuário, quero poder exportar a planilha no formato pdf para fins de documentação ou apresentação**
 
 Critérios de aceitação:
@@ -123,14 +123,14 @@ Critérios de aceitação:
   - O sistema deve detalhar algumas informações principais como: ID; Nome do projeto; Nome do financiador; Período; Datas; Coordenador; 
   - Deverá ter uma tela específica para mostrar as informações.
 
-### **US12 **
+### **US12**
 **Eu, como administrador, quero visualizar o histórico de exportações para ter o controle passado de exportações realizadas**
 
 Critérios de aceitação:
 
 - O sistema deve mostrar uma lista com todas as exportações indicando: Data que foi feito; ID do projeto; Nome de quem realizou;
 
-### **US13 **
+### **US13**
 **Eu, como usuário, quero ter uma maneira de reportar erros identificados para garantir a integridade dos templates/projetos**
 
 Critérios de aceitação:
