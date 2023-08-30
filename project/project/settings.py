@@ -78,6 +78,14 @@ DATABASES = {
         'PASSWORD': 'password',
         'HOST': 'localhost',
         'PORT': '',
+    },
+    'finatec': {
+        'ENGINE': 'sql_server.pyodbc',
+		'HOST': '(LocalDB)\ProjectLocalDB',
+		'PORT': '',
+		'NAME': 'my_db',
+		'USER': 'my_user',
+		'PASSWORD': 'my_password',
     }
 }
 
