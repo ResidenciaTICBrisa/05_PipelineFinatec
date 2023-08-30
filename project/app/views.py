@@ -58,3 +58,19 @@ def projeto(request):
 def custom_logout(request):
     logout(request)
     return redirect('/')
+
+def login_teste(request):
+    if request.method =="GET":
+        return render(request, 'login_teste.html')
+    else:
+        usuario = request.POST.get('usuario')
+        senha = request.POST.get('senha')
+
+        user = authenticate(username=usuario, password=senha)
+
+        if user:
+            login_a(request, user)
+            return HttpResponseRedirect ('http://127.0.0.1:8000/projeto/')
+        else:
+            error_message = 'Usuário ou senha inválido.'
+            return render(request, 'login_teste.html', {'error_message': error_message})
