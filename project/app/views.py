@@ -74,3 +74,32 @@ def login_teste(request):
         else:
             error_message = 'Usuário ou senha inválido.'
             return render(request, 'login_teste.html', {'error_message': error_message})
+        
+def cadastro_teste(request):
+    if request.method == "GET":
+        return render(request, 'cadastro_teste.html')
+    else:
+        usuario = request.POST.get('usuario')
+        senha = request.POST.get('senha')
+
+        try:
+            validate_password(senha, user=User)
+        except Exception as e:
+            error_messages = e.messages
+            return render(request, 'cadastro_teste.html', {'error_messages': error_messages})
+
+        user = User.objects.filter(username=usuario).first()
+
+        if user:
+            error_messages = ['Usuário já existe']
+            return render(request, 'cadastro_teste.html', {'error_messages': error_messages})
+
+        user = User.objects.create_user(username=usuario, password=senha)
+        user.save()
+
+@login_required(login_url="/")
+def projeto_teste(request):
+    # if request.user.is_authenticated:
+    #     return HttpResponse('Projetos')
+    # else:
+    return render(request, 'projeto_teste.html')
