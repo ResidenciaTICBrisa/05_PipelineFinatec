@@ -59,47 +59,47 @@ def custom_logout(request):
     logout(request)
     return redirect('/')
 
-def login_teste(request):
-    if request.method =="GET":
-        return render(request, 'login_teste.html')
-    else:
-        usuario = request.POST.get('usuario')
-        senha = request.POST.get('senha')
+# def login_teste(request):
+#     if request.method =="GET":
+#         return render(request, 'login_teste.html')
+#     else:
+#         usuario = request.POST.get('usuario')
+#         senha = request.POST.get('senha')
 
-        user = authenticate(username=usuario, password=senha)
+#         user = authenticate(username=usuario, password=senha)
 
-        if user:
-            login_a(request, user)
-            return HttpResponseRedirect ('http://127.0.0.1:8000/projeto/')
-        else:
-            error_message = 'Usuário ou senha inválido.'
-            return render(request, 'login_teste.html', {'error_message': error_message})
+#         if user:
+#             login_a(request, user)
+#             return HttpResponseRedirect ('http://127.0.0.1:8000/projeto/')
+#         else:
+#             error_message = 'Usuário ou senha inválido.'
+#             return render(request, 'login_teste.html', {'error_message': error_message})
         
-def cadastro_teste(request):
-    if request.method == "GET":
-        return render(request, 'cadastro_teste.html')
-    else:
-        usuario = request.POST.get('usuario')
-        senha = request.POST.get('senha')
+# def cadastro_teste(request):
+#     if request.method == "GET":
+#         return render(request, 'cadastro_teste.html')
+#     else:
+#         usuario = request.POST.get('usuario')
+#         senha = request.POST.get('senha')
 
-        try:
-            validate_password(senha, user=User)
-        except Exception as e:
-            error_messages = e.messages
-            return render(request, 'cadastro_teste.html', {'error_messages': error_messages})
+#         try:
+#             validate_password(senha, user=User)
+#         except Exception as e:
+#             error_messages = e.messages
+#             return render(request, 'cadastro_teste.html', {'error_messages': error_messages})
 
-        user = User.objects.filter(username=usuario).first()
+#         user = User.objects.filter(username=usuario).first()
 
-        if user:
-            error_messages = ['Usuário já existe']
-            return render(request, 'cadastro_teste.html', {'error_messages': error_messages})
+#         if user:
+#             error_messages = ['Usuário já existe']
+#             return render(request, 'cadastro_teste.html', {'error_messages': error_messages})
 
-        user = User.objects.create_user(username=usuario, password=senha)
-        user.save()
+#         user = User.objects.create_user(username=usuario, password=senha)
+#         user.save()
 
-@login_required(login_url="/")
-def projeto_teste(request):
-    # if request.user.is_authenticated:
-    #     return HttpResponse('Projetos')
-    # else:
-    return render(request, 'projeto_teste.html')
+# @login_required(login_url="/")
+# def projeto_teste(request):
+#     # if request.user.is_authenticated:
+#     #     return HttpResponse('Projetos')
+#     # else:
+#     return render(request, 'projeto_teste.html')
