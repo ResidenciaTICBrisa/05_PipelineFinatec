@@ -172,6 +172,28 @@ planilha_local_dados = {
 
 }
 
+modelo_fundep = {
+	"Relação e despesas" : [
+        # campos cadastrais
+		("C3", "Instituição Gestora"),
+		("F3", "0000*XX"),
+		("I3", "n_acordo"),
+		("C4", "Titulo_Projeto"),
+		("C5", "Nome_Coordenador"),
+
+        # item beneficiarios
+		("I5", "Dt_PeriodoPrestacao"),
+		("C7", "Nome_Beneficiario"),
+		("D7", "CNPJ-CPF-Baneficiario"),
+		("E7", "Rubrica-Beneficiario"),
+		("F7", "CH-OB-Beneficiario"),
+		("G7", "dt-inicial-Beneficiario"),
+		("H7", "NF-DOC.FISCAL-Beneficiario"),
+		("I7", "dt-final-Beneficiario"),
+		("J7", "valor-Beneficiario"),
+	]
+}
+
 # for nomePlanilha, entradaDados in planilha_local_dados.items():
 #     planilhaAtual = workbook[nomePlanilha]
 
