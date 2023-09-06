@@ -14,6 +14,7 @@ def cadastro(request):
     else:
         usuario = request.POST.get('usuario')
         senha = request.POST.get('senha')
+        email = request.POST.get('email')
 
         try:
             validate_password(senha, user=User)
@@ -27,7 +28,7 @@ def cadastro(request):
             error_messages = ['Usuário já existe']
             return render(request, 'cadastro.html', {'error_messages': error_messages})
 
-        user = User.objects.create_user(username=usuario, password=senha)
+        user = User.objects.create_user(username=usuario, password=senha, email=email)
         user.save()
 
         return HttpResponseRedirect('/')

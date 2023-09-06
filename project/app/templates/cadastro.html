@@ -60,6 +60,10 @@
                 {% csrf_token %}
                 <div class="inputGroup">
                     <div class="input">
+                        <label class="email">Email</label>
+                        <input type="email" id="email" name="email" class="placeholder" placeholder="Digite seu Email" title="Digite um email válido." required>
+                    </div>
+                    <div class="input">
                         <label class="name">CPF</label>
                         <input type="text" id="cpf" name="usuario" class="placeholder" placeholder="000.000.000-00" maxlength="14" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" title="Digite um CPF válido no formato 000.000.000-00." required>
                     </div>

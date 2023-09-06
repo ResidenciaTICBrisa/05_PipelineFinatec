@@ -63,31 +63,31 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'myproject',
-        'USER': 'myprojectuser',
-        'PASSWORD': 'password',
-        'HOST': 'localhost',
-        'PORT': '',
-    },
-    'finatec': {
-        'ENGINE': 'sql_server.pyodbc',
-		'HOST': '(LocalDB)\ProjectLocalDB',
-		'PORT': '',
-		'NAME': 'my_db',
-		'USER': 'my_user',
-		'PASSWORD': 'my_password',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'myproject',
+#         'USER': 'myprojectuser',
+#         'PASSWORD': 'password',
+#         'HOST': 'localhost',
+#         'PORT': '',
+#     },
+#     'finatec': {
+#         'ENGINE': 'sql_server.pyodbc',
+# 		'HOST': '(LocalDB)\ProjectLocalDB',
+# 		'PORT': '',
+# 		'NAME': 'my_db',
+# 		'USER': 'my_user',
+# 		'PASSWORD': 'my_password',
+#     }
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
