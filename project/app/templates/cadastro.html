@@ -60,7 +60,15 @@
                 {% csrf_token %}
                 <div class="inputGroup">
                     <div class="input">
-                        <label class="email">Email</label>
+                        <label class="name">Primeiro nome</label>
+                        <input type="text" id="nome1" name="nome1" class="placeholder" placeholder="Primeiro nome" title="Digite o seu primeiro nome" required>
+                    </div>
+                    <div class="input">
+                        <label class="name">Último nome</label>
+                        <input type="text" id="nome2" name="nome2" class="placeholder" placeholder="Sobrenome" title="Digite o seu sobrenome" required>
+                    </div>
+                    <div class="input">
+                        <label class="name">Email</label>
                         <input type="email" id="email" name="email" class="placeholder" placeholder="Digite seu Email" title="Digite um email válido." required>
                     </div>
                     <div class="input">
