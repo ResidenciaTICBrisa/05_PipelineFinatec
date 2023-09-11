@@ -148,9 +148,123 @@ class ModeloTemplate():
 
         return modelo_fub
 
-    def opas():
+    def opas(self):
         modelo_opas = {
-            "" : [],
+            "Relatório Consolidado" : [
+                # campos cadastrais
+                ("C4","numero_loa"),
+                ("C5","nome_beneficiario"),
+                ("C6","nome_representante_legal"),
+                ("C7","titulo_loa"),
+                ("C8","periodo_despesas"),
+                ("C9","montante_recebido"),
+                ("C10","balanco_pagtos_anteriores"),
+
+                # atividade 1
+                ("A15","atividade_1"),
+                
+                # montante previsto/executado atividade 1
+                ("D15","passagens_diarias_previsto"),
+                ("E15","passagens_diarias_executado"),
+                
+                ("D16","equipamentos_previsto"),
+                ("E16","equipamentos_executado"),
+                
+                ("D17", "construcao_previsto"),
+                ("E17", "construcao_executado"),
+                
+                ("D18", "pessoa_fisica_previsto"),
+                ("E18", "pessoa_fisica_executado"),
+                
+                ("D19", "servicoes_materiais_previsto"),
+                ("E19", "servicoes_materiais_executado"),
+                
+                ("D20", "treinamento_capacitacao_previsto"),
+                ("E20", "treinamento_capacitacao_executado"),
+                
+                # atividade 2
+                ("A21","atividade_2"),
+
+                # montante previsto/executado atividade 2
+                ("D21","passagens_diarias_previsto"),
+                ("E21","passagens_diarias_executado"),
+                
+                ("D22","equipamentos_previsto"),
+                ("E22","equipamentos_executado"),
+                
+                ("D23", "construcao_previsto"),
+                ("E23", "construcao_executado"),
+                
+                ("D24", "pessoa_fisica_previsto"),
+                ("E24", "pessoa_fisica_executado"),
+                
+                ("D25", "servicoes_materiais_previsto"),
+                ("E25", "servicoes_materiais_executado"),
+                
+                ("D26", "treinamento_capacitacao_previsto"),
+                ("E26", "treinamento_capacitacao_executado"),
+
+                # atividade 3
+                ("A27","atividade_3"),
+
+                # montante previsto/executado atividade 3
+                ("D27","passagens_diarias_previsto"),
+                ("E27","passagens_diarias_executado"),
+                
+                ("D28","equipamentos_previsto"),
+                ("E28","equipamentos_executado"),
+                
+                ("D29", "construcao_previsto"),
+                ("E29", "construcao_executado"),
+                
+                ("D30", "pessoa_fisica_previsto"),
+                ("E30", "pessoa_fisica_executado"),
+                
+                ("D31", "servicoes_materiais_previsto"),
+                ("E31", "servicoes_materiais_executado"),
+                
+                ("D32", "treinamento_capacitacao_previsto"),
+                ("E32", "treinamento_capacitacao_executado"),
+
+                # atividade 4
+                ("A33","atividade_4"),
+
+                # montante previsto/executado atividade 4
+                ("D33","passagens_diarias_previsto"),
+                ("E33","passagens_diarias_executado"),
+                
+                ("D34","equipamentos_previsto"),
+                ("E34","equipamentos_executado"),
+                
+                ("D35", "construcao_previsto"),
+                ("E35", "construcao_executado"),
+                
+                ("D36", "pessoa_fisica_previsto"),
+                ("E36", "pessoa_fisica_executado"),
+                
+                ("D37", "servicoes_materiais_previsto"),
+                ("E37", "servicoes_materiais_executado"),
+                
+                ("D38", "treinamento_capacitacao_previsto"),
+                ("E38", "treinamento_capacitacao_executado"),
+
+            ],
+
+            "Relatório Detalhado" : [
+                # campos cadastrais
+                ("C4","numero_loa"),
+                ("C5","nome_beneficiario"),
+                ("C6","nome_representante_legal"),
+                ("C7","titulo_loa"),
+                ("C8","periodo_despesas"),
+
+                # despesas
+                ("B13:B42", "nome_fornecedor"),
+                ("C13:C42", "categoria_despesa"),
+                ("D13:D42", "data_despesa"),
+                ("E13:E42", "montante_despesa"),
+
+            ]
         }
         return modelo_opas
     
