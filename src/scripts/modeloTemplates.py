@@ -268,37 +268,50 @@ class ModeloTemplate():
         }
         return modelo_opas
     
-    def fap():
+    def fap(self):
         modelo_fap = {
             "" : [],
         }
         return modelo_fap
     
-    def fup():
+    def fup(self):
         modelo_fup = {
             "" : [],
         }
         return modelo_fup
     
-    def ceb():
+    def ceb(self):
         modelo_ceb = {
             "" : [],
         }
         return modelo_ceb
     
-    def finep():
+    def finep(self):
         modelo_finep = {
             "" : [],
         }
         return modelo_finep
     
-    def ibitic():
+    def ibitic(self):
         modelo_ibitic = {
-            "" : [],
+            "Capa Finatec" : [],
+            "Receita x Despesa" : [],
+            "Exec. Receita e Despesa" : [],
+            "Diárias" : [],
+            "Passagens e Desp. Locomoção" : [],
+            "Material de Consumo" : [],
+            "Serviços de Terceiros PF" : [],
+            "Obrig Tribut e Contributivas" : [],
+            "Bolsas de Pesquisa" : [],
+            "Outros Serviços de Terceiros PJ" : [],
+            "Equip. Material Permanente" : [],
+            "Relação de Bens" : [],
+            "Rendimento de Aplicação" : [],
+            "Conciliação Bancária" : [],
         }
         return modelo_ibitic
     
-    def anp():
+    def anp(self):
         modelo_anp = {
             "" : [],
         }
