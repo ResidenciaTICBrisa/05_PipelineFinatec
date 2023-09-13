@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block conteudo %}
 {% load static %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
 
         <form action="{% url 'logout' %}" method="POST">
             {% csrf_token %}

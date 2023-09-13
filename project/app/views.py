@@ -14,6 +14,7 @@ def cadastro(request):
     else:
         usuario = request.POST.get('usuario')
         senha = request.POST.get('senha')
+        senha_confirmacao = request.POST.get('senhaConfirm')
         email = request.POST.get('email')
         first_name = request.POST.get('nome1')
         last_name = request.POST.get('nome2')
@@ -28,6 +29,10 @@ def cadastro(request):
 
         if user:
             error_messages = ['Usuário já existe']
+            return render(request, 'cadastro.html', {'error_messages': error_messages})
+        
+        if senha != senha_confirmacao:
+            error_messages = ['A senha e a confirmação da senha não coincidem.']
             return render(request, 'cadastro.html', {'error_messages': error_messages})
 
         user = User.objects.create_user(username=usuario, password=senha, email=email)
