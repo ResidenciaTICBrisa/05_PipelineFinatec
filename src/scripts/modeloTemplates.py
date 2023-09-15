@@ -5,11 +5,11 @@ class ModeloTemplate():
         modelo_fundep = {
             "Relação e despesas" : [
                 # campos cadastrais
-                ("C3", "Instituição Gestora"),
+                ("C3", f"{NOME_INSTITUICAO_EXECUTORA}"),
                 ("F3", "0000*XX"),
                 ("I3", "n_acordo"),
-                ("C4", "Titulo_Projeto"),
-                ("C5", "Nome_Coordenador"),
+                ("C4", f"{NOME_PROJETO}"),
+                ("C5", f"{NOME_COORDENADOR}"),
 
                 # item beneficiarios
                 ("I5", "Dt_PeriodoPrestacao"),
@@ -28,15 +28,15 @@ class ModeloTemplate():
     def fub(self):
         modelo_fub = {
             "Receita x Despesa": [
-                ("A3:J3", "Título do Projeto:String 1 A3:J3"),
-                ("A4:J4", "Executora:  String 2 A4:J4"),
-                ("A5:J5", "Partícipe: String 3 A5:J5"),
-                ("A6:J6", "Período de Execução Físico-Financeiro: String 4 A6:J6"),
-                ("A7:J7", "Período que abrange esta prestação:  String 5 A7:J7"),
-                ("A16:A25",datetime.datetime.strptime("2014-06-23", "%Y-%m-%d")),
-                ("B16:B25","STRINGB16B25"),# intervalo nao interfere
-                ("C16:C25","STRINGC16C25"),#intervalo nao interfere
-                ("E16:E25",200),
+                ("A3:J3", f"Título do Projeto: {NOME_PROJETO}"),
+                ("A4:J4", f"Executora:  {NOME_INSTITUICAO_EXECUTORA}"),
+                ("A5:J5", f"Partícipe: {NOME_INSTITUICAO}"),      # o que eh participe?
+                ("A6:J6", f"Período de Execução Físico-Financeiro: {DATA_ASSI}"),
+                ("A7:J7", f"Período que abrange esta prestação:  {DATA_VIGE}"),
+                ("A16:A25", datetime.datetime.strptime("2014-06-23", "%Y-%m-%d")),
+                ("B16:B25", "STRINGB16B25"),# intervalo nao interfere
+                ("C16:C25", "STRINGC16C25"),#intervalo nao interfere
+                ("E16:E25", 200),
                 #("I16:I21",223),
                 ("I16", 23),
                 ("I17", 213),
@@ -50,7 +50,7 @@ class ModeloTemplate():
                 ("I32", 100),
                 ("I33", 1000),
                 ("I38", 10000),
-                ("H45", "COORDENADORA_TESTE")
+                ("H45", f"NOME_COORDENADOR")
             ],
             "Exec. Receita e Despesa":[
                 ("B16",200),
