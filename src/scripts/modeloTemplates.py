@@ -5,11 +5,11 @@ class ModeloTemplate():
         modelo_fundep = {
             "Relação e despesas" : [
                 # campos cadastrais
-                ("C3", f"{NOME_INSTITUICAO_EXECUTORA}"),
+                ("C3", f"{records.NOME_INSTITUICAO_EXECUTORA}"),
                 ("F3", "0000*XX"),
                 ("I3", "n_acordo"),
-                ("C4", f"{NOME_PROJETO}"),
-                ("C5", f"{NOME_COORDENADOR}"),
+                ("C4", f"{records.NOME_PROJETO}"),
+                ("C5", f"{records.NOME_COORDENADOR}"),
 
                 # item beneficiarios
                 ("I5", "Dt_PeriodoPrestacao"),
@@ -28,11 +28,11 @@ class ModeloTemplate():
     def fub(self):
         modelo_fub = {
             "Receita x Despesa": [
-                ("A3:J3", f"Título do Projeto: {NOME_PROJETO}"),
-                ("A4:J4", f"Executora:  {NOME_INSTITUICAO_EXECUTORA}"),
+                ("A3:J3", f"Título do Projeto: {records.NOME}"), #AJEITAR
+                ("A4:J4", f"Executora:  {NOME_INSTITUICAO_EXECUTORA}"), 
                 ("A5:J5", f"Partícipe: {NOME_INSTITUICAO}"),      # o que eh participe?
-                ("A6:J6", f"Período de Execução Físico-Financeiro: {DATA_ASSI}"),
-                ("A7:J7", f"Período que abrange esta prestação:  {DATA_VIGE}"),
+                ("A6:J6", f"Período de Execução Físico-Financeiro: {DATA_ASSINATURA} a {DATA_VIGENCIA}"),
+                ("A7:J7", f"Período que abrange esta prestação:  {DATA_VIGE}"), #VAZIO
                 ("A16:A25", datetime.datetime.strptime("2014-06-23", "%Y-%m-%d")),
                 ("B16:B25", "STRINGB16B25"),# intervalo nao interfere
                 ("C16:C25", "STRINGC16C25"),#intervalo nao interfere
