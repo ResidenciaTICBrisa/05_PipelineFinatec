@@ -2,7 +2,6 @@ from django.db import models
 
 class Mapeamento(models.Model):
     CODIGO = models.CharField(max_length=200)
-    CODIGO = models.CharField(max_length=200)
     NOME = models.CharField(max_length=200)
     SALDO = models.CharField(max_length=200)
     DATA_ASSINATURA = models.CharField(max_length=200)
