@@ -58,4 +58,4 @@ Reunião Presencial na FINATEC com os **Stakeholders (15/08 - 13h as 17h)**
 
 | Data | Versão | Descrição | Autor | Revisor | Issue |
 | --- | --- | --- | --- | --- | --- |
-| 11/08/2023 | 1.0 | Criação do documento | [Raquel]((https://github.com/raqueleucaria) | [Isaac](https://github.com/IsaacLuscaEditar) | [#31](https://github.com/ResidenciaTICBrisa/05_PipelineFinatec/issues/31) |
+| 11/08/2023 | 1.0 | Criação do documento | [Raquel](https://github.com/raqueleucaria) | [Isaac](https://github.com/IsaacLuscaEditar) | [#31](https://github.com/ResidenciaTICBrisa/05_PipelineFinatec/issues/31) |
