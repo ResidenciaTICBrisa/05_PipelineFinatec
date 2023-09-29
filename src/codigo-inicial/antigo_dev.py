@@ -193,6 +193,85 @@ modelo_fundep = {
 		("J7", "valor-Beneficiario"),
 	]
 }
+modelo_opas = {
+    "Relatório Consolidado" : [
+        ("C4", {CODIGO}), #??
+        ("C5", {NOME}), #??
+        ("C6", {INSTITUICAO_EXECUTORA}), #??
+        ("C6", {INSTITUICAO_EXECUTORA}), #??
+    ],
+
+    "Relatório Detalhado" : [
+
+    ]
+}
+
+modelo_fap = {
+    "ANEXO I" : [
+        #Questões cadastrais
+        ("A14",{NOME_FINANCIADOR}),
+        ("E14", "cnpj aqui"),
+        ("A19", f"Título do projeto: {NOME}"),
+
+        ("A43", {NOME_INSTITUICAO}),
+        ("D43", {COORDENADOR}),
+
+    ],
+    "ANEXO II" : [
+        ("A5", f"Coordenador: {COORDENADOR}"),
+        ("A6", f"Concedente: {NOME_FINANCIADOR}"),
+        ("A7", f"Convenente: {NOME_INSTITUICAO}"),
+        ("A8", f"Executora: {ID_INSTITUICAO_EXECUTORA}"),
+
+    ],
+    "ANEXO III" : [
+        ("A6", f"Título do Projeto: {NOME}"),
+        ("A7", f"Instituição Gestora: {NOME_INSTITUICAO}"),
+        ("A8", f"Instituição Executora: {ID_INSTITUICAO_EXECUTORA}")
+
+    ],
+    "ANEXO IV" : [
+        ("A14", {NOME_INSTITUICAO}),
+        ("A16", {NOME}),
+        ("F16", {DATA_VIGENCIA}),
+    ],
+    "Conciliação" : [
+        ("A10", {NOME_INSTITUICAO})
+    ]
+}
+
+modelo_finep = {
+    "Relatório de Exec Financ A.1" : [
+        ("B5", {NOME_INSTITUICAO}),
+        ("B6", {DATA_ASSINATURA}),
+        ("B7", {DATA_VIGENCIA}),
+
+        ("F33", {COORDENADOR})
+    ],
+    "DEMOSTR. RECEITA E DESPESA A.2" : [
+        ("C5", {NOME_INSTITUICAO}),               
+        ("C6", {DATA_ASSINATURA}),
+        ("C7", {DATA_VIGENCIA}),
+    ],
+    "Elemento de Despesa 39a" : [
+        #Semelhante ao anterior
+    ],
+    "Elemento de Despesa 39B" : [
+        #Semelhante ao anterior
+    ],
+    #Varios elementos semelhantes
+    "Rend. APL" : [
+        ("A4", {NOME_INSTITUICAO}),
+        ("A6", {NOME}),
+
+        #?
+        ("G6", {DATA_VIGENCIA}),        
+        ("G7", {DATA_ENCERRAMENTO}),        
+    ],
+    "Conciliação Bancária A.3" : [
+        #Titulo igual o da maioria
+    ]
+}
 
 # for nomePlanilha, entradaDados in planilha_local_dados.items():
 #     planilhaAtual = workbook[nomePlanilha]
