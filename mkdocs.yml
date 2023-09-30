@@ -65,6 +65,7 @@ nav:
   - Treinamento: 
     - Treinamentos: 
       - Mkdocs: treinamento/treinamentos/mkdocs.md
+      - Instalação do PostgreSQL no Ubuntu 20.04 para Projetos Django: treinamento/treinamentos/postgresql.md
     - Estudos Individuais:
       - Linguagens e frameworks: treinamento/estudos_individuais/linguagem_framework.md
       - Metodologias: treinamento/estudos_individuais/metodologias.md
