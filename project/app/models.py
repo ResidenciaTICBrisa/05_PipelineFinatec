@@ -1,7 +1,6 @@
 from django.db import models
 
 class Mapeamento(models.Model):
-    class Mapeamento(models.Model):
     CODIGO = models.IntegerField()
     NOME = models.CharField(max_length=200)
     SALDO = models.DecimalField(max_digits=10, decimal_places=2)
