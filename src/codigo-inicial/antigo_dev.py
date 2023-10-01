@@ -172,7 +172,7 @@ planilha_local_dados = {
 
 }
 
-modelo_fundep = {
+model_fundep = {
 	"Relação e despesas" : [
         # campos cadastrais
 		("C3", "Instituição Gestora"),
@@ -193,31 +193,92 @@ modelo_fundep = {
 		("J7", "valor-Beneficiario"),
 	]
 }
-modelo_opas = {
-    "Relatório Consolidado" : [
-        ("C4", {CODIGO}), #??
-        ("C5", {NOME}), #??
-        ("C6", {INSTITUICAO_EXECUTORA}), #??
-        ("C6", {INSTITUICAO_EXECUTORA}), #??
-    ],
 
-    "Relatório Detalhado" : [
-
+modelo_fundep = {
+    "Relação e despesas" : [
+        ("C3", {INSTITUICAO_EXECUTORA}),
+        ("F3", {}), #Talvez seja outra
+        ("I3", {SUBPROCESSO}),
+        ("C4", {NOME}),
+        ("C5", {COORDENADOR}),
+        ("I5", {}), #Datas diferentes do banco
+        #Não achei novos campos
     ]
 }
 
+modelo_fub = {
+    "Receita x Despesa": [
+        ("A3", f"Título do Projeto: {NOME}"),
+        ("A4", f"Executora: {INSTITUICAO_EXECUTORA}"),
+        ("A5", "Partícipe: FINATEC - Fundação de Empreendimentos Científicos e Tecnológicos"), #Não achei correspondente da consulta
+        ("A6", f"Período de Execução Físico-Financeiro: {DATA_ASSINATURA} a {DATA_VIGENCIA}"),
+        ("A7", f"Período que abrange esta prestação: {x} a {DATA_VIGENCIA}"), #SEM INFORMAÇÃO DA PRIMEIRA DATA
+        
+        ("H46", {COORDENADOR}), #Acredito que pode variar o valor
+     ],
+    "Exec. Receita e Despesa":[
+        #mesmo campos
+    ],
+    
+    "Passagens e Locomoção" : [
+        #mesmo campo
+    ],
+
+    "Pessoa Jurídica":[      
+       #mesmo campo
+    ],
+
+    "Obrigaçoes tributárias" : [
+        #mesmo campo
+    ], 
+
+    "Pessoa Fisica" : [
+        #mesmo campo
+    ], 
+
+    "Serv. Terceiro CLT" : [
+        #mesmo campo
+    ], 
+
+    "Conciliação Bancária":[
+        #mesmo campo
+    ],
+    "Rendimento de Aplicação":[
+        #mesmo campo
+    ]
+
+
+}
+
+modelo_opas = {
+    "Relatório Consolidado" : [
+        ("C3", {NOME}), 
+        ("C4", {NOME_FINANCIADOR}),
+        ("C5", {}), #não achei o nome do representante
+        ("C6", {NOME}), 
+        ("C7", f"{DATA_ASSINATURA} a {DATA_VIGENCIA}"),
+    ],
+
+    "Relatório Detalhado" : [
+        #mesmo anterior
+    ]
+}
+
+#Modelo inconscistente 
 modelo_fap = {
     "ANEXO I" : [
-        #Questões cadastrais
-        ("A14",{NOME_FINANCIADOR}),
-        ("E14", "cnpj aqui"),
-        ("A19", f"Título do projeto: {NOME}"),
+        ("E7", f"{SUBPROCESSO} \n {PROCESSO}")
 
-        ("A43", {NOME_INSTITUICAO}),
-        ("D43", {COORDENADOR}),
+        #Questões cadastrais
+        ("A14",{}), #instituição gestora diferente do banco
+        ("A20", {NOME}),
+        ("C22", f"Período da Prestação de Contas: {DATA_ASSINATURA} a {DATA_VIGENCIA}")
+
+        ("D46", {COORDENADOR}),
 
     ],
     "ANEXO II" : [
+        ("I3", f"{SUBPROCESSO} \n {PROCESSO}")
         ("A5", f"Coordenador: {COORDENADOR}"),
         ("A6", f"Concedente: {NOME_FINANCIADOR}"),
         ("A7", f"Convenente: {NOME_INSTITUICAO}"),
@@ -242,9 +303,9 @@ modelo_fap = {
 
 modelo_finep = {
     "Relatório de Exec Financ A.1" : [
-        ("B5", {NOME_INSTITUICAO}),
-        ("B6", {DATA_ASSINATURA}),
-        ("B7", {DATA_VIGENCIA}),
+        ("B5", {NOME_INSTITUICAO}), #Diferente da consulta
+        ("B6", f"de {DATA_ASSINATURA} a {DATA_VIGENCIA}"), #Datas diferentes
+        ("B7", f"de {DATA_ASSINATURA} a {DATA_VIGENCIA}"), #datas diferentes
 
         ("F33", {COORDENADOR})
     ],
