@@ -1,4 +1,3 @@
-
 # AutomaTEC
 ![logo-finatec](assets/../planejamento/assets/logo.png)
 
