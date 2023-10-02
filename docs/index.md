@@ -60,5 +60,3 @@
 | 10/07/2023 |       1.0   | Criação do documento | [Raquel](https://github.com/raqueleucaria) | [Pedro](https://github.com/pedrobarbosaocb) |
 | 02/08/2023 |       2.0   | Papéis dos membros | [Raquel](https://github.com/raqueleucaria) | [Pedro](https://github.com/pedrobarbosaocb) |
 | 23/08/2023 |       3.0   | Atualização do nome do projeto e papéis dos membros | [Raquel](https://github.com/raqueleucaria) | [Pedro](https://github.com/pedrobarbosaocb) |
-
-
