@@ -3,7 +3,7 @@
 }
 
 body {
-    background-color: #021842;
+    background-image: linear-gradient(#021842 50%, #253E6C);
     flex-direction: column;
     display: flex;
     margin: 0;
@@ -14,14 +14,26 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-around;
-    background-color: #ffffff;
-    color: #004661;
+    background-color: #021842;
+    color: #ffffff;
     height: 100px;
+    box-shadow: 10px 5px 5px #021233;
+
+}
+
+.navButton{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.navButton p, a{
+    text-decoration: none;
+    margin-left: 10px;
 }
 
 img {
-    width: 203px;
-    height: 58px;
+    width: 153px;
+    height: 28px;
 }
 
 .logo {
