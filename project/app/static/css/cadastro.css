@@ -3,7 +3,7 @@
 }
 
 body {
-    background-image: linear-gradient(#021842 40%, #253E6C);
+    background-image: linear-gradient(#021842 50%, #253E6C);
     flex-direction: column;
     display: flex;
     margin: 0;
@@ -57,7 +57,7 @@ h1 {
 
 .footer {
     padding: 20px 0px;
-    color: #8a8989;
+    color: #ffffff;
     align-self: center;
 }
 
