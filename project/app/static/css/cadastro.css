@@ -53,6 +53,9 @@ h1 {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    /* background-image: url('{% static "imagem/fundoLogo.svg" %}');
+    background-size: cover;
+    background-repeat: no-repeat; */
 }
 
 .footer {
@@ -70,7 +73,8 @@ h1 {
     flex-shrink: 0;
     border-radius: 20px;
     border: 1px solid #bcbcbc;
-    color: #ffffff;
+    color: #000000;
+    background-color: #ffffff;
     gap: 1em;
 }
 
@@ -96,15 +100,19 @@ h1 {
     width: 100%;
 }
 .button-submit {
-    color: #004661;
-    background: #ffffff;
+    color: #ffffff;
+    background: #021842;
     border: none;
     border-radius: 20px;
     padding: 10px 20px;
-    width: 100%;
+    width: 50%;
     font-weight: 600;
     transition: 0.3s;
     cursor: pointer;
+}
+.cardSubmit{
+    display: flex;
+    justify-content: center;
 }
 
 .button-submit:hover {
@@ -117,7 +125,7 @@ h1 {
     border: 1px solid #bcbcbc;
     background: rgba(0, 0, 0, 0);
     padding: 10px 20px;
-    color: #ffffff;
+    color: #323232;
 }
 
 .name {
@@ -126,7 +134,7 @@ h1 {
 }
 
 .placeholder::placeholder {
-    color: #ffffff;
+    color: #323232;
 }
 
 .link {

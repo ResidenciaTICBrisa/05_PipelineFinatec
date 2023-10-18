@@ -1,7 +1,30 @@
 {% extends 'base.html' %}
 {% block conteudo %}
 {% load static %}
+
+<script>
+    function highlightButton(button) {
+    // Remova a classe "highlighted" de todos os botões
+    var buttons = document.querySelectorAll(".navButton a");
+    buttons.forEach(function (btn) {
+        btn.classList.remove("highlighted");
+    });
+
+    // Adicione a classe "highlighted" apenas ao botão clicado
+    button.classList.add("highlighted");
+}
+
+</script>
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
+<header>
+    <img src="{% static 'imagem/finateclogo.svg' %}" alt="finatec">
+    <div class="navButton">
+        <p class="otherLogin"><a href="#" class="link" onclick="highlightButton(this)"><h1>Consulta</h1></a></p>
+        <p class="otherLogin"><a href="#" class="link" onclick="highlightButton(this)"><h1>Projetos</h1></a></p>
+        <p class="otherLogin"><a href="#" class="link" onclick="highlightButton(this)"><h1>Criar</h1></a></p>
+        <p class="otherLogin"><a href="#" class="link"><img src="{% static 'imagem/perfil.svg' %}" alt="finatec"></a></p>
+    </div>
+</header>
 
         <form action="{% url 'logout' %}" method="POST">
             {% csrf_token %}

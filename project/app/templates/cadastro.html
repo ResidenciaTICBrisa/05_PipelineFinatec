@@ -49,11 +49,18 @@
             });
         });
     </script>
-
+<header>
+    <img src="{% static 'imagem/finateclogo.svg' %}" alt="finatec">
+    <div class="navButton">
+        <!-- <p class="otherLogin"><a href="/home/" class="link"><h1>Home</h1></a></p> -->
+        <p class="otherLogin"><a href="/cadastro/" class="link"><h1>Cadastro</h1></a></p>
+        <p class="otherLogin"><a href="/" class="link"><h1>Login</h1></a></p>
+    </div>
+</header>
     <content class="content">
         <div class="container">
-            <img src="{% static 'imagem/logoFinatec.png' %}" alt="logo" class="logo">
             <h3>Cadastrar</h3>
+            <img src="{% static 'imagem/perfilC.svg' %}" alt="logo" class="logo">
             <form action="{% url 'cadastro' %}" method="POST" class='form'>
                 {% csrf_token %}
                 <div class="inputGroup">
@@ -88,7 +95,9 @@
                         </div>                       
                     </div>
                 </div>
-                <input type="submit" value="Cadastrar" class="button-submit">
+                <div class="cardSubmit">
+                    <input type="submit" value="Cadastrar" class="button-submit">
+                </div>
             </form>
             {% if error_messages %}
                 <ul class="error-list">
