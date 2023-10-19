@@ -1,6 +1,7 @@
 from django.db import models
 
 class Mapeamento(models.Model):
+    id_mapeamento               = models.IntegerField(primary_key=True)
     codigo                      = models.CharField(max_length=200)
     nome                        = models.CharField(max_length=200)
     saldo                       = models.CharField(max_length=200)
@@ -53,8 +54,14 @@ class Template(models.Model):
 class Report(models.Model):
     titulo                      = models.CharField(max_length=200)
     descricao                   = models.CharField(max_length=200)
-    tipo_erro                   = models.CharField(max_length=200)
-    id_projeto                  = models.CharField(max_length=200)
+    
+    TIPO_ERRO_CHOICES = (
+        ('erro1', 'Falta de informação no projeto'),
+        ('erro2', 'Campo preenchido incorretamente'),
+        # Adicione mais opções conforme necessário
+    )
+    tipo_erro                   = models.CharField(max_length=20, choices=TIPO_ERRO_CHOICES)
+    id_projeto                  = models.CharField(max_length=50)
     nome_usuario                = models.CharField(max_length=200)
 
 class Export(models.Model):
@@ -62,4 +69,4 @@ class Export(models.Model):
     formato                     = models.CharField(max_length=200)
     nome_template               = models.CharField(max_length=200)
     nome_usuario                = models.CharField(max_length=200)
-    id_projeto                  = models.CharField(max_length=200)
+    id_projeto                  = models.CharField(max_length=50)
