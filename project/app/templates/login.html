@@ -57,7 +57,7 @@
     }
 </style>
 <header>
-    <img src="{% static 'imagem/finateclogo.svg' %}" alt="finatec">
+    <img src="{% static 'imagem/finateclogo.svg' %}" alt="finatec" class="finatecLogo">
     <div class="navButton">
         <!-- <p class="otherLogin"><a href="/home/" class="link"><h1>Home</h1></a></p> -->
         <p class="otherLogin"><a href="/cadastro/" class="link"><h1>Cadastro</h1></a></p>
@@ -87,7 +87,7 @@
         {% if error_message %}
         <p class="error">{{ error_message }}</p>
         {% endif %}
-        <!-- <p class="otherLogin">Não possui uma conta? <a href="/cadastro/" class="link">criar</a></p> -->
+        <p class="otherLogin">Não possui uma conta? <a href="/cadastro/" class="link">criar</a></p>
     </div>
 </content>
 

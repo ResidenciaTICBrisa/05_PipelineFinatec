@@ -13,30 +13,38 @@ body {
 header {
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
     background-color: #021842;
     color: #ffffff;
     height: 100px;
     box-shadow: 10px 5px 5px #021233;
-
 }
 
 .navButton{
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-right: 100px;
 }
 .navButton p, a{
     text-decoration: none;
     margin-left: 10px;
 }
 
-.navButton .link.highlighted {
-    background-color: yellow; 
-}
+/* .navButton .link.highlighted {
+    background-color: yellow;
+} */
 img {
     width: 153px;
     height: 28px;
+}
+
+.finatecLogo{
+    margin-left: 100px;
+}
+
+.profile{
+    height: 38px;
 }
 
 .logo {
@@ -78,6 +86,18 @@ h1 {
     background-color: #ffffff;
     gap: 1em;
 }
+.containerProject {
+    display: flex;
+    align-items: center;
+    padding: 24px 72px;
+    width: 280px;
+    flex-direction: column;
+    flex-shrink: 0;
+    border-radius: 20px;
+    border: 1px solid #bcbcbc;
+    color: white;
+    gap: 1em;
+}
 
 .form {
     display: flex;
@@ -98,6 +118,10 @@ h1 {
     gap: 0.5em;
     width: 100%;
 }
+.inputExport{
+    display: flex;
+    justify-content: end;
+}
 
 .button-submit {
     color: #ffffff;
@@ -112,7 +136,7 @@ h1 {
 }
 
 .button-submit:hover {
-    background: #F39B00;
+    background: #f39b00;
 }
 .cardSubmit{
     display: flex;
@@ -127,6 +151,14 @@ h1 {
     padding: 10px 20px;
     color: #323232;
 }
+.placeholderProject {
+    flex-shrink: 0;
+    border-radius: 20px;
+    border: 1px solid #bcbcbc;
+    background: rgba(0, 0, 0, 0);
+    padding: 10px 20px;
+    color: white;
+}
 
 .name {
     font-size: 12px;
@@ -135,6 +167,9 @@ h1 {
 
 .placeholder::placeholder {
     color: #323232;
+}
+.placeholderProject::placeholder {
+    color: white;
 }
 
 .link {
@@ -147,6 +182,9 @@ h1 {
 
 .placeholder option {
     color: black;
+}
+.placeholderProject option {
+    color: white;
 }
 
 .button-logout{
@@ -168,7 +206,6 @@ h1 {
 }
 
 .button-logout:hover {
-    background: #FF3838;
-    color: #FFF;
+    background: #ff3838;
+    color: #fff;
 }
-

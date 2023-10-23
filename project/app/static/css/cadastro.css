@@ -13,7 +13,7 @@ body {
 header {
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: space-between;
     background-color: #021842;
     color: #ffffff;
     height: 100px;
@@ -24,15 +24,26 @@ header {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin-right: 100px;
 }
 .navButton p, a{
     text-decoration: none;
     margin-left: 10px;
 }
 
+.navButton .link.highlighted {
+    background-color: yellow;
+}
 img {
     width: 153px;
     height: 28px;
+}
+.finatecLogo{
+    margin-left: 100px;
+}
+
+.profile{
+    height: 38px;
 }
 
 .logo {

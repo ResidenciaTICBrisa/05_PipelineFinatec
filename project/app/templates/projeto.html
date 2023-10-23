@@ -14,15 +14,25 @@
     button.classList.add("highlighted");
 }
 
+$(function(){
+       $('input.checkgroup').click(function(){
+          if($(this).is(":checked")){
+             $('input.checkgroup').attr('disabled',true);
+             $(this).removeAttr('disabled');
+          }else{
+             $('input.checkgroup').removeAttr('disabled');
+          }
+       })
+    })
 </script>
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
 <header>
-    <img src="{% static 'imagem/finateclogo.svg' %}" alt="finatec">
+    <img src="{% static 'imagem/finateclogo.svg' %}" alt="finatec" class="finatecLogo">
     <div class="navButton">
         <p class="otherLogin"><a href="#" class="link" onclick="highlightButton(this)"><h1>Consulta</h1></a></p>
         <p class="otherLogin"><a href="#" class="link" onclick="highlightButton(this)"><h1>Projetos</h1></a></p>
         <p class="otherLogin"><a href="#" class="link" onclick="highlightButton(this)"><h1>Criar</h1></a></p>
-        <p class="otherLogin"><a href="#" class="link"><img src="{% static 'imagem/perfil.svg' %}" alt="finatec"></a></p>
+        <p class="otherLogin"><a href="#" class="link"><img src="{% static 'imagem/perfil.svg' %}" alt="finatec" class="profile"></a></p>
     </div>
 </header>
 
@@ -33,7 +43,7 @@
 
 
     <content class="content">
-        <div class="container">
+        <div class="containerProject">
             <img src="{% static 'imagem/logoFinatec.png' %}" alt="logo" class="logo">
             <h3>Selecione o projeto</h3>
             <form class="form">
@@ -41,17 +51,20 @@
                 <div class="inputGroup">
                     <div class="input">
                         <label class="name">Código</label>
-                        <input type="number" id="codigo" name="usuario" class="placeholder" placeholder="000.000-00" maxlength="14" pattern="\d{3}\.\d{3}-\d{2}" title="Digite um código válido." required>
+                        <input type="number" id="codigo" name="usuario" class="placeholderProject" placeholder="000.000-00" maxlength="14" pattern="\d{3}\.\d{3}-\d{2}" title="Digite um código válido." required>
                     </div>
                     <div class="input">
                         <label class="name">Template</label>
-                        <select class="placeholder" name="template" id="template" defaultValue="" required>
+                        <select class="placeholderProject" name="template" id="template" defaultValue="" required>
                             <option value="" hidden>Selecione um template:</option>
                             <option value="fub" >FUB</option>
                         </select>
                     </div>
+
                 </div>
-                <input type="submit" value="Baixar" class="button-submit">
+                <div class="cardSubmit">
+                    <input type="submit" value="Baixar" class="button-submit">
+                </div>
                 <!-- <input type="submit" value="formato excel" class="button-submit">     -->
             </form>
         </div>
