@@ -31,12 +31,11 @@ header {
     margin-left: 10px;
 }
 
-.navButton .link.highlighted {
+/* .navButton .link.highlighted {
     background-color: yellow;
-}
+} */
 img {
-    width: 153px;
-    height: 28px;
+    height: 20px;
 }
 .finatecLogo{
     margin-left: 100px;

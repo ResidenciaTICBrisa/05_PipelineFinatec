@@ -3,7 +3,7 @@
 }
 
 body {
-    background-image: linear-gradient(#021842 50%, #253E6C);
+    background-image: linear-gradient(#021842 50%, #253e6c);
     flex-direction: column;
     display: flex;
     margin: 0;
@@ -20,13 +20,14 @@ header {
     box-shadow: 10px 5px 5px #021233;
 }
 
-.navButton{
+.navButton {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-right: 100px;
 }
-.navButton p, a{
+.navButton p,
+a {
     text-decoration: none;
     margin-left: 10px;
 }
@@ -35,15 +36,14 @@ header {
     background-color: yellow;
 } */
 img {
-    width: 153px;
-    height: 28px;
+    height: 20px;
 }
 
-.finatecLogo{
+.finatecLogo {
     margin-left: 100px;
 }
 
-.profile{
+.profile {
     height: 38px;
 }
 
@@ -118,7 +118,7 @@ h1 {
     gap: 0.5em;
     width: 100%;
 }
-.inputExport{
+.inputExport {
     display: flex;
     justify-content: end;
 }
@@ -138,7 +138,7 @@ h1 {
 .button-submit:hover {
     background: #f39b00;
 }
-.cardSubmit{
+.cardSubmit {
     display: flex;
     justify-content: center;
 }
@@ -187,25 +187,79 @@ h1 {
     color: white;
 }
 
-.button-logout{
+.button-logout {
     color: #004661;
     background: #ffffff;
     border: none;
-    border-radius: 20px;
-    padding: 10px 20px;
-    width: 10%;
+    border-radius: 5px;
+    /* padding: 10px 20px; */
+    width: 80px;
+    height: 30px; 
     font-weight: 600;
     transition: 0.3s;
     cursor: pointer;
-    position: absolute;
-    right: 150px;
+    /* position: absolute; */
+    /* right: 150px; */
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 30px;
+    /* margin-top: 30px; */
 }
 
-.button-logout:hover {
+/* .button-logout:hover {
     background: #ff3838;
     color: #fff;
+} */
+
+/* ul {
+    list-style: none;
+}
+ul li {
+    display: inline-block;
+    position: relative;
+}
+ul li a {
+    display: block;
+    text-decoration: none;
+    text-align: center;
+}
+ul li ul.dropdown li {
+    display: block;
+}
+ul li ul.dropdown {
+    width: 100%;
+    z-index: 999;
+    display: none;
+}
+ul li a:hover {
+    background-color: red;
+}
+ul li:hover ul.dropdown {
+    display: block;
+} */
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    display: flex;
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    width: 70px;
+    height: 20px;
+    /* box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2); */
+    /* padding: 12px 16px; */
+    z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.sairImagem{
+    width: 20px;
+    margin-right: 10px;
 }
