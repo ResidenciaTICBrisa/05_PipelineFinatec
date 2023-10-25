@@ -263,3 +263,8 @@ ul li:hover ul.dropdown {
     width: 20px;
     margin-right: 10px;
 }
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    filter: invert(0.8) brightness(100%) sepia(0%) saturate(10000%) hue-rotate(0deg);
+}
