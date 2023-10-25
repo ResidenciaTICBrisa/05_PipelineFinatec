@@ -1,12 +1,18 @@
-
-{% load static %}
-
-
-<link rel="stylesheet" href="{% static 'css/home.css' %}">
-
-
-
+{% extends 'base.html' %}
 {% block conteudo %}
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<link rel="stylesheet" href="{% static 'css/cadastro.css' %}">
+
+<header>
+    <img src="{% static 'imagem/finateclogo.svg' %}" alt="finatec" class="finatecLogo">
+    <div class="navButton">
+        <p class="otherLogin"><a href="/" class="link"><h1>Home</h1></a></p>
+        <p class="otherLogin"><a href="/cadastro/" class="link"><h1>Cadastro</h1></a></p>
+        <p class="otherLogin"><a href="/login/" class="link"><h1>Login</h1></a></p>
+    </div>
+</header>
 
 <content class="content2">
     <div class="div-lado-a-lado">

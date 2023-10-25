@@ -47,7 +47,7 @@ def cadastro(request):
         user.last_name = last_name
         user.save()
 
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect('/login/')
     
 def login(request):
     if request.method =="GET":
@@ -60,12 +60,12 @@ def login(request):
 
         if user:
             login_a(request, user)
-            return HttpResponseRedirect ('projeto/')
+            return HttpResponseRedirect ('/projeto/')
         else:
             error_message = 'Usuário ou senha inválido.'
             return render(request, 'login.html', {'error_message': error_message})
 
-@login_required(login_url="/")
+@login_required(login_url="/login/")
 def projeto(request):
     # if request.user.is_authenticated:
     #     return HttpResponse('Projetos')
