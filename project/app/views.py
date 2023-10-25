@@ -8,6 +8,12 @@ from django.shortcuts import redirect
 from django.contrib.auth import logout
 from django.contrib.auth.password_validation import validate_password
 
+from django.views.generic import TemplateView
+
+class HomeView(TemplateView):
+    template_name = 'home.html'
+
+
 def cadastro(request):
     if request.method == "GET":
         return render(request, 'cadastro.html')
