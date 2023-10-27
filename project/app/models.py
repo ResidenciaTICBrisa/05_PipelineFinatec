@@ -46,7 +46,7 @@ class Mapeamento(models.Model):
     id_instituicao_executora    = models.CharField(max_length=200)
     id_tipo                     = models.CharField(max_length=200)
     
-class MapeamentoConveniar(models.Model):
+class Lancamento(models.Model):
     id_mapeamento               = models.IntegerField(primary_key=True)
     id_favorecido               = models.CharField(max_length=200)
     nome_favorecido             = models.CharField(max_length=200)        
