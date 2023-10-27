@@ -82,7 +82,7 @@
             class="logo"
         />
         <h3>Selecione o projeto</h3>
-        <form class="form">
+        <form class="form" method="POST">
             {% csrf_token %}
             <div class="inputGroup">
                 <div class="input">
@@ -92,7 +92,7 @@
                         id="codigo"
                         name="usuario"
                         class="placeholderProject"
-                        placeholder="000000"
+                        placeholder="0000"
                         maxlength="14"
                         pattern="\d{3}\.\d{3}-\d{2}"
                         title="Digite um código válido."
@@ -114,10 +114,11 @@
                         name="template"
                         id="template"
                         defaultValue=""
-                        required
-                    >
+                        required>  
                         <option value="" hidden>Selecione um template:</option>
-                        <option value="fub">FUB</option>
+                            {% for temp in templates %}
+                            <option value={{temp.id}} >{{ temp.nome_template }}</option>
+                            {% endfor %}
                     </select>
                 </div>
             </div>
