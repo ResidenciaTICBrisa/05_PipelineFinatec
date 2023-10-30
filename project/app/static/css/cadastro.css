@@ -3,7 +3,7 @@
 }
 
 body {
-    background-image: linear-gradient(#021842 50%, #253e6c);
+    background-image: linear-gradient(#021842 50%, #253E6C);
     flex-direction: column;
     display: flex;
     margin: 0;
@@ -20,14 +20,13 @@ header {
     box-shadow: 10px 5px 5px #021233;
 }
 
-.navButton {
+.navButton{
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-right: 100px;
 }
-.navButton p,
-a {
+.navButton p, a{
     text-decoration: none;
     margin-left: 10px;
 }
@@ -38,12 +37,11 @@ a {
 img {
     height: 20px;
 }
-
-.finatecLogo {
+.finatecLogo{
     margin-left: 100px;
 }
 
-.profile {
+.profile{
     height: 38px;
 }
 
@@ -65,6 +63,9 @@ h1 {
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    /* background-image: url('{% static "imagem/fundoLogo.svg" %}');
+    background-size: cover;
+    background-repeat: no-repeat; */
 }
 
 .footer {
@@ -77,25 +78,13 @@ h1 {
     display: flex;
     align-items: center;
     padding: 24px 72px;
-    width: 280px;
+    width: 600px;
     flex-direction: column;
     flex-shrink: 0;
     border-radius: 20px;
     border: 1px solid #bcbcbc;
     color: #000000;
     background-color: #ffffff;
-    gap: 1em;
-}
-.containerProject {
-    display: flex;
-    align-items: center;
-    padding: 24px 72px;
-    width: 280px;
-    flex-direction: column;
-    flex-shrink: 0;
-    border-radius: 20px;
-    border: 1px solid #bcbcbc;
-    color: white;
     gap: 1em;
 }
 
@@ -113,16 +102,13 @@ h1 {
 }
 
 .input {
+    margin-left: 10px;
+    margin-right: 10px;
     display: flex;
     flex-direction: column;
     gap: 0.5em;
     width: 100%;
 }
-.inputExport {
-    display: flex;
-    justify-content: end;
-}
-
 .button-submit {
     color: #ffffff;
     background: #021842;
@@ -134,13 +120,13 @@ h1 {
     transition: 0.3s;
     cursor: pointer;
 }
-
-.button-submit:hover {
-    background: #f39b00;
-}
-.cardSubmit {
+.cardSubmit{
     display: flex;
     justify-content: center;
+}
+
+.button-submit:hover {
+    background: #F39B00;
 }
 
 .placeholder {
@@ -151,14 +137,6 @@ h1 {
     padding: 10px 20px;
     color: #323232;
 }
-.placeholderProject {
-    flex-shrink: 0;
-    border-radius: 20px;
-    border: 1px solid #bcbcbc;
-    background: rgba(0, 0, 0, 0);
-    padding: 10px 20px;
-    color: white;
-}
 
 .name {
     font-size: 12px;
@@ -167,9 +145,6 @@ h1 {
 
 .placeholder::placeholder {
     color: #323232;
-}
-.placeholderProject::placeholder {
-    color: white;
 }
 
 .link {
@@ -183,88 +158,31 @@ h1 {
 .placeholder option {
     color: black;
 }
-.placeholderProject option {
-    color: white;
-}
 
 .button-logout {
     color: #004661;
     background: #ffffff;
     border: none;
-    border-radius: 5px;
-    /* padding: 10px 20px; */
-    width: 80px;
-    height: 30px; 
+    border-radius: 20px;
+    padding: 10px 20px;
+    width: 10%;
     font-weight: 600;
     transition: 0.3s;
     cursor: pointer;
-    /* position: absolute; */
-    /* right: 150px; */
+    position: absolute;
+    right: 150px;
     display: flex;
     align-items: center;
     justify-content: center;
-    /* margin-top: 30px; */
+    margin-top: 30px;
 }
 
-/* .button-logout:hover {
+.button-logout:hover {
     background: #ff3838;
     color: #fff;
-} */
-
-/* ul {
-    list-style: none;
-}
-ul li {
-    display: inline-block;
-    position: relative;
-}
-ul li a {
-    display: block;
-    text-decoration: none;
-    text-align: center;
-}
-ul li ul.dropdown li {
-    display: block;
-}
-ul li ul.dropdown {
-    width: 100%;
-    z-index: 999;
-    display: none;
-}
-ul li a:hover {
-    background-color: red;
-}
-ul li:hover ul.dropdown {
-    display: block;
-} */
-
-.dropdown {
-    position: relative;
-    display: inline-block;
 }
 
-.dropdown-content {
+.together{
     display: flex;
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    width: 70px;
-    height: 20px;
-    /* box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2); */
-    /* padding: 12px 16px; */
-    z-index: 1;
-}
-
-.dropdown:hover .dropdown-content {
-    display: block;
-}
-
-.sairImagem{
-    width: 20px;
-    margin-right: 10px;
-}
-
-input[type="date"]::-webkit-calendar-picker-indicator {
-    cursor: pointer;
-    filter: invert(0.8) brightness(100%) sepia(0%) saturate(10000%) hue-rotate(0deg);
+    justify-content: space-between;
 }

@@ -1,38 +1,133 @@
-{% extends 'base.html' %}
-{% block conteudo %}
-{% load static %}
+{% extends 'base.html' %} {% block conteudo %} {% load static %}
 
-        <form action="{% url 'logout' %}" method="POST">
-            {% csrf_token %}
-            <button type="submit" class="button-logout">Sair</button>
-        </form>
+<script>
+    function highlightButton(button) {
+        // Remova a classe "highlighted" de todos os botões
+        var buttons = document.querySelectorAll(".navButton a");
+        buttons.forEach(function (btn) {
+            btn.classList.remove("highlighted");
+        });
 
+        // Adicione a classe "highlighted" apenas ao botão clicado
+        button.classList.add("highlighted");
+    }
 
-    <content class="content">
-        <div class="container">
-            <img src="{% static 'imagem/logoFinatec.png' %}" alt="logo" class="logo">
-            <h3>Selecione o projeto</h3>
-            <form class="form">
-                 {% csrf_token %} 
-                <div class="inputGroup">
-                    <div class="input">
-                        <label class="name">Código</label>
-                        <input type="number" id="codigo" name="usuario" class="placeholder" placeholder="000.000-00" maxlength="14" pattern="\d{3}\.\d{3}-\d{2}" title="Digite um código válido." required>
-                    </div>
-                    <div class="input">
-                        <label class="name">Template</label>
-                        <select class="placeholder" name="template" id="template" defaultValue="" required>
-                            <option value="" hidden>Selecione um template:</option>
-                            <option value="fub" >FUB</option>
-                        </select>
-                    </div>
-                </div>
-                <input type="submit" value="Baixar" class="button-submit">
-                <!-- <input type="submit" value="formato excel" class="button-submit">     -->
-            </form>
+    $(function () {
+        $("input.checkgroup").click(function () {
+            if ($(this).is(":checked")) {
+                $("input.checkgroup").attr("disabled", true);
+                $(this).removeAttr("disabled");
+            } else {
+                $("input.checkgroup").removeAttr("disabled");
+            }
+        });
+    });
+
+    
+</script>
+<link rel="stylesheet" href="{% static 'css/style.css' %}" />
+<header>
+    <img
+        src="{% static 'imagem/finateclogo.svg' %}"
+        alt="finatec"
+        class="finatecLogo"
+    />
+    <div class="navButton">
+        <!-- <p class="otherLogin">
+            <a href="#" class="link" onclick="highlightButton(this)"
+                ><h1>Consulta</h1></a
+            >
+        </p>
+        <p class="otherLogin">
+            <a href="#" class="link" onclick="highlightButton(this)"
+                ><h1>Projetos</h1></a
+            >
+        </p>
+        <p class="otherLogin">
+            <a href="#" class="link" onclick="highlightButton(this)"
+                ><h1>Criar</h1></a
+            >
+        </p> -->
+        <div class="dropdown">
+                    <img src="{% static 'imagem/perfil.svg' %}" alt="finatec" class="profile"/>
+            <div class="dropdown-content">
+                <form
+                    class="formExit"
+                    action="{% url 'logout' %}"
+                    method="POST"
+                >
+                    {% csrf_token %}
+                    <button type="submit" class="button-logout">
+                        <img src="{% static 'imagem/sairImg.svg' %}" alt="logo" class="sairImagem"/>
+                        Sair
+                    </button>
+                </form>
+            </div>
         </div>
-    </content>
+        <!-- <ul>
+            <li>
+                <ul class="dropdown">
+                    <li></li>
+                </ul>
+            </li>
+        </ul> -->
+    </div>
+</header>
 
-
+<content class="content">
+    <div class="containerProject">
+        <img
+            src="{% static 'imagem/logoFinatec.png' %}"
+            alt="logo"
+            class="logo"
+        />
+        <h3>Selecione o projeto</h3>
+        <form class="form" method="POST">
+            {% csrf_token %}
+            <div class="inputGroup">
+                <div class="input">
+                    <label class="name">Código</label>
+                    <input
+                        type="number"
+                        id="codigo"
+                        name="usuario"
+                        class="placeholderProject"
+                        placeholder="0000"
+                        maxlength="14"
+                        pattern="\d{3}\.\d{3}-\d{2}"
+                        title="Digite um código válido."
+                        required
+                    />
+                </div>
+                <div class="inputGroup">
+                    <label class="name">Data inicio</label>
+                    <input class="placeholderProject" type="date" name="inicio" id="inicio" placeholder="00/00/0000" title="Digite uma data válida." max="8">
+                </div>
+                <div class="inputGroup">
+                    <label class="name">Data fim</label>
+                    <input class="placeholderProject" type="date" name="fim" id="fim" placeholder="00/00/0000" title="Digite uma data válida." max="8">
+                </div>
+                <div class="input">
+                    <label class="name">Template</label>
+                    <select
+                        class="placeholderProject"
+                        name="template"
+                        id="template"
+                        defaultValue=""
+                        required>  
+                        <option value="" hidden>Selecione um template:</option>
+                            {% for temp in templates %}
+                            <option value={{temp.id}} >{{ temp.nome_template }}</option>
+                            {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="cardSubmit">
+                <input type="submit" value="Baixar" class="button-submit" />
+            </div>
+            <!-- <input type="submit" value="formato excel" class="button-submit">     -->
+        </form>
+    </div>
+</content>
 
 {% endblock %}
