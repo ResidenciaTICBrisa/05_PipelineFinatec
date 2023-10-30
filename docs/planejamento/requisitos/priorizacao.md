@@ -18,4 +18,4 @@ A dinâmica foi muito importante, pois foi possível confirmar e entender melhor
 
 | Data | Versão | Descrição | Autor | Revisor | Issue |
 | --- | --- | --- | --- | --- | --- |
-| 15/08/2023 | 1.0 | Criação do documento | [Raquel]((https://github.com/raqueleucaria) | [Isaac](https://github.com/IsaacLuscaEditar) | [#44](https://github.com/ResidenciaTICBrisa/05_PipelineFinatec/issues/44) |
+| 15/08/2023 | 1.0 | Criação do documento | [Raquel](https://github.com/raqueleucaria) | [Isaac](https://github.com/IsaacLuscaEditar) | [#44](https://github.com/ResidenciaTICBrisa/05_PipelineFinatec/issues/44) |

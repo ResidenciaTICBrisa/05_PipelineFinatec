@@ -40,7 +40,11 @@ A definir com a FINATEC dia 09/08
 
 A definir com a FINATEC dia 09/08
 
+<<<<<<< HEAD
 # Fluxograma
+=======
+## Fluxograma
+>>>>>>> parent of fba4d38 (refact: limpando ambiente de desenvolvimento)
 ![fluxograma](assets/fluxograma.png)
 
 ## Histórico de Versão
