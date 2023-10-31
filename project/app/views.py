@@ -10,7 +10,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.views.generic import TemplateView
 from .models import Template
 from .oracle_cruds import consultaPorID
-from .new_dev import preenche_planilha,extrair
+from .new_dev import preenche_planilha,extrair,pegar_caminho
 import os
 import datetime
 import re
@@ -203,7 +203,7 @@ def projeto(request):
             output_dict = {key: value for key, value in result.items()}
 
 
-        print(output_dict)
+        #print(output_dict)
 
         # for key, value_list in output_dict.items():
         #     for i, (position, template) in enumerate(value_list):
@@ -239,7 +239,7 @@ def projeto(request):
                 nova_lista_de_tuplas.append(nova_tupla)
             novo_dicionario[chave] = nova_lista_de_tuplas
 
-        print(novo_dicionario)
+        #print(novo_dicionario)
 
 
         dict_final = {}
@@ -251,9 +251,9 @@ def projeto(request):
                 else:
                     combined_values[item[0]] = item[1]
     
-        dict_final[key] = [(k, v) for k, v in combined_values.items()]
+            dict_final[key] = [(k, v) for k, v in combined_values.items()]
 
-        print(dict_final)
+        #print(dict_final)
         tabe = None
         if nome.nome_template == "fundep":
             tabe = preenche_planilha("planilhas/ModeloFUNDEP.xlsx",dict_final)
@@ -274,24 +274,31 @@ def projeto(request):
         file_path = None
         print(f"download{template_id}")
         if template_id == '1':
-            file_path = '/home/ubuntu/Desktop/devfront/devfull/05_PipelineFinatec/project/app/planilhas_preenchidas/planilhas/Modelo_Fub.xlsx'
+            
+            file_path = pegar_caminho('planilhas_preenchidas/planilhas/Modelo_Fub.xlsx')
         elif template_id == '2':
-            file_path = '/home/ubuntu/Desktop/devfront/devfull/05_PipelineFinatec/project/app/planilhas_preenchidas/planilhas/ModeloFUNDEP.xlsx'
+           
+            file_path = pegar_caminho('planilhas_preenchidas/planilhas/ModeloFUNDEP.xlsx')
         elif template_id == '3':
-            file_path = '/home/ubuntu/Desktop/devfront/devfull/05_PipelineFinatec/project/app/planilhas_preenchidas/planilhas/ModeloOPAS.xlsx'
+            
+            file_path = pegar_caminho('planilhas_preenchidas/planilhas/ModeloOPAS.xlsx')
         elif template_id == '4':
-            file_path = '/home/ubuntu/Desktop/devfront/devfull/05_PipelineFinatec/project/app/planilhas_preenchidas/planilhas/ModeloFAP.xlsx'
+            
+            file_path = pegar_caminho('planilhas_preenchidas/planilhas/ModeloFAP.xlsx')
         elif template_id == '5':
-            file_path = '/home/ubuntu/Desktop/devfront/devfull/05_PipelineFinatec/project/app/planilhas_preenchidas/planilhas/ModeloFINEP.xlsx'
+            
+            file_path = pegar_caminho('planilhas_preenchidas/planilhas/ModeloFINEP.xlsx')
         else:
             # Handle cases where 'download' doesn't match any expected values
             return HttpResponse("Invalid download request", status=400)
-        print(file_path)
+        #print(file_path)
         # Check if the file exists
-        print(os.path.exists(file_path))
+     
+        #print(os.path.exists(file_path))
         if os.path.exists(file_path):
             with open(file_path, 'rb') as f:
                 response = HttpResponse(f.read(), content_type='application/octet-stream')
+                #print(f'aaaa{os.path.basename(file_path)}')
                 response['Content-Disposition'] = f'attachment; filename="{os.path.basename(file_path)}"'
                 return response
         else:

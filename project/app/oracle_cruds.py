@@ -3,8 +3,13 @@ import oracledb
 
 #connection string in the format
 #<username>/<password>@<dBhostAddress>:<dbPort>/<dbServiceName>
-
+file_path = "/home/ubuntu/Desktop/devfront/devfull/pass.txt"
 conStr = ''
+with open(file_path, 'r') as file:
+        conStr = file.readline().strip()
+
+
+
 
 def getCollumNames():
 

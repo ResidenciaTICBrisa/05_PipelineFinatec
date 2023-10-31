@@ -62,13 +62,16 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+file_path = "/home/ubuntu/Desktop/devfront/devfull/postgre.txt"
+with open(file_path, 'r') as file:
+        password_database = file.readline().strip()
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'automatec',
         'USER': 'automauser',
-        'PASSWORD': '',
+        'PASSWORD': password_database,
         'HOST': 'localhost',
         'PORT': '',
     },
