@@ -203,7 +203,7 @@ def projeto(request):
             output_dict = {key: value for key, value in result.items()}
 
 
-        print(output_dict)
+        #print(output_dict)
 
         # for key, value_list in output_dict.items():
         #     for i, (position, template) in enumerate(value_list):
@@ -239,7 +239,7 @@ def projeto(request):
                 nova_lista_de_tuplas.append(nova_tupla)
             novo_dicionario[chave] = nova_lista_de_tuplas
 
-        print(novo_dicionario)
+        #print(novo_dicionario)
 
 
         dict_final = {}
@@ -253,7 +253,7 @@ def projeto(request):
     
             dict_final[key] = [(k, v) for k, v in combined_values.items()]
 
-        print(dict_final)
+        #print(dict_final)
         tabe = None
         if nome.nome_template == "fundep":
             tabe = preenche_planilha("planilhas/ModeloFUNDEP.xlsx",dict_final)
@@ -291,14 +291,14 @@ def projeto(request):
         else:
             # Handle cases where 'download' doesn't match any expected values
             return HttpResponse("Invalid download request", status=400)
-        print(file_path)
+        #print(file_path)
         # Check if the file exists
      
-        print(os.path.exists(file_path))
+        #print(os.path.exists(file_path))
         if os.path.exists(file_path):
             with open(file_path, 'rb') as f:
                 response = HttpResponse(f.read(), content_type='application/octet-stream')
-                print(f'aaaa{os.path.basename(file_path)}')
+                #print(f'aaaa{os.path.basename(file_path)}')
                 response['Content-Disposition'] = f'attachment; filename="{os.path.basename(file_path)}"'
                 return response
         else:
