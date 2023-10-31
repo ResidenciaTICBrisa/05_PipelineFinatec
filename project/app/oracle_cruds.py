@@ -60,7 +60,7 @@ def getlimitedRows(numb):
             consulta[i] = i_data
 
         
-        print(consulta)
+        #print(consulta)
 
         # print(f"\n <oracledb.LOB object at 0x7f8823d022b0> \n {consulta['OBJETIVOS']} \n")
         #consulta[0]['OBJETIVOS'] = str(consulta[0]['OBJETIVOS'])
