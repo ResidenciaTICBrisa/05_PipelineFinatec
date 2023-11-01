@@ -23,6 +23,20 @@
         });
     });
 
+    document.addEventListener('DOMContentLoaded', (event) => {
+    var profileIcon = document.querySelector('.profile');
+
+    profileIcon.addEventListener('click', function() {
+        var dropdownContent = this.nextElementSibling;
+
+        if (dropdownContent.style.display === "none") {
+            dropdownContent.style.display = "block";
+        } else {
+            dropdownContent.style.display = "none";
+        }
+    });
+});
+
     
 </script>
 <link rel="stylesheet" href="{% static 'css/style.css' %}" />

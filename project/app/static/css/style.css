@@ -176,6 +176,10 @@ h1 {
     color: #bcbcbc;
 }
 
+.linkS{
+    color: #f39b00;
+  }
+
 .otherLogin {
     font-size: 12px;
 }
@@ -244,8 +248,7 @@ ul li:hover ul.dropdown {
 }
 
 .dropdown-content {
-    display: flex;
-    display: none;
+    display: none; /* Removido o display: block; */
     position: absolute;
     background-color: #f9f9f9;
     width: 70px;
@@ -255,11 +258,7 @@ ul li:hover ul.dropdown {
     z-index: 1;
 }
 
-.dropdown:hover .dropdown-content {
-    display: block;
-}
-
-.sairImagem{
+.sairImagem {
     width: 20px;
     margin-right: 10px;
 }
