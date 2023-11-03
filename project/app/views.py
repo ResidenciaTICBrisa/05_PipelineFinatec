@@ -11,6 +11,7 @@ from django.views.generic import TemplateView
 from .models import Template
 from .oracle_cruds import consultaPorID
 from .new_dev import preenche_planilha,extrair,pegar_caminho
+from .preencher_colunas import prenchimento_fub
 import os
 import datetime
 import re
@@ -97,13 +98,13 @@ def projeto(request):
         coduaigo = request.POST.get('usuario')
         template_id = request.POST.get('template')
         download = request.POST.get('Baixar')
-        #print(f"{download}")
+        data1 = request.POST.get('inicio')
+        data2 = request.POST.get('fim')
+        print(data1)
+        print(data2)
         db_fin = consultaPorID(coduaigo)
-        #print(template_id)
-        
-        #print(db_fin)
+       
         # nome = Template.objects.get(pk=template_id)
-        #print(nome)
         # nome = Template.objects.get(pk=template_id)
         try:
             nome = Template.objects.get(pk=template_id)
@@ -274,8 +275,9 @@ def projeto(request):
         file_path = None
         print(f"download{template_id}")
         if template_id == '1':
-            
+            keys = ['NOME_FAVORECIDO','CNPJ_FAVORECIDO','TIPO_LANCAMENTO','HIS_LANCAMENTO','DATA_EMISSAO','DATA_PAGAMENTO', 'VALOR_PAGO']
             file_path = pegar_caminho('planilhas_preenchidas/planilhas/Modelo_Fub.xlsx')
+            prenchimento_fub(file_path,keys,coduaigo,data1,data2)
         elif template_id == '2':
            
             file_path = pegar_caminho('planilhas_preenchidas/planilhas/ModeloFUNDEP.xlsx')
