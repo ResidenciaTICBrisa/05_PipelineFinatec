@@ -18,24 +18,13 @@ def pegar_caminho(nome_arquivo):
 
 
 def estilo_fub_fisica_juridica(tabela,tamanho):
-        # carrega a planilha de acordo com o caminho
+    
     caminho = pegar_caminho(tabela)
     workbook = openpyxl.load_workbook(caminho)
+    worksheet = workbook['Pessoa Fisica']  
 
-    # Create a new workbook
-    # workbook = openpyxl.Workbook()
-
-    #workbook.create_sheet(title="Sheet1")
-
-    # You can add one or more worksheets to the workbook (the first one is created by default)
-    worksheet = workbook['Pessoa Fisica']  # Replace 'Sheet1' with the name of your worksheet
-
-
-    # Add data to the worksheet
-    #tamanho = 101
+   
     size = tamanho + 10
-    #Font(name="Arial", size=12, color="00FF0000",bold=True)
-    # Change height of row A1
     #worksheet.row_dimensions[27].height = 50
 
     cinza = "979CA8"
@@ -47,29 +36,18 @@ def estilo_fub_fisica_juridica(tabela,tamanho):
         worksheet.row_dimensions[row[0].row].height = 35
 
 
-    # Create a custom number format
+    # MASCARA R$
     custom_number_format = NamedStyle(name='custom_number_format')
     custom_number_format.number_format = 'R$ #,##0.00'
     custom_number_format.font = Font(name="Arial", size=12, color="000000")
     custom_number_format.alignment = Alignment(horizontal="general",vertical="bottom",wrap_text=True)
-
-# Define the value until which you want to apply the format
-    value_to_stop = size  # Replace x with your specific value
+    value_to_stop = size  
     start_row = 10
 #
     for row in range(start_row,size+1):
         cell = worksheet[f'J{row}']
         cell.style = custom_number_format
         
-# # Iterate through the column J and apply the custom number format
-#     for cell in worksheet['J']:
-#         if row < start_row:
-#             continue
-#         cell.style = custom_number_format
-        
-#         if cell.value == value_to_stop:
-#             break  # Exit the loop once you reach the specified value
-#padraocinzaebranco
     for rows in worksheet.iter_rows(min_row=10, max_row=size, min_col=1, max_col=10):
             for cell in rows:
                 if cell.row % 2:
@@ -91,9 +69,9 @@ def estilo_fub_fisica_juridica(tabela,tamanho):
     top_left_cell.alignment = Alignment(horizontal="center",vertical="center")
 
 
-    # Specify the row number where you want to sum until (e.g., row 10)
+  
 
-    # Build the formula string
+    # FORMULATOTAL
     formula = f"=SUM(J10:J{size-1})"
     celula = f'J{size}'
     worksheet[celula] = formula
@@ -118,10 +96,7 @@ def estilo_fub_fisica_juridica(tabela,tamanho):
 
     row_number = size + 2
    
-    # # Apply the style to each cell in the row
-    # for cell in worksheet[row_number]:
-    #     cell.style = row_style
-    for column in range(1, 11):  # This will loop through columns 1 to 10
+    for column in range(1, 11):  
         cell = worksheet.cell(row=row_number, column=column)
         cell.style = row_style
 
