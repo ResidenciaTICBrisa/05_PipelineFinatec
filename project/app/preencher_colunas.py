@@ -79,12 +79,7 @@ def get_values_from_dict(keys,codigo,data1,data2):
 
 def prenchimento_fub(tabela,keys,codigo,data1,data2):
      
-    #keys = ['NOME_FAVORECIDO','CNPJ_FAVORECIDO','TIPO_LANCAMENTO','HIS_LANCAMENTO','DATA_EMISSAO','DATA_PAGAMENTO', 'VALOR_PAGO']
-    # print(f'TABELAO{tabela}')
-    # print(f'KEYS{keys}')
-    # print(f'CODIGOZERA{codigo}')
-    # print(f'DATAO{data1}')
-    # print(f'DATADO{data2}')
+
    
     tamanho = []
     for j in keys:
@@ -128,9 +123,3 @@ def prenchimento_fub(tabela,keys,codigo,data1,data2):
 
 
 
-#keys = ['NOME_FAVORECIDO','CNPJ_FAVORECIDO','TIPO_LANCAMENTO','HIS_LANCAMENTO','DATA_EMISSAO','DATA_PAGAMENTO', 'VALOR_PAGO']
-# cod = 7262
-# data1 = '2022-08-09'
-# data2 = '2023-05-31'
-
-# prenchimento_fub(keys,cod,data1,data2)

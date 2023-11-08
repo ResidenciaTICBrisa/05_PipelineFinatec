@@ -15,6 +15,8 @@ from .preencher_colunas import prenchimento_fub
 import os
 import datetime
 import re
+
+from .capa import inserir_round_retangulo
 def convert_datetime_to_string(value):
     if isinstance(value, datetime.datetime):
         return value.strftime('%d/%m/%Y')
@@ -26,7 +28,7 @@ def extract_strings(input_string):
     if matches:
         return tuple(matches[0])
     else:
-        # Handle the case when no '@@' is found in the input string
+        
         return (input_string, '')
 
 class HomeView(TemplateView):
@@ -100,7 +102,7 @@ def projeto(request):
         download = request.POST.get('Baixar')
         data1 = request.POST.get('inicio')
         data2 = request.POST.get('fim')
-        print(data1)
+        print(type(data1))
         print(data2)
         db_fin = consultaPorID(coduaigo)
        
@@ -167,9 +169,11 @@ def projeto(request):
                 if attribute_value:
                     lista_append_db_sql.append(f"{attribute_value}@@{attribute_name}@@")
                     
-        #print(lista_append_db_sql)
-        #print(mapeamento.id_mapeamento)
-        #print(mapeamento.data_vigencia)
+        print(lista_append_db_sql)
+        print('\n')
+        print(mapeamento.id_mapeamento)
+        print('\n')
+        print(mapeamento.data_vigencia)
         output = []
         result = {}
         current_key = None
@@ -277,7 +281,12 @@ def projeto(request):
         if template_id == '1':
             keys = ['NOME_FAVORECIDO','CNPJ_FAVORECIDO','TIPO_LANCAMENTO','HIS_LANCAMENTO','DATA_EMISSAO','DATA_PAGAMENTO', 'VALOR_PAGO']
             file_path = pegar_caminho('planilhas_preenchidas/planilhas/Modelo_Fub.xlsx')
-            prenchimento_fub(file_path,keys,coduaigo,data1,data2)
+            # data_obj = datetime.strptime(data1, "%Y-%m-%d")
+            # data1 = data_obj.strftime("%d/%m/%Y")
+            # data_obj2 = datetime.strptime(data2, "%Y-%m-%d")
+            # data2 = data_obj2.strftime("%d/%m/%Y")
+            prenchimento_fub(file_path,keys,coduaigo,convert_datetime_to_string(data1),convert_datetime_to_string(data2))
+            inserir_round_retangulo(file_path,data1,data2,db_fin)
         elif template_id == '2':
            
             file_path = pegar_caminho('planilhas_preenchidas/planilhas/ModeloFUNDEP.xlsx')
