@@ -191,6 +191,10 @@ h1 {
     color: white;
 }
 
+.placeholderProject .option-model{
+    color: black;
+}
+
 .button-logout {
     color: #004661;
     background: #ffffff;
