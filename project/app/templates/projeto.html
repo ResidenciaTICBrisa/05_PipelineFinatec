@@ -25,17 +25,17 @@
 
     document.addEventListener('DOMContentLoaded', (event) => {
     var profileIcon = document.querySelector('.profile');
+    var dropdownContent = profileIcon.nextElementSibling;
 
     profileIcon.addEventListener('click', function() {
-        var dropdownContent = this.nextElementSibling;
-
-        if (dropdownContent.style.display === "none") {
+        if (dropdownContent.style.display === "none" || dropdownContent.style.display === "") {
             dropdownContent.style.display = "block";
         } else {
             dropdownContent.style.display = "none";
         }
     });
 });
+
 
     
 </script>
@@ -131,7 +131,7 @@
                         required>  
                         <option value="" hidden>Selecione um template:</option>
                             {% for temp in templates %}
-                            <option value={{temp.id}} >{{ temp.nome_template }}</option>
+                            <option value={{temp.id}} class="option-model" >{{ temp.nome_template }}</option>
                             {% endfor %}
                     </select>
                 </div>
