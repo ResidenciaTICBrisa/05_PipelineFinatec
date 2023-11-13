@@ -102,12 +102,15 @@ def preenche_fundep(codigo,data1,data2,keys,planilha):
         input_date = datetime.strptime(data1, "%Y-%m-%d")
     # Format the datetime object to a string in dd/mm/yyyy format
         output_date_str = input_date.strftime("%d/%m/%Y")
-    elif check_format(data2):
+    else :
+         return None
+    if check_format(data2):
         input_date2 = datetime.strptime(data2, "%Y-%m-%d")
     # Format the datetime object to a string in dd/mm/yyyy format
         output_date_str2 = input_date2.strftime("%d/%m/%Y")
     else :
          return None
+    
     string_periodo = f"{output_date_str} a {output_date_str2}"
     
 

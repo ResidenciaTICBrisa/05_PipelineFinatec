@@ -1,6 +1,7 @@
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment,NamedStyle,Border, Side
 import os
+#pegar o caminho do arquivo
 def pegar_caminho(nome_arquivo):
 
     # Obter o caminho absoluto do arquivo Python em execução
