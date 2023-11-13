@@ -12,6 +12,7 @@ from .models import Template
 from .oracle_cruds import consultaPorID
 from .new_dev import preenche_planilha,extrair,pegar_caminho
 from .preenche_fub import preencher_fub_teste
+from .preenche_fundep import preenche_fundep
 import os
 import datetime
 import re
@@ -295,8 +296,9 @@ def projeto(request):
             preencher_fub_teste(coduaigo,convert_datetime_to_string(data1),convert_datetime_to_string(data2),keys,file_path)
             inserir_round_retangulo(file_path,data1,data2,db_fin)
         elif template_id == '2':
-           
+            keys = ['NOME_FAVORECIDO','CNPJ_FAVORECIDO','NOME_RUBRICA','DATA_EMISSAO','DATA_PAGAMENTO', 'VALOR_PAGO']
             file_path = pegar_caminho('planilhas_preenchidas/planilhas/ModeloFUNDEP.xlsx')
+            preenche_fundep(coduaigo,convert_datetime_to_string(data1),convert_datetime_to_string(data2),keys,file_path)
         elif template_id == '3':
             
             file_path = pegar_caminho('planilhas_preenchidas/planilhas/ModeloOPAS.xlsx')

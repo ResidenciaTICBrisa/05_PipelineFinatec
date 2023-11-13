@@ -1,6 +1,8 @@
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment,NamedStyle,Border, Side
 import os
+from datetime import datetime,date
+
 def pegar_caminho(nome_arquivo):
 
     # Obter o caminho absoluto do arquivo Python em execução
@@ -18,35 +20,63 @@ def estilo_fundep(tabela,tamanho):
     # caminho = pegar_caminho(tabela)
     workbook = openpyxl.load_workbook(tabela)
     worksheet = workbook['Relação de despesas']
-    size = tamanho + 5
-
-# #Cabecario
-
-#     worksheet.row_dimensions['A1'].height = 19
-#     worksheet.row_dimensions['A2'].height = 1
-#     worksheet.merge_cells('A1:J1')
-#     worksheet['A1'] = 'Rota 2030 - Fundep - Anexo III – Relação de Despesas'
-
-#     for i in range(3,6):
-#         worksheet.merge_cells(start_row=i,end_row=i,start_column=1,end_column=2)
+    ######periodo de prestação de contas
     
-#     worksheet['A3'] = '1 - Gestora'
-#     worksheet['A4'] = '2 - Título do Projeto'
-#     worksheet['A5'] = '3 - Coordenador'
-#     worksheet.merge_cells('A3:D3')
 
-#Corpo
-    count = 1
-    for rows in worksheet.iter_rows(min_row=7 ,max_row=size,min_col=2,max_col=2):
-        for cell in rows:
-            cell.value = count
-        count = count + 1
+    #corpo
+    size = tamanho + 6
+    print(size)
+
+    custom_number_format = []
+    # MASCARA R$
+    if custom_number_format!= False: 
+        custom_number_format = NamedStyle(name='custom_number_format')
+        custom_number_format.number_format = 'R$ #,##0.00'
+        custom_number_format.font = Font(name="Calibri", size=11, color="000000")
+        custom_number_format.alignment = Alignment(horizontal="general",vertical="bottom",wrap_text=True)
     
-    for rows in worksheet.iter_rows(min_row=7 ,max_row=size,min_col=1,max_col=1):
-        for cell in rows:
-            cell.value = 1
-       
+    value_to_stop = size  
+    start_row = 7
+    for row in range(start_row,size+2):
+        cell = worksheet[f'J{row}']
+        cell.style = custom_number_format
+
+    #Bordas
+    for rows in worksheet.iter_rows(min_row=7, max_row=size, min_col=1, max_col=10):
+            for cell in rows:
+                cell.font = Font(name="Calibri", size=11, color="000000")
+                cell.alignment = Alignment(horizontal="general",vertical="bottom",wrap_text=True)
+                cell.border = Border(top=Side(border_style="thin") ,left = Side(border_style="thin") ,right =Side(border_style="thin") ,bottom=Side(border_style="thin") )
+                
+
     #total despesas nesta
-    total_despesa_string = f''
-    worksheet.merge_cells()
+    total_despesa_string_LOCATION_merge = f'A{size+1}:I{size+1}'
+    worksheet.merge_cells(total_despesa_string_LOCATION_merge)
+    total_despesa_string_LOCATION = f'A{size+1}'
+    worksheet[total_despesa_string_LOCATION] = f'TOTAL DE DESPESAS NESTA'
+    worksheet[total_despesa_string_LOCATION].alignment = Alignment(horizontal="right",vertical="center",wrap_text = True)
+    worksheet[total_despesa_string_LOCATION].fill= PatternFill(start_color='d9d9d9',end_color='d9d9d9',fill_type='solid')
+
+    #Total Nessa
+    formula = f"=SUM(J7:J{size})"
+    formulat_total_location = f'J{size+1}'
+    worksheet[formulat_total_location]= formula = f"=SUM(J10:J{size-1})"
+    worksheet[formulat_total_location].font=Font(bold=True)
+
+    #total de despesas Acumuladas
+    total_despesa_string_LOCATION_merge_acumuladas = f'A{size+2}:I{size+2}'
+    worksheet.merge_cells(total_despesa_string_LOCATION_merge_acumuladas)
+    total_despesa_string_LOCATION_acumuladas = f'A{size+2}'
+    worksheet[total_despesa_string_LOCATION_acumuladas] = f'TOTAL DE DESPESAS ACUMULADAS'
+    worksheet[total_despesa_string_LOCATION_acumuladas].alignment = Alignment(horizontal="right",vertical="center",wrap_text = True)
+    worksheet[total_despesa_string_LOCATION_acumuladas].fill= PatternFill(start_color='d9d9d9',end_color='d9d9d9',fill_type='solid')
+
+        #Total de despesas Acumuladas
+    
+    total_despesa_string_LOCATION_acumuladas_valor = f'J{size+2}'
+    worksheet[total_despesa_string_LOCATION_acumuladas_valor].font=Font(bold=True)
+
+    workbook.save(tabela)
+    workbook.close()
+
 
