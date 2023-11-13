@@ -11,7 +11,7 @@ from django.views.generic import TemplateView
 from .models import Template
 from .oracle_cruds import consultaPorID
 from .new_dev import preenche_planilha,extrair,pegar_caminho
-from .preencher_colunas import prenchimento_fub
+from .preenche_fub import preencher_fub_teste
 import os
 import datetime
 import re
@@ -104,7 +104,14 @@ def projeto(request):
         data2 = request.POST.get('fim')
         print(type(data1))
         print(data2)
-        db_fin = consultaPorID(coduaigo)
+        try:
+            db_fin = consultaPorID(coduaigo)
+        except:
+             return render(request,'projeto.html',{
+        "templates":Template.objects.all(),
+    })  
+       
+      
        
         # nome = Template.objects.get(pk=template_id)
         # nome = Template.objects.get(pk=template_id)
@@ -285,7 +292,7 @@ def projeto(request):
             # data1 = data_obj.strftime("%d/%m/%Y")
             # data_obj2 = datetime.strptime(data2, "%Y-%m-%d")
             # data2 = data_obj2.strftime("%d/%m/%Y")
-            prenchimento_fub(file_path,keys,coduaigo,convert_datetime_to_string(data1),convert_datetime_to_string(data2))
+            preencher_fub_teste(coduaigo,convert_datetime_to_string(data1),convert_datetime_to_string(data2),keys,file_path)
             inserir_round_retangulo(file_path,data1,data2,db_fin)
         elif template_id == '2':
            
