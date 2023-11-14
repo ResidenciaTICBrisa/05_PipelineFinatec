@@ -2216,7 +2216,64 @@ def estilo_rendimento_de_aplicacao(tabela,tamanho):
 
     workbook.save(tabela)
     workbook.close()
-        
+
+def diarias(tabela,tamanho):
+    caminho = pegar_caminho(tabela)
+    workbook = openpyxl.load_workbook(caminho)
+    worksheet = workbook['Diárias']
+    size = tamanho + 10
+    cinza = "d9d9d9"
+    cinza_escuro = "979CA8"
+    azul = "336394"
+    azul_claro = '1c8cbc'
+
+
+    worksheet.column_dimensions['a'].width = 25
+    worksheet.column_dimensions['b'].width = 25
+    worksheet.column_dimensions['c'].width = 35
+    worksheet.column_dimensions['d'].width = 35
+    worksheet.column_dimensions['e'].width = 20
+    worksheet.column_dimensions['f'].width = 20
+
+    #cabecario relação de pagamentos - outro servicoes de terceiros
+    worksheet.merge_cells('A1:F2')
+    worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - DIÁRIAS'
+    worksheet['A1'].font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
+    worksheet['A1'].alignment = Alignment(horizontal="center",vertical="center")
+    worksheet['A1'].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
+    
+    worksheet.merge_cells('A3:F3')
+    worksheet['A3'] = "='Receita x Despesa'!A3:J3"
+    worksheet['A3'].font = Font(name="Arial", size=12, color="000000")
+    worksheet['A3'].alignment = Alignment(horizontal="left",vertical="center")
+
+    worksheet.merge_cells('A4:F4')
+    worksheet['A4'] = "='Receita x Despesa'!A4:J4"
+    worksheet['A4'].font = Font(name="Arial", size=12, color="000000")
+    worksheet['A4'].alignment = Alignment(horizontal="left",vertical="center")
+    
+    worksheet.merge_cells('A5:F5')
+    worksheet['A5'] = "='Receita x Despesa'!A5:J5"
+    worksheet['A5'].font = Font(name="Arial", size=12, color="000000")
+    worksheet['A5'].alignment = Alignment(horizontal="left",vertical="center")
+    
+    worksheet.merge_cells('A6:F6')
+    worksheet['A6'] = "='Receita x Despesa'!A6:J6"
+    worksheet['A6'].font = Font(name="Arial", size=12, color="000000")
+    worksheet['A6'].alignment = Alignment(horizontal="left",vertical="center")
+    
+    worksheet.merge_cells('A7:F7')
+    worksheet['A7'] = "='Receita x Despesa'!A7:J7"
+    worksheet['A7'].font = Font(name="Arial", size=12, color="000000")
+    worksheet['A7'].alignment = Alignment(horizontal="left",vertical="center")
+
+    #colunas azul
+    row_style_juridica = NamedStyle(name='row_style_juridica')
+    row_style_juridica.font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
+    row_style_juridica.fill = openpyxl.styles.PatternFill(start_color=azul_claro, end_color=azul_claro, fill_type='solid')
+    row_style_juridica.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
+    row_style_juridica.height = 20
+
 def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2):
     caminho = pegar_caminho(tabela)
     workbook = openpyxl.load_workbook(caminho)
