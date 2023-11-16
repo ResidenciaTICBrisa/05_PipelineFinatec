@@ -2,7 +2,9 @@ import oracledb
 from datetime import datetime,date
 import openpyxl
 import os
-from .estilo_fub import estilo_conciliacoes_bancaria,estilo_fub_fisica,estilo_fub_juridica,estilo_Iss,estilo_obrigacoes_tributarias,estilo_passagens,estilo_rendimento_de_aplicacao,estilo_serv_terceiro,estilo_fub_juridica_juridica
+from .estilo_fub import (estilo_conciliacoes_bancaria,estilo_fub_fisica,estilo_fub_juridica,
+estilo_Iss,estilo_obrigacoes_tributarias,estilo_passagens,estilo_rendimento_de_aplicacao,
+estilo_serv_terceiro,estilo_fub_juridica_juridica,estilo_diarias,estilo_demonstrativoDeReceita)
 from collections import defaultdict
 from .oracle_cruds import consultaPorID
 
@@ -167,8 +169,6 @@ def criaout(planilha,codigo,data1,data2):
 
     hoje = date.today()
     data_formatada = f"{hoje.day} de {meses_dict[hoje.month]} de {hoje.year}"
-
-# Constrói a string completa
     sheet["A42"] = f'Brasilia,{data_formatada}'
     workbook.save(planilha)
     workbook.close()
@@ -358,6 +358,11 @@ def iss(codigo,data1,data2,keys,planilha):
 
 # ##########################################Passagem Locomoção#########################################
 def passagem_locomção(codigo,data1,data2,keys,planilha):
+    tabela = pegar_caminho(planilha)
+    workbook = openpyxl.load_workbook(tabela)
+    sheet2 = workbook.create_sheet(title="Passagens e Desp. Locomoção")
+    workbook.save(tabela)
+    workbook.close()
     tamanho = []
     categorized_data= separarporrubrica(codigo,data1,data2)
     for j in keys:
@@ -385,7 +390,7 @@ def passagem_locomção(codigo,data1,data2,keys,planilha):
     # caminho = pegar_caminho(planilha)
 
     workb = openpyxl.load_workbook(tabela)
-    worksheet3 = workb["Passagens e Locomoção"]
+    worksheet3 = workb["Passagens e Desp. Locomoção"]
 
     for i in range(1,maior+1):
         valor_coluna = 9 + i
@@ -737,6 +742,24 @@ def rendimentodeaplicacao(codigo,data1,data2,planilha):
         workb.close
    ##############################
 
+def diaria(codigo,data1,data2,planilha):
+    tabela = pegar_caminho(planilha)
+    workbook = openpyxl.load_workbook(tabela)
+    sheet2 = workbook.create_sheet(title="Diárias")
+    workbook.save(tabela)
+    workbook.close()
+    tamanho = 20
+    estilo_diarias(tabela,tamanho)
+
+def demonstrativo(codigo,data1,data2,planilha):
+    tabela = pegar_caminho(planilha)
+    workbook = openpyxl.load_workbook(tabela)
+    sheet2 = workbook.create_sheet(title="Demonstrativo de Receita")
+    workbook.save(tabela)
+    workbook.close()
+    tamanho = 20
+    estilo_demonstrativoDeReceita(tabela,tamanho)
+
 def preencher_fub_teste(codigo,data1,data2,keys,tabela):
     criaout(tabela,codigo,data1,data2)
     pessoa_fisica(codigo,data1,data2,keys,tabela)
@@ -747,6 +770,9 @@ def preencher_fub_teste(codigo,data1,data2,keys,tabela):
     obricacao_tributaria(codigo,data1,data2,keys,tabela)
     conciliacao_bancaria(codigo,data1,data2,tabela)
     rendimentodeaplicacao(codigo,data1,data2,tabela)
+    diaria(codigo,data1,data2,tabela)
+    demonstrativo(codigo,data1,data2,tabela)
+    
 
 # keys = ['NOME_FAVORECIDO','CNPJ_FAVORECIDO','TIPO_LANCAMENTO','HIS_LANCAMENTO','DATA_EMISSAO','DATA_PAGAMENTO', 'VALOR_PAGO']
 # tabela = pegar_caminho("Modelo_Fub.xlsx")
