@@ -3,7 +3,7 @@ from datetime import datetime,date
 import openpyxl
 import os
 from .estilo_fub import (estilo_conciliacoes_bancaria,estilo_rendimento_de_aplicacao,
-estilo_demonstrativoDeReceita,estiloGeral)
+estilo_demonstrativoDeReceita,estiloGeral,estiloRelacaoBens)
 from collections import defaultdict
 from .oracle_cruds import consultaPorID,getAnalistaDoProjetoECpfCoordenador
 
@@ -805,6 +805,17 @@ def custoIndireto(codigo,data1,data2,planilha):
     tamanho = 20
     estiloGeral(tabela,tamanho,tituloStyle,nomeTabela)
 
+def relacaodeBens(codigo,data1,data2,planilha):
+    tabela = pegar_caminho(planilha)
+    workbook = openpyxl.load_workbook(tabela)
+    nomeTabela ="Relação de Bens"
+    tituloStyle = "relacaoBEns"
+    sheet2 = workbook.create_sheet(title="Relação de Bens")
+    workbook.save(tabela)
+    workbook.close()
+    tamanho = 20
+    estiloRelacaoBens(tabela,tamanho,tituloStyle,nomeTabela)
+
 def materialDeConsumo(codigo,data1,data2,planilha):
     tabela = pegar_caminho(planilha)
     workbook = openpyxl.load_workbook(tabela)
@@ -855,6 +866,7 @@ def preencher_fub_teste(codigo,data1,data2,keys,tabela):
     materialDeConsumo(codigo,data1,data2,tabela)
     equipamentoMaterialPermanente(codigo,data1,data2,tabela)
     demonstrativo(codigo,data1,data2,tabela)
+    relacaodeBens(codigo,data1,data2,tabela)
     
 
 # keys = ['NOME_FAVORECIDO','CNPJ_FAVORECIDO','TIPO_LANCAMENTO','HIS_LANCAMENTO','DATA_EMISSAO','DATA_PAGAMENTO', 'VALOR_PAGO']
