@@ -15,6 +15,15 @@ def getCollumNames():
     #criar um objeto cursor necessario para fazer as consultas
     cur = conn.cursor() 
     cur.execute("SELECT * FROM IDEA.STG_PROJETOS_CONVENIAR")
+    # colunas_desejadas = [
+    #     'CODIGO', 'NOME', 'NOME_FINANCIADOR', 
+    #     'DATA_ASSINATURA', 'DATA_VIGENCIA', 'COORDENADOR', 
+    #     'VALOR_APROVADO', 'GRUPO_GESTORES'
+    # ]
+
+    # # Montar a consulta SQL selecionando apenas as colunas desejadas
+    # consulta_sql = "SELECT {} FROM IDEA.STG_PROJETOS_CONVENIAR".format(", ".join(colunas_desejadas))
+    
 
     return cur
 
