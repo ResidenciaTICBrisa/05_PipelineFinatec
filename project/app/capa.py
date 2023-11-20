@@ -6,6 +6,7 @@ import os
 
 
 
+
 def pegar_caminho(nome_arquivo):
 
     # Obter o caminho absoluto do arquivo Python em execução
@@ -118,7 +119,8 @@ def inserir_round_retangulo(planilha,data1,data2,dicionariofin):
     # Create an empty dictionary to store the values from the second dictionary
     result_dict = {}
 
-    # Iterate over the keys and values in the first dictionary
+    # Loop pra criar no formato dicionarario por exemplo
+    # Capa Finatec : [(E3:COORDENADOR)]
     for key, value in planilha_local_dados["Capa Finatec"]:
         if value in dicionariofin:
             result_dict[key] = dicionariofin[value]
@@ -180,8 +182,9 @@ def inserir_round_retangulo(planilha,data1,data2,dicionariofin):
         img = Image(image_path)
         images.append(img)
 
+  
 
-    
+ 
     #estilo imagem
     worksheet.add_image(images[20], "B2")#prestação
     worksheet.merge_cells('B2:L2')
@@ -202,8 +205,8 @@ def inserir_round_retangulo(planilha,data1,data2,dicionariofin):
     worksheet['B6'].alignment = Alignment(horizontal="justify",vertical="center",wrap_text=True)
     worksheet.add_image(images[3], "E6")
     worksheet.merge_cells('E6:M7')
-    worksheet['E6'].font = Font(name="Tahoma", size=10, color="204c80",bold=False)
-    worksheet['E6'].alignment = Alignment(horizontal="left",vertical="center",wrap_text=True)
+    worksheet['E6'].font = Font(name="Tahoma", size=9, color="204c80",bold=False)
+    worksheet['E6'].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
 
     worksheet.add_image(images[23], "B9")#projeto
     worksheet.merge_cells('B9:D13')
@@ -213,7 +216,7 @@ def inserir_round_retangulo(planilha,data1,data2,dicionariofin):
     worksheet.add_image(images[24], "E9")
     worksheet.merge_cells('E9:M13')
     worksheet['E9'].font = Font(name="Tahoma", size=10, color="204c80",bold=False)
-    worksheet['E9'].alignment = Alignment(horizontal="left",vertical="center",wrap_text=True)
+    worksheet['E9'].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
 
     worksheet.add_image(images[13], "B14")#coordenador
     worksheet.merge_cells('B14:D15')
@@ -286,7 +289,7 @@ def inserir_round_retangulo(planilha,data1,data2,dicionariofin):
     worksheet.merge_cells('E21:G22')
     worksheet['E21'] = f"{(data1)} a {(data2)}"
     worksheet['E21'].font = Font(name="Tahoma", size=10, color="204c80",bold=False)
-    worksheet['E21'].alignment = Alignment(horizontal="left",vertical="center",wrap_text=True)
+    worksheet['E21'].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
 
     worksheet.add_image(images[7], "B30")#Assistente
     worksheet.merge_cells('B30:D32')
@@ -303,8 +306,9 @@ def inserir_round_retangulo(planilha,data1,data2,dicionariofin):
     worksheet['B26'].font = Font(name="Tahoma", size=10, color="204c80",bold=True)
     worksheet['B26'].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
     worksheet.add_image(images[5], "E26")#Analista
+    worksheet.merge_cells('E26:M28')
     worksheet['E26'].font = Font(name="Tahoma", size=10, color="204c80",bold=False)
-    worksheet['E26'].alignment = Alignment(horizontal="left",vertical="center")
+    worksheet['E26'].alignment = Alignment(horizontal="center",vertical="center")
 
     worksheet.add_image(images[16], "B34")#gerengte
     worksheet.merge_cells('B34:D36')

@@ -140,9 +140,60 @@ def consultaPorID(IDPROJETO):
     # return records
     return consulta
 
-# # executando
-# a = input("Digite o id do projeto: ")
-# print("\n\n")
-# resultado = consultaPorID(a)
 
-# print(f"\n {type(resultado)} \n")
+def getAnalistaDoProjetoECpfCoordenador(IDPROJETO):
+    #dados interessantes dessa tabela
+    #CPF_COORDENADOR
+    #NOME_ANALISTA
+    #VALOR_APROVADO
+    #CUSTOOPERACIONAL
+
+
+   #inicializando o objeto que ira conectar no db
+    conn = None
+    #criando o objeto de conexão das
+    conn = oracledb.connect(conStr)
+    #criar um objeto cursor necessario para fazer as consultas
+    cur = conn.cursor() 
+    cur.execute("SELECT * FROM IDEA.FAT_PROJETO_CONVENIAR")
+
+ 
+
+
+    consulta = {}
+    try:
+            connection = oracledb.connect(conStr)
+            cursor = connection.cursor()
+            print("Connected to database")
+
+            # idProjeto = 6411
+            sqlite_select_query = f"SELECT * FROM IDEA.FAT_PROJETO_CONVENIAR WHERE IDPROJETO='{IDPROJETO}'"
+            
+            cursor.execute(sqlite_select_query)
+
+            records = cursor.fetchall()
+
+            collums = cur
+
+            # print(records)
+            # print(collums.description)
+
+            for i in range(len(collums.description)):
+                consulta[collums.description[i][0]] = records[0][i]
+
+            #print(consulta)
+
+            # print(f"\n <oracledb.LOB object at 0x7f8823d022b0> \n {consulta['OBJETIVOS']} \n")
+            # consulta['NOME_ANALISTA'] = str(consulta['NOME_ANALISTA'])
+                
+            cursor.close()
+
+    except oracledb.Error as error:
+            print("Failed to read data from table", error)
+    finally:
+            if connection:
+                connection.close()
+                print("The connection is closed")
+        
+    # return records
+    return consulta
