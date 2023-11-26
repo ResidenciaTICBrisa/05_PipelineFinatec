@@ -433,10 +433,10 @@ def passagem_locomção(codigo,data1,data2,keys,planilha):
 # ##########################################Serv.Terceiro CLTa#########################################
 def terclt(codigo,data1,data2,keys,planilha):
     tabela = pegar_caminho(planilha)
-    nomeTabela ="Outros Serviços Terceiros - PF"
+    nomeTabela ="Serv. Terceiro CLT"
     tituloStyle = "outrosServiçosTerceiros"
     workbook = openpyxl.load_workbook(tabela)
-    sheet2 = workbook.create_sheet(title="Outros Serviços Terceiros - PF")
+    sheet2 = workbook.create_sheet(title="Serv. Terceiro CLT")
     workbook.save(tabela)
     workbook.close()
     categorized_data= separarporrubrica(codigo,data1,data2)
@@ -852,7 +852,7 @@ def preencher_fub_teste(codigo,data1,data2,keys,tabela):
     preencherCapa(codigo,tabela)
     pessoa_fisica(codigo,data1,data2,keys,tabela)
     pessoa_juridica(codigo,data1,data2,keys,tabela)
-    iss(codigo,data1,data2,keys,tabela)
+    #iss(codigo,data1,data2,keys,tabela)
     passagem_locomção(codigo,data1,data2,keys,tabela)
     terclt(codigo,data1,data2,keys,tabela)
     obricacao_tributaria(codigo,data1,data2,keys,tabela)

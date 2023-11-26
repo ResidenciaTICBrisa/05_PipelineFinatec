@@ -57,7 +57,30 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela):
 
     #cabecario relação de pagamentos - outro servicoes de terceiros
     worksheet.merge_cells('A1:J2')
-    worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - DIÁRIAS'
+    if nomeSheet == "diarias":
+        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - DIÁRIAS'
+    elif nomeSheet == "pessoaFisica":
+        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  OUTROS SERVIÇOS DE TERCEIROS - PF'
+    elif nomeSheet == "pessoaJuridica":
+        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - OUTROS SERVIÇOS DE TERCEIROS - PESSOA JURÍDICA'
+    elif nomeSheet == "passagenDespLocomo":
+        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - PASSAGENS E DESPESAS COM LOCOMOÇÃO'
+    elif nomeSheet == "outrosServiçosTerceiros":
+        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - O U T R O S  S E R V I Ç O S D E T E R C E I R O S - C E L E T I S T A S'
+    elif nomeSheet == "auxilioEstudante":
+        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  AUXÍLIO FINANCEIRO A ESTUDANTE'
+    elif nomeSheet == "bolsaExtensao":
+        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  BOLSA DE EXTENSÃO'
+    elif nomeSheet == "estagiario":
+        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  ESTAGIÁRIO'
+    elif nomeSheet == "custosIndiretos":
+        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - CUSTOS INDIRETOS - FUB'
+    elif nomeSheet == "materialDeConsumo":
+        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  MATERIAL DE CONSUMO'
+    elif nomeSheet == "equipamentoMaterialPermanente":
+        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  EQUIPAMENTO E MATERIAL PERMANENTE'
+  
+
     worksheet['A1'].font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
     worksheet['A1'].alignment = Alignment(horizontal="center",vertical="center")
     worksheet['A1'].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
@@ -965,10 +988,6 @@ def estiloRelacaoBens(tabela,tamanho,nomeVariavel,nomeTabela):
 
             cell.border = borda       
 
-    
-  
-
-
 ##CABECARIO
     
     worksheet["A11"].fill = openpyxl.styles.PatternFill(start_color=azul_claro, end_color=azul_claro, fill_type='solid')
@@ -1014,22 +1033,6 @@ def estiloRelacaoBens(tabela,tamanho,nomeVariavel,nomeTabela):
     worksheet["I12"].fill = openpyxl.styles.PatternFill(start_color=cinza, end_color=cinza, fill_type='solid')
     worksheet["I12"] = "Total"
     worksheet["I12"].border = borda2   
-
-  
-   
-
-   
-
-
-
-
-
-
-
-
-
-
-
 
     #Aumentar  a altura das celulas 
     for row in worksheet.iter_rows(min_row=10, max_row=size, min_col=1, max_col=10):
@@ -1182,7 +1185,6 @@ def estiloRelacaoBens(tabela,tamanho,nomeVariavel,nomeTabela):
 
     workbook.save(tabela)
     workbook.close()
-
 
 def estilo_demonstrativoDeReceita(tabela,tamanho):
     caminho = pegar_caminho(tabela)
