@@ -1,10 +1,15 @@
 import oracledb
+import os
 
+script_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(os.path.dirname(os.path.dirname(script_dir)))
+file_path = os.path.join(parent_dir, "pass.txt")
 
-file_path = "/home/ubuntu/Desktop/devfront/devfull/pass.txt"
+# file_path = "/home/ubuntu/Desktop/devfront/devfull/pass.txt"
 conStr = ''
 with open(file_path, 'r') as file:
         conStr = file.readline().strip()
+
 
 def getCollumNames():
 
