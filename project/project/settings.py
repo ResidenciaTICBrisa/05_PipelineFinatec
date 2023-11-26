@@ -65,14 +65,20 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# script_dir = os.path.dirname(os.path.abspath(__file__))
+# parent_dir = os.path.dirname(os.path.dirname(os.path.dirname(script_dir)))
+# file_path = os.path.join(parent_dir, "postgre.txt")
+# conStr = ''
+
+
 script_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(os.path.dirname(os.path.dirname(script_dir)))
+parent_dir = os.path.join(script_dir, '..')
 file_path = os.path.join(parent_dir, "postgre.txt")
-conStr = ''
+
 
 with open(file_path, 'r') as file:
         password_database = file.readline().strip()
-
+print(password_database)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
