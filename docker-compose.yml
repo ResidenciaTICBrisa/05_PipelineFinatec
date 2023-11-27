@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  django:
+    image: automatec:1.0
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  postgres:
+    image: postgres:latest
+#    env_file: .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+#    command: ["sh", "create_user.sh"]
+    ports:
+      - "5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U automauser"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+

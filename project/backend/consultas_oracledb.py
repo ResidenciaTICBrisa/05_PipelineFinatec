@@ -1,17 +1,21 @@
 import oracledb
+import os
 
+script_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(os.path.dirname(os.path.dirname(script_dir)))
+file_path = os.path.join(parent_dir, "pass.txt")
 
-file_path = "/home/ubuntu/Desktop/devfront/devfull/pass.txt"
+# file_path = "/home/ubuntu/Desktop/devfront/devfull/pass.txt"
 conStr = ''
 with open(file_path, 'r') as file:
         conStr = file.readline().strip()
-
 def getCollumNames():
 
     #inicializando o objeto que ira conectar no db
     conn = None
     #criando o objeto de conexão das
     conn = oracledb.connect(conStr)
+    
     #criar um objeto cursor necessario para fazer as consultas
     cur = conn.cursor() 
     cur.execute("SELECT * FROM IDEA.STG_PROJETOS_CONVENIAR")
