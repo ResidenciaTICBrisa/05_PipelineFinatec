@@ -1,17 +1,65 @@
 {% extends 'base.html' %}
 {% block conteudo %}
 {% load static %}
+
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
 <style>
-    /* .data-table {
-        border-collapse: collapse;
-        width: 100%;
+    .list-box {
+        align-items: center;
+        justify-content: space-between;
+        margin-right: 100px;
+        margin-left: 100px;
+        margin-top: 20px;
     }
 
-    .data-table th, .data-table td {
+    .search-container {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .search-container button {
+        border-radius: 0px 10px 10px 0px;
+        background-color: white;
+        margin-left: 0;
+        border: 0;
+        padding: 5px;
+    }
+
+    .search-container input {
+        border-radius: 10px 0px 0px 10px;
+        background-color: white;
+        margin-right: 0;
+        border: 0;
+        padding: 5px;
+    }
+
+    .data-table {
+        /* border-collapse: collapse; */
+        width: 100%;
+        color: white;
+        border-color: red;
+    }
+
+    .data-table td {
+        color: white;
+    }
+
+    .pagination {
+        align-self: center;
+        color: white;
+        text-align: center;
+    }
+
+    .pagination a {
+        color: white;
+    }
+
+    /* .data-table th, .data-table td {
         border: 1px solid #c41515;
         padding: 8px;
         text-align: left;
-    } */
+    }  */
 
     /* .data-table tr:nth-child(even) {
         background-color: #2e06dd;
@@ -22,61 +70,76 @@
         color: rgb(0, 0, 0);
     } */
 </style>
-<div class="search-container">
-    <form method="get" action="{% url 'pjview' %}">
-        <input type="text" name="search" placeholder="Digite codigo,nome do projeto,coordenador..." value="{{ search_query }}">
-        <button type="submit">Buscar</button>
-    </form>
-</div>
 
-<table class="data-table">
-    <thead>
-        <tr>
-            <th>Código</th>
-            <th>Nome</th>
-            <th>Financiador</th>
-            <th>Data Assinatura</th>
-            <th>Data Vigência</th>
-            <th>Coordenador</th>
-            <th>Valor aprovado</th>
-            <th>Grupo</th>
-            <th>Analista</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for entry in data %}
+<header>
+    <img src="{% static 'imagem/finateclogo.svg' %}" alt="finatec" class="finatecLogo">
+    <div class="navButton">
+        <p class="otherLogin"><a href="/" class="link"><h1>Home</h1></a></p>
+        <p class="otherLogin"><a href="/cadastro/" class="link"><h1>Cadastro</h1></a></p>
+        <p class="otherLogin"><a href="/login/" class="link"><h1>Login</h1></a></p>
+    </div>
+</header>
+
+
+<div class="list-box">
+    <div class="search-container">
+        <form method="get" action="{% url 'pjview' %}">
+            <input type="text" name="search" placeholder="Digite codigo, nome do projeto, coordenador..." value="{{ search_query }}">
+            <button type="submit">Buscar</button>
+        </form>
+    </div>
+
+    <table class="data-table">
+        <thead>
             <tr>
-                <td style="color: black;">{{ entry.CODIGO }}</td>
-                <td style="color: black;">{{ entry.NOME }}</td>
-                <td style="color: black;">{{ entry.NOME_FINANCIADOR }}</td>
-                <td style="color: black;">{{ entry.DATA_ASSINATURA }}</td>
-                <td style="color: black;">{{ entry.DATA_VIGENCIA }}</td>
-                <td style="color: black;">{{ entry.COORDENADOR }}</td>
-                <td style="color: black;">{{ entry.VALOR_APROVADO }}</td>
-                <td style="color: black;">{{ entry.GRUPO_GESTORES }}</td>
-                
+                <th>Código</th>
+                <th>Nome</th>
+                <th>Financiador</th>
+                <th>Data Assinatura</th>
+                <th>Data Vigência</th>
+                <th>Coordenador</th>
+                <th>Valor aprovado</th>
+                <th>Grupo</th>
+                <th>Baixar</th>
             </tr>
-            <tr><td colspan="8"><hr></td></tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            {% for entry in data %}
+                <tr>
+                    <td>{{ entry.CODIGO }}</td>
+                    <td>{{ entry.NOME | slice:20 }}...</td>
+                    <td>{{ entry.NOME_FINANCIADOR }}</td>
+                    <td>{{ entry.DATA_ASSINATURA | date:"d / m / Y" }}</td>
+                    <td>{{ entry.DATA_VIGENCIA | date:"d / m / Y" }}</td>
+                    <td>{{ entry.COORDENADOR }}</td>
+                    <td>R$ {{ entry.VALOR_APROVADO | floatformat:2 }}</td>
+                    <td>{{ entry.GRUPO_GESTORES }}</td>
+                    <td id="btn-baixar"><a href="#"><img src="{% static 'imagem/baixar.png' %}" alt="btn_download"></a></td>
+                </tr>
+                <tr><td colspan="9"><hr></td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-<div class="pagination">
-    <span class="step-links">
-        {% if data.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ data.previous_page_number }}">previous</a>
-        {% endif %}
+    <div class="pagination">
+        <span class="step-links">
+            <span class="current-page">
+                Página {{ data.number }} de {{ data.paginator.num_pages }}.
+            </span>
 
-        <span class="current-page">
-            Page {{ data.number }} of {{ data.paginator.num_pages }}.
+            <br>
+
+            {% if data.has_previous %}
+                <a href="?page=1">&laquo;&laquo; Ir para o início</a>
+                <a href="?page={{ data.previous_page_number }}">&laquo; Anterior</a>
+            {% endif %}
+
+            {% if data.has_next %}
+            <a href="?page={{ data.next_page_number }}">Próximo &raquo;</a>
+            <a href="?page={{ data.paginator.num_pages }}">Ir para o fim &raquo;&raquo;</a>
+            {% endif %}        
         </span>
-
-        {% if data.has_next %}
-            <a href="?page={{ data.next_page_number }}">next</a>
-            <a href="?page={{ data.paginator.num_pages }}">last &raquo;</a>
-        {% endif %}
-    </span>
+    </div>
 </div>
 
 {% endblock %}
