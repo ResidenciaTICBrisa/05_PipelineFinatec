@@ -27,6 +27,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app',
+    'backend',
+    
 ]
 
 MIDDLEWARE = [
@@ -62,20 +64,31 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+file_path = "/home/ubuntu/Desktop/devfront/devfull/postgre.txt"
+with open(file_path, 'r') as file:
+        password_database = file.readline().strip()
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'automatec',
+        'USER': 'automauser',
+        'PASSWORD': password_database,
+        'HOST': 'localhost',
+        'PORT': '',
+    },
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
 }
 
 # DATABASES = {
-#     'default': {
+# 'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'myproject',
-#         'USER': 'myprojectuser',
-#         'PASSWORD': 'password',
+#         'NAME': 'automatec',
+#         'USER': 'automauser',
+#         'PASSWORD': '',
 #         'HOST': 'localhost',
 #         'PORT': '',
 #     },

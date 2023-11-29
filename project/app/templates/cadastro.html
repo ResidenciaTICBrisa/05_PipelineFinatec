@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block conteudo %}
 {% load static %}
-
+<link rel="stylesheet" href="{% static 'css/cadastro.css' %}">
     <script>
         function valida_cpf(cpf) {
             var numeros, digitos, soma, i, resultado, digitos_iguais;
@@ -49,30 +49,62 @@
             });
         });
     </script>
-</head>
-
-<body>
+    <style>
+        .content {
+            background-image: url('{% static "imagem/fundoLogo.svg" %}');
+            background-size: 100%;
+            background-repeat: no-repeat;
+        }
+    </style>
+<header>
+    <img src="{% static 'imagem/finateclogo.svg' %}" alt="finatec" class="finatecLogo">
+    <div class="navButton">
+        <p class="otherLogin"><a href="/" class="link"><h1>Home</h1></a></p>
+        <p class="otherLogin"><a href="/cadastro/" class="link"><h1>Cadastro</h1></a></p>
+        <p class="otherLogin"><a href="/login/" class="link"><h1>Login</h1></a></p>
+    </div>
+</header>
     <content class="content">
         <div class="container">
-            <img src="{% static 'imagem/logoFinatec.png' %}" alt="logo" class="logo">
-            <h3>Cadastrar</h3>
+            <h3>Cadastro</h3>
+            <img src="{% static 'imagem/perfilC.svg' %}" alt="logo" class="logo">
             <form action="{% url 'cadastro' %}" method="POST" class='form'>
                 {% csrf_token %}
                 <div class="inputGroup">
-                    <div class="input">
-                        <label class="email">Email</label>
-                        <input type="email" id="email" name="email" class="placeholder" placeholder="Digite seu Email" title="Digite um email válido." required>
+                    <div class="together">
+                        <div class="input">
+                            <label class="name">Primeiro nome</label>
+                            <input type="text" id="nome1" name="nome1" class="placeholder" placeholder="Primeiro nome" title="Digite o seu primeiro nome" required>
+                        </div>
+                        <div class="input">
+                            <label class="name">Último nome</label>
+                            <input type="text" id="nome2" name="nome2" class="placeholder" placeholder="Sobrenome" title="Digite o seu sobrenome" required>
+                        </div>
                     </div>
-                    <div class="input">
-                        <label class="name">CPF</label>
-                        <input type="text" id="cpf" name="usuario" class="placeholder" placeholder="000.000.000-00" maxlength="14" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" title="Digite um CPF válido no formato 000.000.000-00." required>
+                    <div class="together">
+                        <div class="input">
+                            <label class="name">Email</label>
+                            <input type="email" id="email" name="email" class="placeholder" placeholder="Digite seu Email" title="Digite um email válido." required>
+                        </div>
+                        <div class="input">
+                            <label class="name">CPF</label>
+                            <input type="text" id="cpf" name="usuario" class="placeholder" placeholder="000.000.000-00" maxlength="14" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" title="Digite um CPF válido no formato 000.000.000-00." required>
+                        </div>
                     </div>
-                    <div class="input">
-                        <label class="name">Senha</label>
-                        <input type="password" name="senha" class="placeholder" placeholder="••••••" title="Digite uma senha válida." required>
+                    <div class="together">
+                        <div class="input">
+                            <label class="name">Senha</label>
+                            <input type="password" name="senha" class="placeholder" placeholder="••••••" title="Digite uma senha válida." required>
+                        </div>                       
+                        <div class="input">
+                            <label class="name">Confirmar senha</label>
+                            <input type="password" name="senhaConfirm" class="placeholder" placeholder="••••••" title="Digite uma senha válida." required>
+                        </div>                       
                     </div>
                 </div>
-                <input type="submit" value="Cadastrar" class="button-submit">
+                <div class="cardSubmit">
+                    <input type="submit" value="Cadastrar" class="button-submit">
+                </div>
             </form>
             {% if error_messages %}
                 <ul class="error-list">
@@ -81,9 +113,8 @@
                     {% endfor %}
                 </ul>
             {% endif %}
-            <p class="otherLogin">Possui uma conta? <a href="/" class="link">Logar</a></p>
+            <p class="otherLogin">Possui uma conta? <a href="/login/" class="linkS">Logar</a></p>
         </div>
     </content>
-
 
 {% endblock %}
