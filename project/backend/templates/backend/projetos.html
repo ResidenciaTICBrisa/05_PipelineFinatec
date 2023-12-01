@@ -18,56 +18,91 @@
         padding-bottom: 10px;
     }
 
+    .search-container form {
+        display: flex;
+    }
+
     .search-container button {
-        border-radius: 0px 10px 10px 0px;
+        border-radius: 20px 0px 0px 20px;
         background-color: white;
         margin-left: 0;
         border: 0;
-        padding: 5px;
+        padding-block: 8px;
+        padding-inline: 12px;
     }
-
+    
     .search-container input {
-        border-radius: 10px 0px 0px 10px;
-        background-color: white;
+        border-radius: 0px 20px 20px 0px;
+        border: 2px solid rgb(255, 255, 255);
+        background-color: #4A5978;
         margin-right: 0;
-        border: 0;
-        padding: 5px;
+        width: 17%;
+        padding-inline: 10px;
+        transition: 200ms;
+    }
+    
+    .search-container input:focus {
+        background-color: white;
+        outline: none;
     }
 
     .data-table {
         /* border-collapse: collapse; */
         width: 100%;
         color: white;
-        border-color: red;
+        border:1px solid white;
+        border-radius: 30px;
+        padding: 20px;
+        margin-block: 10px;
     }
 
     .data-table td {
         color: white;
+        padding-inline: 7px;
+        text-align: center;
     }
 
     .pagination {
         align-self: center;
         color: white;
         text-align: center;
+        display: flex;
+        justify-content: center;
     }
 
     .pagination a {
         color: white;
     }
 
-    /* .data-table th, .data-table td {
-        border: 1px solid #c41515;
-        padding: 8px;
-        text-align: left;
-    }  */
+    
+    .step-links {
+        display: flex;
+        justify-content: space-evenly;
+        width: 170px;
+        padding: 0;
+        margin: 0;
+    } 
 
-    /* .data-table tr:nth-child(even) {
-        background-color: #2e06dd;
-    } */
+    .step-links * {
+        align-self: center;
+        padding-inline: 10px;
+        text-align: center;
+        margin: 0;
+    }
 
-    /* .data-table th {
-        background-color: #333;
-        color: rgb(0, 0, 0);
+    #current-page {
+        border-radius: 20000px;
+        background-color: #021842;
+        padding-block: 5px;
+    }
+
+    /* LINHAS DE GUIA */
+
+    /* .pagination * {
+        border: 1px solid red;  
+    }
+    .step-links * {
+        border: 1px solid red;
     } */
 </style>
 
@@ -80,12 +115,12 @@
     </div>
 </header>
 
-
 <div class="list-box">
+
     <div class="search-container">
         <form method="get" action="{% url 'pjview' %}">
+            <button type="submit"><img style="height: 15px; align-self: center;" src="{% static 'imagem/pesquisar.png' %}" alt="btn-search"/></button>
             <input type="text" name="search" placeholder="Digite codigo, nome do projeto, coordenador..." value="{{ search_query }}">
-            <button type="submit">Buscar</button>
         </form>
     </div>
 
@@ -95,23 +130,24 @@
                 <th>Código</th>
                 <th>Nome</th>
                 <th>Financiador</th>
-                <th>Data Assinatura</th>
-                <th>Data Vigência</th>
+                <th>Data<br>Assinatura</th>
+                <th>Data<br>Vigência</th>
                 <th>Coordenador</th>
-                <th>Valor aprovado</th>
+                <th>Valor<br>Aprovado</th>
                 <th>Grupo</th>
                 <th>Baixar</th>
             </tr>
         </thead>
+        
         <tbody>
             {% for entry in data %}
                 <tr>
                     <td>{{ entry.CODIGO }}</td>
-                    <td>{{ entry.NOME | slice:20 }}...</td>
-                    <td>{{ entry.NOME_FINANCIADOR }}</td>
-                    <td>{{ entry.DATA_ASSINATURA | date:"d / m / Y" }}</td>
-                    <td>{{ entry.DATA_VIGENCIA | date:"d / m / Y" }}</td>
-                    <td>{{ entry.COORDENADOR }}</td>
+                    <td>{{ entry.NOME | truncatechars:25 }}</td>
+                    <td>{{ entry.NOME_FINANCIADOR | title }}</td>
+                    <td>{{ entry.DATA_ASSINATURA | date:"d/m/Y" | center:"15" }}</td>
+                    <td>{{ entry.DATA_VIGENCIA | date:"d/m/Y" }}</td>
+                    <td>{{ entry.COORDENADOR | title}}</td>
                     <td>R$ {{ entry.VALOR_APROVADO | floatformat:2 }}</td>
                     <td>{{ entry.GRUPO_GESTORES }}</td>
                     <td id="btn-baixar"><a href="#"><img src="{% static 'imagem/baixar.png' %}" alt="btn_download"></a></td>
@@ -123,20 +159,34 @@
 
     <div class="pagination">
         <span class="step-links">
-            <span class="current-page">
+            <!-- <span class="current-page">
                 Página {{ data.number }} de {{ data.paginator.num_pages }}.
-            </span>
+            </span> -->
 
-            <br>
-
-            {% if data.has_previous %}
-                <a href="?page=1">&laquo;&laquo; Ir para o início</a>
-                <a href="?page={{ data.previous_page_number }}">&laquo; Anterior</a>
+            {% if data.has_previous and data.previous_page_number == 1 %}
+            <a href="?page=1">1</a>            
+            
+            {% elif data.has_previous and data.previous_page_number == 2 %}
+            <a href="?page=1">1</a>
+            <a href="?page={{ data.previous_page_number }}">{{ data.previous_page_number }}</a>
+            
+            {% elif data.has_previous %}
+            <a href="?page=1">1</a>
+            <p>...</p>
+            <a href="?page={{ data.previous_page_number }}">{{ data.previous_page_number }}</a>
+            
             {% endif %}
-
-            {% if data.has_next %}
-            <a href="?page={{ data.next_page_number }}">Próximo &raquo;</a>
-            <a href="?page={{ data.paginator.num_pages }}">Ir para o fim &raquo;&raquo;</a>
+            
+            <strong id="current-page">{{ data.number }}</strong>
+            
+            {% if data.has_next and data.next_page_number == data.paginator.num_pages %}
+            <a href="?page={{ data.paginator.num_pages }}">{{ data.paginator.num_pages }}</a>
+            
+            {% elif data.has_next %}
+            <a href="?page={{ data.next_page_number }}">{{ data.next_page_number }}</a>
+            <p>...</p>
+            <a href="?page={{ data.paginator.num_pages }}">{{ data.paginator.num_pages }}</a>
+            
             {% endif %}        
         </span>
     </div>
