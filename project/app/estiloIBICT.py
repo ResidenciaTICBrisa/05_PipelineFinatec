@@ -641,9 +641,12 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2):
     worksheet[celula_total].font = Font(name="Arial", size=12, color="000000",bold=True)
     #rubricado
     celulaRubricadoSegundo = F'C{size+tamanho2+4}'
+    stringLozalicaoRubricadoSegundo = f'C{size+tamanho2+4}:F{size+tamanho2+4}'
     worksheet.merge_cells(stringLozalicaoRubricadoSegundo)
     worksheet[celulaRubricadoSegundo].fill = PatternFill(start_color="000000", end_color="FFFFFF",fill_type = "lightUp")
     #Saldo disponível p/ período seguinte (1 +2 - 3)
+    string_saldo_disponivel = f'A{size+3+tamanho2+3}:D{size+3+tamanho2+3}'
+    celula_string_saldo = f'A{size+tamanho2+6}'
     worksheet[celula_string_saldo].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     worksheet.merge_cells(string_saldo_disponivel)
     worksheet[celula_string_saldo]= f'Saldo disponível p/ período seguinte (1 + 2 - 3)'

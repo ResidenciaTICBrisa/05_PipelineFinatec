@@ -169,8 +169,6 @@ def inserir_round_retangulo(planilha,data1,data2,dicionariofin):
     ]
 
  
-    # Path to the images
-    path = '/home/ubuntu/Desktop/entrega/05_PipelineFinatec/project/app/imagensCapa/'
    
     # List to hold Image objects
     images = []
