@@ -23,7 +23,7 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela):
     size = tamanho + 10
     cinza = "d9d9d9"
     cinza_escuro = "bfbfbf"
-    azul_claro = 'cdfeff'
+    azul_claro = 'cdfffe'
 
     borda = Border(right=Side(border_style="medium"))
     worksheet.sheet_view.showGridLines = False
@@ -71,32 +71,32 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela):
         worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  EQUIPAMENTO E MATERIAL PERMANENTE'
   
 
-    worksheet['A1'].font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
+    worksheet['A1'].font = Font(name="Arial", size=12, color="000000",bold=True)
     worksheet['A1'].alignment = Alignment(horizontal="center",vertical="center")
     worksheet['A1'].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
     
     worksheet.merge_cells('A3:F3')
-    worksheet['A3'] = "='Receita x Despesa'!A3:J3"
+    worksheet['A3'] = "=''Relatório de Exec Financ A.1'!A3"
     worksheet['A3'].font = Font(name="Arial", size=12, color="000000")
     worksheet['A3'].alignment = Alignment(horizontal="left",vertical="center")
 
     worksheet.merge_cells('A4:F4')
-    worksheet['A4'] = "='Receita x Despesa'!A4:J4"
+    worksheet['A4'] = "=''Relatório de Exec Financ A.1'!A4"
     worksheet['A4'].font = Font(name="Arial", size=12, color="000000")
     worksheet['A4'].alignment = Alignment(horizontal="left",vertical="center")
     
     worksheet.merge_cells('A5:F5')
-    worksheet['A5'] = "='Receita x Despesa'!A5:J5"
+    worksheet['A5'] = "=''Relatório de Exec Financ A.1'!A5"
     worksheet['A5'].font = Font(name="Arial", size=12, color="000000")
     worksheet['A5'].alignment = Alignment(horizontal="left",vertical="center")
     
     worksheet.merge_cells('A6:F6')
-    worksheet['A6'] = "='Receita x Despesa'!A6:J6"
+    worksheet['A6'] = "=''Relatório de Exec Financ A.1'!A6"
     worksheet['A6'].font = Font(name="Arial", size=12, color="000000")
     worksheet['A6'].alignment = Alignment(horizontal="left",vertical="center")
     
     worksheet.merge_cells('A7:F7')
-    worksheet['A7'] = "='Receita x Despesa'!A7:J7"
+    worksheet['A7'] = "=''Relatório de Exec Financ A.1'!A7"
     worksheet['A7'].font = Font(name="Arial", size=12, color="000000")
     worksheet['A7'].alignment = Alignment(horizontal="left",vertical="center")
     
@@ -107,7 +107,7 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela):
 
     #colunas azul cabecario
     locals()[input2] = NamedStyle(name=f'{input2}')
-    locals()[input2].font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
+    locals()[input2].font = Font(name="Arial", size=12, color="000000",bold=True)
     locals()[input2].fill = openpyxl.styles.PatternFill(start_color=azul_claro, end_color=azul_claro, fill_type='solid')
     locals()[input2].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
     locals()[input2].border = Border(top=Side(border_style="medium")  ,bottom=Side(border_style="thin") )
@@ -119,7 +119,7 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela):
             if cell.column == 10:
                 cell.border = Border(top=Side(border_style="medium")  ,bottom=Side(border_style="thin"), right=Side(border_style="medium") )
 
-    valores = ["ITEM","NOME","CNPJ/CPF",'ESPECIFICAÇÃO DA DESPESA','DESCRIÇÃO',"Nº DO RECIBO OU EQUIVALENTE","DATA DE EMISSÃO",'CHEQUE / ORDEM BANCÁRIA','DATA DE PGTO','Valor']
+    valores = ["Nº DE ORDEM","CREDOR","CNPJ/CPF",'Equivalência na Relação de Itens Apoiados','Nº DA NOTA FISCAL OU EQUIVALENTE',"DATA DA NOTA FISCAL","Nº DO CHEQUE OU EQUIVALENTE",'DATA DA COMPENSAÇÃO DO CHEQUE','VALOR']
     col = 1
     for a,b in enumerate(valores):
         worksheet.cell(row=linha_number, column=col, value=b)
@@ -195,7 +195,7 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela):
     input4 = f'row_style_diaria_append{nomeVariavel}'
     #estilo colunas restitucoes creditadas
     locals()[input4] = NamedStyle(name=f'{input4}')
-    locals()[input4].font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
+    locals()[input4].font = Font(name="Arial", size=12, color="000000",bold=True)
     locals()[input4].fill = openpyxl.styles.PatternFill(start_color=azul_claro, end_color=azul_claro, fill_type='solid')
     locals()[input4].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
     locals()[input4].height = 30
@@ -212,12 +212,10 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela):
 
 
 
-    values = ["Item","Restituidor","CNPJ/CPF",'Descrição',"Cheque equivalente","Data do Cheque",'Nº do Depósito','Data da Devolução','Valor']
+    values = ["Nº DE ORDEM","RESTITUIDOR","CNPJ/CPF",'Equivalência na Relação de Itens Apoiados',"CHEQUE OU EQUIVALENTE ESTORNADO","DATA DO CHEQUE",'Nº DO DEPÓSITO','DATA DO DEPÓSITO','VALOR']
     coluna = 1
     for a,b in enumerate(values):
         worksheet.cell(row=row_number, column=coluna, value=b)
-        if coluna == 4:
-            coluna = coluna + 1
         coluna = coluna + 1
         
 
@@ -351,3 +349,21 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela):
 
     workbook.save(tabela)
     workbook.close()
+
+
+
+
+
+
+
+tabela = pegar_caminho('modelFINEP.xlsx')
+nomeTabela ="Elemento de Despesa 36a"
+tituloStyle = "36a"
+workbook = openpyxl.load_workbook(tabela)
+sheet2 = workbook.create_sheet(title=nomeTabela)
+workbook.save("tabelapreenchida.xlsx")
+workbook.close()
+maior = 20
+tabela2 = pegar_caminho('tabelapreenchida.xlsx')
+print(tabela2)
+estiloGeral(tabela2,maior,tituloStyle,nomeTabela)

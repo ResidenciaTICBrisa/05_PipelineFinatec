@@ -191,13 +191,13 @@ def criaout(planilha,codigo,data1,data2):
     workbook.save(planilha)
     workbook.close()
 
-# ##########################################Pessoa Fisica#########################################
+# ##########################################Pessoa Fisica######################################### CANCELADO
 def pessoa_fisica(codigo,data1,data2,keys,planilha):
     tabela = pegar_caminho(planilha)
-    nomeTabela ="Pessoa Fisica"
+    nomeTabela ="Outros Serviços Terceiros - PF"
     tituloStyle = "pessoaFisica"
     workbook = openpyxl.load_workbook(tabela)
-    sheet2 = workbook.create_sheet(title="Pessoa Fisica")
+    sheet2 = workbook.create_sheet(title="Outros Serviços Terceiros - PF")
     workbook.save(tabela)
     workbook.close()
     categorized_data= separarporrubrica(codigo,data1,data2)
@@ -219,7 +219,7 @@ def pessoa_fisica(codigo,data1,data2,keys,planilha):
     # caminho = pegar_caminho(planilha)
 
     workb = openpyxl.load_workbook(tabela)
-    worksheet5 = workb['Pessoa Fisica']
+    worksheet5 = workb['Outros Serviços Terceiros - PF']
 
     for i in range(1,maior+1):
         valor_coluna = 9 + i
@@ -245,6 +245,78 @@ def pessoa_fisica(codigo,data1,data2,keys,planilha):
 
     workb.save(tabela)
     workb.close()
+
+
+
+def pessoaFisica(codigo,data1,data2,keys,planilha):
+   
+    tabela = pegar_caminho(planilha)
+    nomeTabela ="Outros Serviços Terceiros - PF"
+    tituloStyle = "pessoaFisica"
+    workbook = openpyxl.load_workbook(tabela)
+    sheet2 = workbook.create_sheet(title="Outros Serviços Terceiros - PF")
+    workbook.save(tabela)
+    workbook.close()
+    categorized_data= separarporrubrica(codigo,data1,data2)
+
+    tamanho = []
+   
+    if 87 in categorized_data and 25 in categorized_data:
+        categorized_data[87].extend(categorized_data[25])
+    elif 87 not in categorized_data and 25 in categorized_data:
+       categorized_data[87] = categorized_data[25]
+    else:
+        print("Data not available or empty.")
+        maior = 1
+        tabela = pegar_caminho(planilha)
+        estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+        return None  # or handle the case accordingly
+    
+    if 87 not in categorized_data or not categorized_data[87]:
+                maior = 1
+                tabela = pegar_caminho(planilha)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                print("Data not available or empty.")
+                return None  # or handle the case accordingly
+    maior = len(categorized_data[87])
+    print(maior)
+    print(len(categorized_data[87]))
+    tabela = pegar_caminho(planilha)
+
+    estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+
+
+    coluna = 2
+    # caminho = pegar_caminho(planilha)
+
+    workb = openpyxl.load_workbook(tabela)
+    worksheet5 = workb['Outros Serviços Terceiros - PF']
+
+    for i in range(1,maior+1):
+        valor_coluna = 9 + i
+        worksheet5.cell(row=valor_coluna, column=1, value=i)  # column index starts from 1
+
+
+    for i in keys:
+        li = [i]
+        if 87 not in categorized_data or not categorized_data[87]:
+                print("Data not available or empty.")
+                maior = 1
+                tabela = pegar_caminho(planilha)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                return None  # or handle the case accordingly
+        valores_preenchimento = retornavalores(categorized_data[87],li)
+        
+        n = len(valores_preenchimento)  
+        for rowkek, cell_data in enumerate(valores_preenchimento, start=10):
+            worksheet5.cell(row=rowkek, column=coluna, value=cell_data)  
+        if coluna == 5 or coluna == 7 :
+                coluna = coluna + 1  
+        coluna = coluna + 1
+
+    workb.save(tabela)
+    workb.close()
+
 
 # ##########################################Pessoa Juridica#########################################
 def pessoa_juridica(codigo,data1,data2,keys,planilha):
@@ -318,7 +390,7 @@ def pessoa_juridica(codigo,data1,data2,keys,planilha):
     workb.save(tabela)
     workb.close()
 
-# ##########################################ISS#########################################
+# ##########################################ISS#########################################CANCELADO
 def iss(codigo,data1,data2,keys,planilha):
     tabela = pegar_caminho(planilha)
     nomeTabela ="ISS"
@@ -430,7 +502,7 @@ def passagem_locomção(codigo,data1,data2,keys,planilha):
     workb.save(tabela)
     workb.close()
 
-# ##########################################Serv.Terceiro CLTa#########################################
+# ##########################################Serv.Terceiro CLTa#########################################CANCELADO
 def terclt(codigo,data1,data2,keys,planilha):
     tabela = pegar_caminho(planilha)
     nomeTabela ="Serv. Terceiro CLT"
@@ -458,7 +530,7 @@ def terclt(codigo,data1,data2,keys,planilha):
     # caminho = pegar_caminho(planilha)
 
     workb = openpyxl.load_workbook(tabela)
-    worksheet4 = workb['Outros Serviços Terceiros - PF']
+    worksheet4 = workb['Serv. Terceiro CLT']
 
     for i in range(1,maior+1):
         valor_coluna = 9 + i
@@ -850,11 +922,11 @@ def demonstrativo(codigo,data1,data2,planilha):
 def preencher_fub_teste(codigo,data1,data2,keys,tabela):
     criaout(tabela,codigo,data1,data2)
     preencherCapa(codigo,tabela)
-    pessoa_fisica(codigo,data1,data2,keys,tabela)
+    pessoaFisica(codigo,data1,data2,keys,tabela)
     pessoa_juridica(codigo,data1,data2,keys,tabela)
     #iss(codigo,data1,data2,keys,tabela)
     passagem_locomção(codigo,data1,data2,keys,tabela)
-    terclt(codigo,data1,data2,keys,tabela)
+    #terclt(codigo,data1,data2,keys,tabela)
     obricacao_tributaria(codigo,data1,data2,keys,tabela)
     conciliacao_bancaria(codigo,data1,data2,tabela)
     rendimentodeaplicacao(codigo,data1,data2,tabela)
