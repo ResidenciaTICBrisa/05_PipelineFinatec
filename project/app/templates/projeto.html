@@ -41,11 +41,13 @@
 </script>
 <link rel="stylesheet" href="{% static 'css/style.css' %}" />
 <header>
-    <img
-        src="{% static 'imagem/finateclogo.svg' %}"
-        alt="finatec"
-        class="finatecLogo"
-    />
+    <a href="/">
+        <img
+            src="{% static 'imagem/finateclogo.svg' %}"
+            alt="finatec"
+            class="finatecLogo"
+        />
+    </a>
     <div class="navButton">
         <!-- <p class="otherLogin">
             <a href="#" class="link" onclick="highlightButton(this)"
@@ -88,6 +90,22 @@
     </div>
 </header>
 
+<style>
+    #inputTemplate select {
+        margin: 0;
+        /* display: block; */
+    }
+
+    
+    /* .borderSelection {
+        border: 1px solid #bcbcbc;
+        border-radius: 20px;
+        display: flex;
+        justify-content: center;
+    }  */
+
+</style>
+
 <content class="content">
     <div class="containerProject">
         <img
@@ -121,19 +139,23 @@
                     <label class="name">Data fim</label>
                     <input class="placeholderProject" type="date" name="fim" id="fim" placeholder="00/00/0000" title="Digite uma data válida." max="8">
                 </div>
-                <div class="input">
+                <div class="input" id="inputTemplate">
                     <label class="name">Template</label>
-                    <select
-                        class="placeholderProject"
-                        name="template"
-                        id="template"
-                        defaultValue=""
-                        required>  
-                        <option value="" hidden>Selecione um template:</option>
-                            {% for temp in templates %}
-                            <option value={{temp.id}} class="option-model" >{{ temp.nome_template }}</option>
-                            {% endfor %}
-                    </select>
+                    <!-- <div class="borderSelection"> -->
+                        <select
+                            class="placeholderProject"
+                            name="template"
+                            id="template"
+                            defaultValue=""
+                            required>  
+                            <option value="" hidden id="defaultSelection">
+                                Selecione um template
+                            </option>
+                                {% for temp in templates %}
+                                <option value={{temp.id}} class="option-model" >{{ temp.nome_template }}</option>
+                                {% endfor %}
+                        </select>
+                    <!-- </div> -->
                 </div>
             </div>
             <div class="cardSubmit">
