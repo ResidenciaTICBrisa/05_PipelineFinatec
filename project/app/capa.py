@@ -136,7 +136,7 @@ def inserir_round_retangulo(planilha,data1,data2,dicionariofin):
     worksheet = workbook['Capa Finatec'] 
 
     
-
+    
     # List of image names
     image_names = [
         'agencia.png',#0
@@ -168,18 +168,20 @@ def inserir_round_retangulo(planilha,data1,data2,dicionariofin):
         'centrodecusto_branco.png'
     ]
 
-    # Path to the images
-    path = '/home/ubuntu/Desktop/entrega/05_PipelineFinatec/project/app/capa_60/'
+ 
    
     # List to hold Image objects
     images = []
 
+    nomePasta = "imagensCapa"
+    diretorio = os.path.dirname(__file__)
+
     # Loop through the list of image names and create Image objects
     for i, name in enumerate(image_names):
-        image_path = path + name
-        pil_image = PILImage.open(image_path)
-        pil_image.save(image_path)
-        img = Image(image_path)
+        caminhoImage = os.path.join(diretorio, nomePasta, name)
+        pil_image = PILImage.open(caminhoImage)
+        pil_image.save(caminhoImage)
+        img = Image(caminhoImage)
         images.append(img)
 
   
