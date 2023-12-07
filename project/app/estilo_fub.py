@@ -65,8 +65,8 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela):
         worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - OUTROS SERVIÇOS DE TERCEIROS - PESSOA JURÍDICA'
     elif nomeSheet == "passagenDespLocomo":
         worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - PASSAGENS E DESPESAS COM LOCOMOÇÃO'
-    elif nomeSheet == "outrosServiçosTerceiros":
-        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - O U T R O S  S E R V I Ç O S D E T E R C E I R O S - C E L E T I S T A S'
+    # elif nomeSheet == "outrosServiçosTerceiros":
+    #     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - O U T R O S  S E R V I Ç O S D E T E R C E I R O S - C E L E T I S T A S'
     elif nomeSheet == "auxilioEstudante":
         worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  AUXÍLIO FINANCEIRO A ESTUDANTE'
     elif nomeSheet == "bolsaExtensao":
