@@ -1,7 +1,14 @@
 from pathlib import Path
 import os
-from dotenv import load_dotenv   #for python-dotenv method
-load_dotenv()                    #for python-dotenv method
+
+import sys
+
+# Add the path to your project
+path = '/home/ubuntu/Desktop/05_PipelineFinatec'
+if path not in sys.path:
+    sys.path.append(path)
+
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "project.settings")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -66,24 +73,28 @@ WSGI_APPLICATION = 'project.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-file_path = "/home/ubuntu/Desktop/devfront/devfull/postgre.txt"
+
+script_dir = os.path.dirname(os.path.abspath(__file__))
+parent_dir = os.path.dirname(os.path.dirname(os.path.dirname(script_dir)))
+file_path = os.path.join(parent_dir, "postgre.txt")
+
 with open(file_path, 'r') as file:
         password_database = file.readline().strip()
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'automatec',
-#         'USER': 'automauser',
-#         'PASSWORD': password_database,
-#         'HOST': '146.235.46.122',
-#         'PORT': '5432',
-#     },
-#     # 'default': {
-#     #     'ENGINE': 'django.db.backends.sqlite3',
-#     #     'NAME': BASE_DIR / 'db.sqlite3',
-#     # }
-# }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'automatec',
+        'USER': 'automauser',
+        'PASSWORD': password_database,
+        'HOST': '0.0.0.0',
+        'PORT': '5432',
+    },
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
+}
 
 # DATABASES = {
 # 'default': {
@@ -151,11 +162,16 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'assets/'
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "app/static")
-]
+# STATIC_URL = 'assets/'
+# STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "app/static")
+# ]
+
+STATIC_URL = '/static/'
+STATIC_ROOT = '/home/05_PipelineFinatec/sites/public/static'
+MEDIA_ROOT = 'home/05_PipelineFinatec/sites/public/static/imagem'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
