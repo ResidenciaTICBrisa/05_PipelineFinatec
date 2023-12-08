@@ -36,40 +36,40 @@ class HomeView(TemplateView):
     template_name = 'home.html'
 
 
-def cadastro(request):
-    if request.method == "GET":
-        return render(request, 'cadastro.html')
-    else:
-        usuario = request.POST.get('usuario')
-        senha = request.POST.get('senha')
-        senha_confirmacao = request.POST.get('senhaConfirm')
-        email = request.POST.get('email')
-        first_name = request.POST.get('nome1')
-        last_name = request.POST.get('nome2')
+# def cadastro(request):
+#     if request.method == "GET":
+#         return render(request, 'cadastro.html')
+#     else:
+#         usuario = request.POST.get('usuario')
+#         senha = request.POST.get('senha')
+#         senha_confirmacao = request.POST.get('senhaConfirm')
+#         email = request.POST.get('email')
+#         first_name = request.POST.get('nome1')
+#         last_name = request.POST.get('nome2')
 
-        try:
-            validate_password(senha, user=User)
-        except Exception as e:
-            error_messages = e.messages
-            return render(request, 'cadastro.html', {'error_messages': error_messages})
+#         try:
+#             validate_password(senha, user=User)
+#         except Exception as e:
+#             error_messages = e.messages
+#             return render(request, 'cadastro.html', {'error_messages': error_messages})
 
-        user = User.objects.filter(username=usuario).first()
+#         user = User.objects.filter(username=usuario).first()
 
-        if user:
-            error_messages = ['Usuário já existe']
-            return render(request, 'cadastro.html', {'error_messages': error_messages})
+#         if user:
+#             error_messages = ['Usuário já existe']
+#             return render(request, 'cadastro.html', {'error_messages': error_messages})
         
-        if senha != senha_confirmacao:
-            error_messages = ['A senha e a confirmação da senha não coincidem.']
-            return render(request, 'cadastro.html', {'error_messages': error_messages})
+#         if senha != senha_confirmacao:
+#             error_messages = ['A senha e a confirmação da senha não coincidem.']
+#             return render(request, 'cadastro.html', {'error_messages': error_messages})
 
-        user = User.objects.create_user(username=usuario, password=senha, email=email)
-        user.is_active = True
-        user.first_name = first_name
-        user.last_name = last_name
-        user.save()
+#         user = User.objects.create_user(username=usuario, password=senha, email=email)
+#         user.is_active = True
+#         user.first_name = first_name
+#         user.last_name = last_name
+#         user.save()
 
-        return HttpResponseRedirect('/login/')
+#         return HttpResponseRedirect('/login/')
     
 def login(request):
     if request.method =="GET":

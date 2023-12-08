@@ -65,8 +65,8 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela):
         worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - OUTROS SERVIÇOS DE TERCEIROS - PESSOA JURÍDICA'
     elif nomeSheet == "passagenDespLocomo":
         worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - PASSAGENS E DESPESAS COM LOCOMOÇÃO'
-    elif nomeSheet == "outrosServiçosTerceiros":
-        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - O U T R O S  S E R V I Ç O S D E T E R C E I R O S - C E L E T I S T A S'
+    # elif nomeSheet == "outrosServiçosTerceiros":
+    #     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - O U T R O S  S E R V I Ç O S D E T E R C E I R O S - C E L E T I S T A S'
     elif nomeSheet == "auxilioEstudante":
         worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  AUXÍLIO FINANCEIRO A ESTUDANTE'
     elif nomeSheet == "bolsaExtensao":
@@ -876,7 +876,7 @@ def estilo_rendimento_de_aplicacao(tabela,tamanho):
 
     for row in worksheet.iter_rows(min_row=coordenadora_cpf_row+1, max_row=coordenadora_cpf_row+1,min_col=1,max_col=8):
         for cell in row:
-            if cell.column == 4:
+            if cell.column == 8:
                 cell.border = Border(top=Side(border_style="none") ,left = Side(border_style="none") ,right =Side(border_style="medium") ,bottom=Side(border_style="medium") )
             else:
                 cell.border = Border(top=Side(border_style="none") ,left = Side(border_style="none") ,right =Side(border_style="none") ,bottom=Side(border_style="medium") )
@@ -1477,7 +1477,7 @@ def estilo_demonstrativoDeReceita(tabela,tamanho):
 
     for row in worksheet.iter_rows(min_row=coordenadora_cpf_row+1, max_row=coordenadora_cpf_row+1,min_col=1,max_col=4):
         for cell in row:
-            if cell.column == 8:
+            if cell.column == 4:
                 cell.border = Border(top=Side(border_style="none") ,left = Side(border_style="none") ,right =Side(border_style="medium") ,bottom=Side(border_style="medium") )
             else:
                 cell.border = Border(top=Side(border_style="none") ,left = Side(border_style="none") ,right =Side(border_style="none") ,bottom=Side(border_style="medium") )

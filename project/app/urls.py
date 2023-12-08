@@ -6,7 +6,7 @@ from .views import HomeView
 
 urlpatterns = [
     path('', HomeView.as_view(), name='home'),
-    path("cadastro/", views.cadastro, name="cadastro"),
+    # path("cadastro/", views.cadastro, name="cadastro"),
     path('login/', views.login, name='login' ),
     path('projeto/', views.projeto, name='projeto'),
     path('logout/', views.custom_logout, name='logout'),

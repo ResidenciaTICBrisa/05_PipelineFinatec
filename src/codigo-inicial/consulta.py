@@ -1,10 +1,15 @@
 import oracledb
 
 
+#connection string in the format
+#<username>/<password>@<dBhostAddress>:<dbPort>/<dbServiceName>
 file_path = "/home/ubuntu/Desktop/devfront/devfull/pass.txt"
 conStr = ''
 with open(file_path, 'r') as file:
         conStr = file.readline().strip()
+
+
+
 
 def getCollumNames():
 
@@ -15,15 +20,6 @@ def getCollumNames():
     #criar um objeto cursor necessario para fazer as consultas
     cur = conn.cursor() 
     cur.execute("SELECT * FROM IDEA.STG_PROJETOS_CONVENIAR")
-    # colunas_desejadas = [
-    #     'CODIGO', 'NOME', 'NOME_FINANCIADOR', 
-    #     'DATA_ASSINATURA', 'DATA_VIGENCIA', 'COORDENADOR', 
-    #     'VALOR_APROVADO', 'GRUPO_GESTORES'
-    # ]
-
-    # # Montar a consulta SQL selecionando apenas as colunas desejadas
-    # consulta_sql = "SELECT {} FROM IDEA.STG_PROJETOS_CONVENIAR".format(", ".join(colunas_desejadas))
-    
 
     return cur
 
@@ -81,12 +77,6 @@ def getlimitedRows(numb):
     # return records
     return consulta
 
-
-# a = int(input(""))
-# lul = getlimitedRows(a)
-# print("\n")
-# print(type(lul))
-
 def getallRows():
    
     try:
@@ -112,5 +102,98 @@ def getallRows():
     # return records
     return length
 
+def consultaPorID(IDPROJETO):
+    consulta = {}
+    try:
+        connection = oracledb.connect(conStr)
+        cursor = connection.cursor()
+        print("Connected to database")
+
+        # idProjeto = 6411
+        sqlite_select_query = f"SELECT * FROM IDEA.STG_PROJETOS_CONVENIAR WHERE CODIGO='{IDPROJETO}'"
+        
+        cursor.execute(sqlite_select_query)
+
+        records = cursor.fetchall()
+
+        collums = getCollumNames()
+      
+        
+
+        for i in range(len(collums.description)):
+            consulta[collums.description[i][0]] = records[0][i]
+
+        #print(consulta)
+
+        # print(f"\n <oracledb.LOB object at 0x7f8823d022b0> \n {consulta['OBJETIVOS']} \n")
+        consulta['OBJETIVOS'] = str(consulta['OBJETIVOS'])
+            
+        cursor.close()
+
+    except oracledb.Error as error:
+        print("Failed to read data from table", error)
+    finally:
+        if connection:
+            connection.close()
+            print("The connection is closed")
+    
+    # return records
+    return consulta
 
 
+def getAnalistaDoProjetoECpfCoordenador(IDPROJETO):
+    #dados interessantes dessa tabela
+    #CPF_COORDENADOR
+    #NOME_ANALISTA
+    #VALOR_APROVADO
+    #CUSTOOPERACIONAL
+
+
+   #inicializando o objeto que ira conectar no db
+    conn = None
+    #criando o objeto de conexão das
+    conn = oracledb.connect(conStr)
+    #criar um objeto cursor necessario para fazer as consultas
+    cur = conn.cursor() 
+    cur.execute("SELECT * FROM IDEA.FAT_PROJETO_CONVENIAR")
+
+ 
+
+
+    consulta = {}
+    try:
+            connection = oracledb.connect(conStr)
+            cursor = connection.cursor()
+            print("Connected to database")
+
+            # idProjeto = 6411
+            sqlite_select_query = f"SELECT * FROM IDEA.FAT_PROJETO_CONVENIAR WHERE IDPROJETO='{IDPROJETO}'"
+            
+            cursor.execute(sqlite_select_query)
+
+            records = cursor.fetchall()
+
+            collums = cur
+
+            # print(records)
+            # print(collums.description)
+
+            for i in range(len(collums.description)):
+                consulta[collums.description[i][0]] = records[0][i]
+
+            #print(consulta)
+
+            # print(f"\n <oracledb.LOB object at 0x7f8823d022b0> \n {consulta['OBJETIVOS']} \n")
+            # consulta['NOME_ANALISTA'] = str(consulta['NOME_ANALISTA'])
+                
+            cursor.close()
+
+    except oracledb.Error as error:
+            print("Failed to read data from table", error)
+    finally:
+            if connection:
+                connection.close()
+                print("The connection is closed")
+        
+    # return records
+    return consulta

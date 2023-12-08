@@ -1,180 +1,195 @@
 {% extends 'base.html' %}
 {% block conteudo %}
 {% load static %}
+
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
 <style>
+    .list-box {
+        align-items: center;
+        justify-content: space-between;
+        margin-right: 100px;
+        margin-left: 100px;
+        margin-top: 20px;
+    }
+
+    .search-container {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    .search-container form {
+        display: flex;
+    }
+
+    .search-container button {
+        border-radius: 20px 0px 0px 20px;
+        background-color: white;
+        margin-left: 0;
+        border: 0;
+        padding-block: 8px;
+        padding-inline: 12px;
+    }
+    
+    .search-container input {
+        border-radius: 0px 20px 20px 0px;
+        border: 2px solid rgb(255, 255, 255);
+        background-color: #4A5978;
+        margin-right: 0;
+        width: 17%;
+        padding-inline: 10px;
+        transition: 200ms;
+    }
+    
+    .search-container input:focus {
+        background-color: white;
+        outline: none;
+    }
+
     .data-table {
-        border-collapse: collapse;
+        /* border-collapse: collapse; */
         width: 100%;
+        color: white;
+        border:1px solid white;
+        border-radius: 30px;
+        padding: 20px;
+        margin-block: 10px;
     }
 
-    .data-table th, .data-table td {
-        border: 1px solid #c41515;
-        padding: 8px;
-        text-align: left;
+    .data-table td {
+        color: white;
+        padding-inline: 7px;
+        text-align: center;
     }
 
-    .data-table tr:nth-child(even) {
-        background-color: #2e06dd;
+    .pagination {
+        align-self: center;
+        color: white;
+        text-align: center;
+        display: flex;
+        justify-content: center;
     }
 
-    .data-table th {
-        background-color: #333;
-        color: rgb(0, 0, 0);
+    .pagination a {
+        color: white;
     }
+
+    
+    .step-links {
+        display: flex;
+        justify-content: space-evenly;
+        width: 170px;
+        padding: 0;
+        margin: 0;
+    } 
+
+    .step-links * {
+        align-self: center;
+        padding-inline: 10px;
+        text-align: center;
+        margin: 0;
+    }
+
+    #current-page {
+        border-radius: 20000px;
+        background-color: #021842;
+        padding-block: 5px;
+    }
+
+    /* LINHAS DE GUIA */
+
+    /* .pagination * {
+        border: 1px solid red;  
+    }
+    .step-links * {
+        border: 1px solid red;
+    } */
 </style>
-<div class="search-container">
-    <form method="get" action="{% url 'pjview' %}">
-        <input type="text" name="search" placeholder="Digite codigo,nome do projeto,coordenador..." value="{{ search_query }}">
-        <button type="submit">Buscar</button>
-    </form>
-</div>
 
-<!-- <table class="data-table">
-    <thead>
-        <tr>
-            <th>CODIGO</th>
-            <th>NOME</th>
-            <th>FINANCIADOR</th>
-            <th>COORDENADOR</th>
-            <th>DATA ASSINATURA</th>
-            <th>DATA VIGENCIA</th>
-            <th>DATA ENCERRAMENTO</th>
-            <th>TIPO DO CONTRATO</th>
-            <th>INSTITUICAO EXECUTORA</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for entry in data %}
+<header>
+    <img src="{% static 'imagem/finateclogo.svg' %}" alt="finatec" class="finatecLogo">
+    <div class="navButton">
+        <p class="otherLogin"><a href="/" class="link"><h1>Home</h1></a></p>
+        <p class="otherLogin"><a href="/cadastro/" class="link"><h1>Cadastro</h1></a></p>
+        <p class="otherLogin"><a href="/login/" class="link"><h1>Login</h1></a></p>
+    </div>
+</header>
+
+<div class="list-box">
+
+    <div class="search-container">
+        <form method="get" action="{% url 'pjview' %}">
+            <button type="submit"><img style="height: 15px; align-self: center;" src="{% static 'imagem/pesquisar.png' %}" alt="btn-search"/></button>
+            <input type="text" name="search" placeholder="Digite codigo, nome do projeto, coordenador..." value="{{ search_query }}">
+        </form>
+    </div>
+
+    <table class="data-table">
+        <thead>
             <tr>
-                <td style="color: white;" >{{ entry.CODIGO }}</td>
-                <td style="color: white;" >{{ entry.NOME }}</td>
-                <td style="color: white;" >{{ entry.NOME_FINANCIADOR }}</td>
-                <td style="color: white;">{{ entry.COORDENADOR }}</td>
-                <td style="color: white;" >{{ entry.DATA_ASSINATURA }}</td>
-                <td style="color: white;" >{{ entry.DATA_VIGENCIA }}</td>
-                <td style="color: white;" >{{ entry.DATA_ENCERRAMENTO }}</td>
-                <td style="color: white;" >{{ entry.TIPO_CONTRATO }}</td>
-                <td style="color: white;" >{{ entry.INSTITUICAO_EXECUTORA }}</td>
+                <th>Código</th>
+                <th>Nome</th>
+                <th>Financiador</th>
+                <th>Data<br>Assinatura</th>
+                <th>Data<br>Vigência</th>
+                <th>Coordenador</th>
+                <th>Valor<br>Aprovado</th>
+                <th>Grupo</th>
+                <th>Baixar</th>
             </tr>
-        {% endfor %}
-    </tbody>
-</table> -->
-<table class="data-table">
-    <thead>
-        <tr>
-            <th>CODIGO</th>
-            <th>NOME</th>
-            <th>SALDO</th>
-            <th>DATA ASSINATURA</th>
-            <th>DATA VIGENCIA</th>
-            <th>DATA ENCERRAMENTO</th>
-            <th>TIPO DO CONTRATO</th>
-            <th>INSTITUICAO EXECUTORA</th>
-            <th>PROCESSO</th>
-            <th>SUBPROCESSO</th>
-            <th>COD_PROPOSTA</th>
-            <th>PROPOSTA</th>
-            <!-- #<th>OBJETIVOS</th> -->
-            <th>VALOR_APROVADO</th>
-            <th>NOME_TP_CONTROLE_SALDO</th>
-            <th>GRUPO_GESTORES</th>
-            <th>GESTOR_RESP</th>
-            <th>COORDENADOR</th>
-            <th>PROCEDIMENTO_COMPRA</th>
-            <th>TAB_FRETE</th>
-            <th>TAB_DIARIAS</th>
-            <th>CUSTO_OP</th>
-            <th>NOME_FINANCIADOR</th>
-            <th>DEPARTAMENTO</th>
-            <th>SITUACAO</th>
-            <th>BANCO</th>
-            <th>AGENCIA_BANCARIA</th>
-            <th>CONTA_BANCARIA</th>
-            <th>CENTRO_CUSTO</th>
-            <th>CONTA_CAIXA</th>
-            <th>CATEGORIA_PROJETO</th>
-            <th>COD_CONVENIO_CONTA</th>
-            <th>COD_STATUS</th>
-            <th>IND_SUB_PROJETO</th>
-            <th>TIPO_CUSTO_OP</th>
-            <th>PROJETO_MAE</th>
-            <th>ID_COORDENADOR</th>
-            <th>ID_FINANCIADOR</th>
-            <th>ID_INSTITUICAO</th>
-            <th>ID_DEPARTAMENTO</th>
-            <th>NOME_INSTITUICAO</th>
-            <th>ID_INSTITUICAO_EXECUTORA</th>
-            <th>ID_TIPO</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for entry in data %}
-            <tr>
-                <td style="color: black;">{{ entry.CODIGO }}</td>
-                <td style="color: black;">{{ entry.NOME }}</td>
-                <td style="color: black;">{{ entry.SALDO }}</td>
-                <td style="color: black;">{{ entry.DATA_ASSINATURA }}</td>
-                <td style="color: black;">{{ entry.DATA_VIGENCIA }}</td>
-                <td style="color: black;">{{ entry.DATA_ENCERRAMENTO }}</td>
-                <td style="color: black;">{{ entry.TIPO_CONTRATO }}</td>
-                <td style="color: black;">{{ entry.INSTITUICAO_EXECUTORA }}</td>
-                <td style="color: black;">{{ entry.PROCESSO }}</td>
-                <td style="color: black;">{{ entry.SUBPROCESSO }}</td>
-                <td style="color: black;">{{ entry.COD_PROPOSTA }}</td>
-                <td style="color: black;">{{ entry.PROPOSTA }}</td>
-                <!-- <td style="color: black;">{{ entry.OBJETIVOS }}</td> -->
-                <td style="color: black;">{{ entry.VALOR_APROVADO }}</td>
-                <td style="color: black;">{{ entry.NOME_TP_CONTROLE_SALDO }}</td>
-                <td style="color: black;">{{ entry.GRUPO_GESTORES }}</td>
-                <td style="color: black;">{{ entry.GESTOR_RESP }}</td>
-                <td style="color: black;">{{ entry.COORDENADOR }}</td>
-                <td style="color: black;">{{ entry.PROCEDIMENTO_COMPRA }}</td>
-                <td style="color: black;">{{ entry.TAB_FRETE }}</td>
-                <td style="color: black;">{{ entry.TAB_DIARIAS }}</td>
-                <td style="color: black;">{{ entry.CUSTO_OP }}</td>
-                <td style="color: black;">{{ entry.NOME_FINANCIADOR }}</td>
-                <td style="color: black;">{{ entry.DEPARTAMENTO }}</td>
-                <td style="color: black;">{{ entry.SITUACAO }}</td>
-                <td style="color: black;">{{ entry.BANCO }}</td>
-                <td style="color: black;">{{ entry.AGENCIA_BANCARIA }}</td>
-                <td style="color: black;">{{ entry.CONTA_BANCARIA }}</td>
-                <td style="color: black;">{{ entry.CENTRO_CUSTO }}</td>
-                <td style="color: black;">{{ entry.CONTA_CAIXA }}</td>
-                <td style="color: black;">{{ entry.CATEGORIA_PROJETO }}</td>
-                <td style="color: black;">{{ entry.COD_CONVENIO_CONTA }}</td>
-                <td style="color: black;">{{ entry.COD_STATUS }}</td>
-                <td style="color: black;">{{ entry.IND_SUB_PROJETO }}</td>
-                <td style="color: black;">{{ entry.TIPO_CUSTO_OP }}</td>
-                <td style="color: black;">{{ entry.PROJETO_MAE }}</td>
-                <td style="color: black;">{{ entry.ID_COORDENADOR }}</td>
-                <td style="color: black;">{{ entry.ID_FINANCIADOR }}</td>
-                <td style="color: black;">{{ entry.ID_INSTITUICAO }}</td>
-                <td style="color: black;">{{ entry.ID_DEPARTAMENTO }}</td>
-                <td style="color: black;">{{ entry.NOME_INSTITUICAO }}</td>
-                <td style="color: black;">{{ entry.ID_INSTITUICAO_EXECUTORA }}</td>
-                <td style="color: black;">{{ entry.ID_TIPO }}</td>
-            </tr>
-            <tr><td colspan="8"><hr></td></tr>
-        {% endfor %}
-    </tbody>
-</table>
+        </thead>
+        
+        <tbody>
+            {% for entry in data %}
+                <tr>
+                    <td>{{ entry.CODIGO }}</td>
+                    <td>{{ entry.NOME | truncatechars:25 }}</td>
+                    <td>{{ entry.NOME_FINANCIADOR | title }}</td>
+                    <td>{{ entry.DATA_ASSINATURA | date:"d/m/Y" | center:"15" }}</td>
+                    <td>{{ entry.DATA_VIGENCIA | date:"d/m/Y" }}</td>
+                    <td>{{ entry.COORDENADOR | title}}</td>
+                    <td>R$ {{ entry.VALOR_APROVADO | floatformat:2 }}</td>
+                    <td>{{ entry.GRUPO_GESTORES }}</td>
+                    <td id="btn-baixar"><a href="#"><img src="{% static 'imagem/baixar.png' %}" alt="btn_download"></a></td>
+                </tr>
+                <tr><td colspan="9"><hr></td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
 
-<div class="pagination">
-    <span class="step-links">
-        {% if data.has_previous %}
-            <a href="?page=1">&laquo; first</a>
-            <a href="?page={{ data.previous_page_number }}">previous</a>
-        {% endif %}
+    <div class="pagination">
+        <span class="step-links">
+            <!-- <span class="current-page">
+                Página {{ data.number }} de {{ data.paginator.num_pages }}.
+            </span> -->
 
-        <span class="current-page">
-            Page {{ data.number }} of {{ data.paginator.num_pages }}.
+            {% if data.has_previous and data.previous_page_number == 1 %}
+            <a href="?page=1">1</a>            
+            
+            {% elif data.has_previous and data.previous_page_number == 2 %}
+            <a href="?page=1">1</a>
+            <a href="?page={{ data.previous_page_number }}">{{ data.previous_page_number }}</a>
+            
+            {% elif data.has_previous %}
+            <a href="?page=1">1</a>
+            <p>...</p>
+            <a href="?page={{ data.previous_page_number }}">{{ data.previous_page_number }}</a>
+            
+            {% endif %}
+            
+            <strong id="current-page">{{ data.number }}</strong>
+            
+            {% if data.has_next and data.next_page_number == data.paginator.num_pages %}
+            <a href="?page={{ data.paginator.num_pages }}">{{ data.paginator.num_pages }}</a>
+            
+            {% elif data.has_next %}
+            <a href="?page={{ data.next_page_number }}">{{ data.next_page_number }}</a>
+            <p>...</p>
+            <a href="?page={{ data.paginator.num_pages }}">{{ data.paginator.num_pages }}</a>
+            
+            {% endif %}        
         </span>
-
-        {% if data.has_next %}
-            <a href="?page={{ data.next_page_number }}">next</a>
-            <a href="?page={{ data.paginator.num_pages }}">last &raquo;</a>
-        {% endif %}
-    </span>
+    </div>
 </div>
 
 {% endblock %}

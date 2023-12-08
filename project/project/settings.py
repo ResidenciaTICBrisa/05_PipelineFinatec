@@ -1,5 +1,7 @@
 from pathlib import Path
 import os
+from dotenv import load_dotenv   #for python-dotenv method
+load_dotenv()                    #for python-dotenv method
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -14,7 +16,7 @@ SECRET_KEY = 'django-insecure-tn_bk%@%rt@570m)e14wxmm4u2x_z&lvb8uh3--6ay7@h2olcs
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -68,20 +70,20 @@ file_path = "/home/ubuntu/Desktop/devfront/devfull/postgre.txt"
 with open(file_path, 'r') as file:
         password_database = file.readline().strip()
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'automatec',
-        'USER': 'automauser',
-        'PASSWORD': password_database,
-        'HOST': 'localhost',
-        'PORT': '',
-    },
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'automatec',
+#         'USER': 'automauser',
+#         'PASSWORD': password_database,
+#         'HOST': '146.235.46.122',
+#         'PORT': '5432',
+#     },
+#     # 'default': {
+#     #     'ENGINE': 'django.db.backends.sqlite3',
+#     #     'NAME': BASE_DIR / 'db.sqlite3',
+#     # }
+# }
 
 # DATABASES = {
 # 'default': {
@@ -152,7 +154,7 @@ USE_TZ = True
 STATIC_URL = 'assets/'
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static")
+    os.path.join(BASE_DIR, "app/static")
 ]
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
