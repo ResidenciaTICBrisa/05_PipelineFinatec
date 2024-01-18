@@ -99,15 +99,15 @@ def inserir_round_retangulo(planilha,data1,data2,dicionariofin):
 
     planilha_local_dados = {
         "Capa Finatec":[
-        ("E6",'NomePessoaFinanciador,'),
+        ("E6",'NomePessoaFinanciador'),
         ("E9",'NomeConvenio'),
         ("E14",'NomePessoaResponsavel'),
         ("E17",'Processo'),
         ("E19",'CodConvenio'),
         ("K17",'NomeBanco'),
         ("K19",'Conta'),
-        ("K21",'Agencia'),
-        ("E35",'Suellen Santos Diniz de Carvalho') 
+        ("K21",'Agencia')
+        
         ]
     }
 

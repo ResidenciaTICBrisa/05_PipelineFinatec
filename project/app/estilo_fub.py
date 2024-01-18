@@ -471,7 +471,7 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2):
         sttring = f"D{i}:F{i}"
         worksheet.merge_cells(sttring)
         
-    for i in range(size+3,size+3+tamanho2):
+    for i in range(size+3,size+4+tamanho2):
         sttring = f"D{i}:F{i}"
         worksheet.merge_cells(sttring)
 
@@ -550,7 +550,7 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2):
         cell = worksheet[f'B{row}']
         cell.style = custom_number_format_conciliacoes
         
-    for rows in worksheet.iter_rows(min_row=size+3, max_row=size+3+tamanho, min_col=1, max_col=6):
+    for rows in worksheet.iter_rows(min_row=size+3, max_row=size+3+tamanho2, min_col=1, max_col=6):
             for cell in rows:
                 if cell.row % 2:
                     cell.fill = PatternFill(start_color=cinza, end_color=cinza,
@@ -657,7 +657,7 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2):
     top_left_coordenadora_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
     top_left_coordenadora_cell_cpf_formula.border = borda
 
-    for row in worksheet.iter_rows(min_row=1, max_row=size+11,min_col=6,max_col=6):
+    for row in worksheet.iter_rows(min_row=1, max_row=coordenadora_cpf_row+1,min_col=6,max_col=6):
         for cell in row:
             cell.border = borda
 

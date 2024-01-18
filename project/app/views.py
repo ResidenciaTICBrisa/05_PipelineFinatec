@@ -310,7 +310,7 @@ def projeto(request):
         file_path = None
         print(f"download{template_id}")
         if template_id == '1':
-            keys = ['NomeFavorecido','FavorecidoCPFCNPJ','NomeTipoLancamento','HisLancamento','DataEmissao','DataPagamento', 'ValorPago']            
+            keys = ['NomeFavorecido','FavorecidoCPFCNPJ','NomeTipoLancamento','HisLancamento','NumDocPago','DataEmissao','NumChequeDeposito','DataPagamento', 'ValorPago']            
             file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"planilhaPreenchidaModelo_Fub.xlsx")
             #file_path = pegar_caminho('/home/ubuntu/Desktop/05_PipelineFinatec/planilhas_preenchidas/planilhaPreenchidaModelo_Fub.xlsx')
             # data_obj = datetime.strptime(data1, "%Y-%m-%d")
