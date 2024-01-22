@@ -154,7 +154,7 @@ def consultaID(IDPROJETO):
     records = cursor.fetchall()
     
     collums = getCollumNamesSemData()
-
+    
     #print(len(collums.description))
     # print(records)
     # print(len(colunaruim.description))
@@ -613,7 +613,7 @@ def passagemLocomocao(codigo,data1,data2,keys,planilha,dadoRubrica):
     # categorized_data= separarporrubrica(codigo,data1,data2)
     categorized_data = dadoRubrica
 
-    rubricas = [30,52,20]
+    rubricas = [52,20]
     if 7 in categorized_data:
         for num in rubricas:
             if num in categorized_data:
@@ -913,6 +913,7 @@ def conciliacaoBancaria(codigo,data1,data2,planilha,dadoRubrica):
                 worksheet333.cell(row=i, column=1, value=cell_data)
                 worksheet333.cell(row=i,column=2,value=valor_lancado)
                 worksheet333.cell(row=i,column=4,value= item['HisLancamento'])
+                worksheet333.cell(row=i,column=3,value= item['NumDocBancario'])
             else:
                  i = i - 1
             # print(estorno_valor)
@@ -924,6 +925,7 @@ def conciliacaoBancaria(codigo,data1,data2,planilha,dadoRubrica):
                 worksheet333.cell(row=16+tamanho+j+4, column=1, value=cell_data)
                 worksheet333.cell(row=16+tamanho+j+4, column=2, value=estorno_valor)
                 worksheet333.cell(row=16+tamanho+j+4, column=4, value= item['HisLancamento'])
+                worksheet333.cell(row=16+tamanho+j+4, column=3, value= item['NumDocBancario'])
                
                 j = j +1
                     
@@ -1036,7 +1038,7 @@ def diaria(codigo,data1,data2,keys,planilha,dadoRubrica):
     tamanho = []
     #diarias
     #53,37,50,10,
-    rubricas = [37,50,10,78,30,51,63]
+    rubricas = [37,50,10,78,30,51,63,11]
     if 53 in categorized_data:
         for num in rubricas:
             if num in categorized_data:
@@ -1111,8 +1113,25 @@ def auxilio(codigo,data1,data2,keys,planilha,dadoRubrica):
     
     # categorized_data= separarporrubrica(codigo,data1,data2)
     categorized_data = dadoRubrica
+    rubricas = [31]
+    if 31 in categorized_data:
+        for num in rubricas:
+            if num in categorized_data:
+                    categorized_data[31].extend(categorized_data[num])
+    elif any(num in categorized_data for num in rubricas):
+        for num in rubricas:
+            if num in categorized_data:
+                if 31 not in categorized_data:
+                    categorized_data[31] = categorized_data[num]
+                else:
+                    categorized_data[31].extend(categorized_data[num])
+    else:
+        print("Data not available or empty.")
+        maior = 1
+        tabela = pegar_caminho(planilha)
+        estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+        return None  # or handle the case accordingly
     
-
     if 31 not in categorized_data or not categorized_data[31]:
                 maior = 1
                 tabela = pegar_caminho(planilha)
@@ -1125,17 +1144,15 @@ def auxilio(codigo,data1,data2,keys,planilha,dadoRubrica):
     tabela = pegar_caminho(planilha)
 
     estiloGeral(tabela,maior,tituloStyle,nomeTabela)
-
-
     coluna = 2
     # caminho = pegar_caminho(planilha)
 
     workb = openpyxl.load_workbook(tabela)
-    worksheet3 = workb["Auxílio Financeiro Estudante"]
+    worksheet4 = workb['Auxílio Financeiro Estudante']
 
     for i in range(1,maior+1):
         valor_coluna = 9 + i
-        worksheet3.cell(row=valor_coluna, column=1, value=i)  # column index starts from 1
+        worksheet4.cell(row=valor_coluna, column=1, value=i)  # column index starts from 1
 
 
     for i in keys:
@@ -1145,18 +1162,18 @@ def auxilio(codigo,data1,data2,keys,planilha,dadoRubrica):
                 maior = 1
                 tabela = pegar_caminho(planilha)
                 estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+
                 return None  # or handle the case accordingly
         valores_preenchimento = retornavalores(categorized_data[31],li)
         
         n = len(valores_preenchimento)  
         for rowkek, cell_data in enumerate(valores_preenchimento, start=10):
-            worksheet3.cell(row=rowkek, column=coluna, value=cell_data)  
+            worksheet4.cell(row=rowkek, column=coluna, value=cell_data)  
         # if coluna == 5 or coluna == 7 :
         #         coluna = coluna + 1  
         coluna = coluna + 1
-    
 
-    workb.save(tabela)
+    workb.save(planilha)
     workb.close()
 
 def bolsaExtensao(codigo,data1,data2,keys,planilha,dadoRubrica):
@@ -1243,53 +1260,73 @@ def estagiario(codigo,data1,data2,keys,planilha,dadoRubrica):
     workbook.save(tabela)
     workbook.close()
    
-    # categorized_data= separarporrubrica(codigo,data1,data2)
     categorized_data = dadoRubrica
-    if 80 not in categorized_data or not categorized_data[80]:
+    rubricas = [56]
+    if 80 in categorized_data:
+        for num in rubricas:
+            if num in categorized_data:
+                    categorized_data[31].extend(categorized_data[num])
+    elif any(num in categorized_data for num in rubricas):
+        for num in rubricas:
+            if num in categorized_data:
+                if 31 not in categorized_data:
+                    categorized_data[31] = categorized_data[num]
+                else:
+                    categorized_data[31].extend(categorized_data[num])
+    else:
+        print("Data not available or empty.")
+        maior = 1
+        tabela = pegar_caminho(planilha)
+        estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+        return None  # or handle the case accordingly
+    
+    if 31 not in categorized_data or not categorized_data[31]:
                 maior = 1
                 tabela = pegar_caminho(planilha)
                 estiloGeral(tabela,maior,tituloStyle,nomeTabela)
                 print("Data not available or empty.")
                 return None  # or handle the case accordingly
-    maior = len(categorized_data[80])
+    maior = len(categorized_data[31])
     print(maior)
-    print(len(categorized_data[80]))
+    print(len(categorized_data[31]))
     tabela = pegar_caminho(planilha)
 
     estiloGeral(tabela,maior,tituloStyle,nomeTabela)
-
-
     coluna = 2
     # caminho = pegar_caminho(planilha)
 
     workb = openpyxl.load_workbook(tabela)
-    worksheet3 = workb["Estagiário"]
+    worksheet4 = workb['Estagiário']
 
     for i in range(1,maior+1):
         valor_coluna = 9 + i
-        worksheet3.cell(row=valor_coluna, column=1, value=i)  # column index starts from 1
+        worksheet4.cell(row=valor_coluna, column=1, value=i)  # column index starts from 1
 
 
     for i in keys:
         li = [i]
-        if 80 not in categorized_data or not categorized_data[80]:
+        if 31 not in categorized_data or not categorized_data[31]:
                 print("Data not available or empty.")
                 maior = 1
                 tabela = pegar_caminho(planilha)
                 estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+
                 return None  # or handle the case accordingly
-        valores_preenchimento = retornavalores(categorized_data[80],li)
+        valores_preenchimento = retornavalores(categorized_data[31],li)
         
         n = len(valores_preenchimento)  
         for rowkek, cell_data in enumerate(valores_preenchimento, start=10):
-            worksheet3.cell(row=rowkek, column=coluna, value=cell_data)  
+            worksheet4.cell(row=rowkek, column=coluna, value=cell_data)  
         # if coluna == 5 or coluna == 7 :
         #         coluna = coluna + 1  
         coluna = coluna + 1
-    
 
-    workb.save(tabela)
+    workb.save(planilha)
     workb.close()
+
+
+
+
 
 def custoIndireto(codigo,data1,data2,keys,planilha,dadoRubrica):
     tabela = pegar_caminho(planilha)
@@ -1299,9 +1336,73 @@ def custoIndireto(codigo,data1,data2,keys,planilha,dadoRubrica):
     sheet2 = workbook.create_sheet(title="Custos Indiretos - FUB")
     workbook.save(tabela)
     workbook.close()
-    tamanho = 20
-    estiloGeral(tabela,tamanho,tituloStyle,nomeTabela)
     categorized_data = dadoRubrica
+    rubricas = [77,111,117]
+    if 49 in categorized_data:
+        for num in rubricas:
+            if num in categorized_data:
+                    categorized_data[49].extend(categorized_data[num])
+    elif any(num in categorized_data for num in rubricas):
+        for num in rubricas:
+            if num in categorized_data:
+                if 49 not in categorized_data:
+                    categorized_data[49] = categorized_data[num]
+                else:
+                    categorized_data[49].extend(categorized_data[num])
+    else:
+        print("Data not available or empty.")
+        maior = 1
+        tabela = pegar_caminho(planilha)
+        estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+        return None  # or handle the case accordingly
+    
+    if 49 not in categorized_data or not categorized_data[49]:
+                maior = 1
+                tabela = pegar_caminho(planilha)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                print("Data not available or empty.")
+                return None  # or handle the case accordingly
+    maior = len(categorized_data[49])
+    print(maior)
+    print(len(categorized_data[49]))
+    tabela = pegar_caminho(planilha)
+
+    estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+    coluna = 2
+    # caminho = pegar_caminho(planilha)
+
+    workb = openpyxl.load_workbook(tabela)
+    worksheet4 = workb['Custos Indiretos - FUB']
+
+    for i in range(1,maior+1):
+        valor_coluna = 9 + i
+        worksheet4.cell(row=valor_coluna, column=1, value=i)  # column index starts from 1
+
+
+    for i in keys:
+        li = [i]
+        if 49 not in categorized_data or not categorized_data[49]:
+                print("Data not available or empty.")
+                maior = 1
+                tabela = pegar_caminho(planilha)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+
+                return None  # or handle the case accordingly
+        valores_preenchimento = retornavalores(categorized_data[49],li)
+        
+        n = len(valores_preenchimento)  
+        for rowkek, cell_data in enumerate(valores_preenchimento, start=10):
+            worksheet4.cell(row=rowkek, column=coluna, value=cell_data)  
+        # if coluna == 5 or coluna == 7 :
+        #         coluna = coluna + 1  
+        coluna = coluna + 1
+
+    workb.save(planilha)
+    workb.close()
+
+
+
+
 def relacaodeBens(codigo,data1,data2,planilha,dadoRubrica):
     tabela = pegar_caminho(planilha)
     workbook = openpyxl.load_workbook(tabela)

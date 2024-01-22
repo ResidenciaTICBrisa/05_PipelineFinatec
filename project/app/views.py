@@ -320,7 +320,7 @@ def projeto(request):
             preencher_fub_teste(coduaigo,convert_datetime_to_string(data1),convert_datetime_to_string(data2),keys,file_path)
             inserir_round_retangulo(file_path,data1,data2,db_fin)
         elif template_id == '2':
-            keys = ['NOME_FAVORECIDO','CNPJ_FAVORECIDO','NOME_RUBRICA','DATA_EMISSAO','DATA_PAGAMENTO', 'VALOR_PAGO']
+            keys = ['NomeFavorecido','FavorecidoCPFCNPJ','NomeRubrica','NumDocPago','DataEmissao','NumChequeDeposito','DataPagamento', 'ValorPago']            
             file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"planilhaPreenchidaModeloFUNDEP.xlsx")
             #file_path = pegar_caminho('/home/ubuntu/Desktop/05_PipelineFinatec/planilhas_preenchidas/planilhaPreenchidaModeloFUNDEP.xlsx')
             preenche_fundep(coduaigo,convert_datetime_to_string(data1),convert_datetime_to_string(data2),keys,file_path)

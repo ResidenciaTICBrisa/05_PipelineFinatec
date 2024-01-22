@@ -563,12 +563,12 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2):
 
     # FORMULATOTALrestituição
     formula = f"=SUM(B{size+4}:B{size+tamanho2+3})"
-    celula = f'B{size+tamanho2+4}'
+    celula = f'B{size+tamanho2+5}'
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
     #Total
-    celula_total = F'A{size+tamanho2+4}'
+    celula_total = F'A{size+tamanho2+5}'
     worksheet[celula_total] = f'TOTAL'
     worksheet[celula_total].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     worksheet[celula_total].font = Font(name="Arial", size=12, color="000000",bold=True)
@@ -589,7 +589,7 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2):
     saldodiposnivelformat_conciliacoes.fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     celular = worksheet[celula_string_total]
     celular.style = saldodiposnivelformat_conciliacoes
-    celular.value = f'=F10+F11+B{size} -B{size+tamanho2+4}'
+    celular.value = f'=F10+F11+B{size} -B{size+tamanho2+5}'
 
      #brasilia
     brasilia_row = size + tamanho2+ 8
