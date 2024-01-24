@@ -2,8 +2,6 @@ import pyodbc
 from datetime import datetime,date
 import openpyxl
 import os
-#from .estilo_fub import (estilo_conciliacoes_bancaria,estilo_rendimento_de_aplicacao,
-#estilo_demonstrativoDeReceita,estiloGeral,estiloRelacaoBens)
 from .estilo_fub import *
 from collections import defaultdict
 from .oracle_cruds import getAnalistaDoProjetoECpfCoordenador
@@ -20,7 +18,7 @@ def check_format(time_data, format='%Y-%m-%d'):
         return False  # The time_data does not match the format
 
 # def pegar_caminho(nome_arquivo):
-
+ 
 #     # Obter o caminho absoluto do arquivo Python em execução
 #     caminho_script = os.path.abspath(__file__)
 
@@ -50,14 +48,10 @@ def pegar_caminho(subdiretorio):
     
     return caminho_pipeline
 
-
 def convert_datetime_to_string(value):
     if isinstance(value, datetime):
         return value.strftime('%d/%m/%Y')
     return value
-#connection string in the format
-#<username>/<password>@<dBhostAddress>:<dbPort>/<dbServiceNam
-# def getCollumNames(IDPROJETO):
 
 def pegar_pass(chave):
     arq_atual = os.path.abspath(__file__)
@@ -69,7 +63,7 @@ def pegar_pass(chave):
     
     return caminho_pipeline
 
-def getCollumNamesSemData():
+def consultaLisLancamentoConveniarSemData():
 
     #file_path = "/home/ubuntu/Desktop/devfront/devfull/pass.txt"
     file_path = pegar_pass("passs.txt")
@@ -99,7 +93,8 @@ def getCollumNamesSemData():
     # conn.close()
 
     return cursor
-def getCollumNames(IDPROJETO, DATA1, DATA2):
+
+def consultaLisLancamentoConveniar(IDPROJETO, DATA1, DATA2):
 
  
     file_path = pegar_pass("passs.txt")
@@ -116,7 +111,8 @@ def getCollumNames(IDPROJETO, DATA1, DATA2):
     
     # formatted_date1 = DATA1.strftime("%Y-%m-%d")
     # formatted_date2 = DATA2.strftime("%Y-%m-%d")
-    sql = f"SELECT * FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? ORDER BY NumDocFinConvenio"
+    sql = f"SELECT * FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ?  ORDER BY CodLancamento"
+    #sql = f"SELECT * FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ?  ORDER BY NumDocFinConvenio"
 
     # Execute the query
     cursor.execute(sql, IDPROJETO, DATA1, DATA2)
@@ -153,30 +149,23 @@ def consultaID(IDPROJETO):
 
     records = cursor.fetchall()
     
-    collums = getCollumNamesSemData()
+    collums = cursor.description
     
-    #print(len(collums.description))
-    # print(records)
-    # print(len(colunaruim.description))
 
-    for i in range(len(collums.description)):
-        consulta[collums.description[i][0]] = records[0][i]
-
-        #print(consulta)
-
-        # print(f"\n <pyodbc.LOB object at 0x7f8823d022b0> \n {consulta['OBJETIVOS']} \n")
-       # consulta['OBJETIVOS'] = str(consulta['OBJETIVOS'])
-    # print(consulta)        
+    for i in range(len(collums)):
+        consulta[collums[i][0]] = records[0][i]
+  
     cursor.close()
     conn.close()
     print("The connection is closed")
+    #print(consulta)
     
     # return records
     return consulta
 #retorna todos os valores dos dicionarios
 def get_values_from_dict(codigo,data1,data2):
   
-    gete = getCollumNames(codigo,data1,data2)
+    gete = consultaLisLancamentoConveniar(codigo,data1,data2)
 
     collums = []
     for i in gete.description:
@@ -204,10 +193,10 @@ def separarporrubrica(codigo,data1,data2):
     valor = get_values_from_dict(codigo,data1,data2)
 
 
-    # # Step 1: Extract unique values from the 'ID_RUBRICA' key
+    #  Extract unique values from the 'ID_RUBRICA' key
     unique_id_rubrica_values = set(item['CodRubrica'] for item in valor)
 
-    # # Step 2: Create separate lists of dictionaries for each unique 'ID_RUBRICA' value
+    # Create separate lists of dictionaries for each unique 'ID_RUBRICA' value
     categorized_data = {value: [] for value in unique_id_rubrica_values}
     for item in valor:
         categorized_data[item['CodRubrica']].append(item)
@@ -232,6 +221,71 @@ def tipodefavorecido(codigo,data1,data2):
     #print(dict_favorecido_fisica_e_juridica)
     return dict_favorecido_fisica_e_juridica
 
+def queryReceitaXDespesa(CodConvenio,DATA1,DATA2):
+    
+    file_path = pegar_pass("passs.txt")
+    conStr = ''
+    with open(file_path, 'r') as file:
+            conStr = file.readline().strip()
+
+    conn = None
+    conn = pyodbc.connect(conStr)
+    cursor = conn.cursor()
+    consulta = {}
+
+    # SQL querys
+    
+    # formatted_date1 = DATA1.strftime("%Y-%m-%d")
+    # formatted_date2 = DATA2.strftime("%Y-%m-%d")
+    #sql = f"SELECT * FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ?  ORDER BY CodLancamento"
+    #sql = f"SELECT SUM(ValorPago) AS VALOR_TOTAL, CodRubrica, NomeRubrica FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27AND DataPagamento BETWEEN '2022-01-01 00:00:00' AND '2023-01-31 00:00:00' GROUP BY NomeRubrica, CodRubrica;"
+    sql = f"SELECT SUM(ValorPago) AS VALOR_TOTAL, CodRubrica, NomeRubrica FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? GROUP BY NomeRubrica, CodRubrica"
+    # Execute the query
+    cursor.execute(sql, CodConvenio, DATA1, DATA2)
+
+    records = cursor.fetchall()
+    
+    
+
+
+    collums = []
+    for i in cursor.description:
+        collums.append(i[0])
+    
+    print(collums)
+    print(type(collums))
+
+    value = []
+    #print(cursor)
+    for i in records:
+        val = tuple(convert_datetime_to_string(item) for item in i)
+        value.append(val)
+    
+    # print(f"vlo")
+    # print(type(value))
+    # print(value)
+        
+    # Create an empty dictionary to store the associations
+    association_dict = {}
+
+    # Iterate over the data and associate it with the columns
+    for i, value in enumerate(value):
+        column_index = i % len(collums)
+        column_name = collums[column_index]
+
+        if column_name not in association_dict:
+            association_dict[column_name] = []
+
+        association_dict[column_name].append(value)
+
+    # Print the associations
+    for column, values in association_dict.items():
+        print(f"{column}: {values}")
+
+
+
+    return consulta
+     
 def preencherCapa(codigo,planilha):
     analista = getAnalistaDoProjetoECpfCoordenador(codigo)
     caminho = pegar_caminho(planilha)
@@ -240,12 +294,12 @@ def preencherCapa(codigo,planilha):
     sheet['E26'] = analista['NOME_ANALISTA']
     workbook.save(planilha)
     workbook.close()
-
 #preenche planilha de referencia pra nome do coordenador e diretor
-def criaout(planilha,codigo,data1,data2):
+def criaReceitaXDespesa(planilha,codigo,data1,data2):
     
     caminho = pegar_caminho(planilha)
-    Plan = planilha
+    tamanho = estiloReceitaXDespesa(caminho,15) 
+    #Plan = planilha
     # carrega a planilha de acordo com o caminho
     workbook = openpyxl.load_workbook(caminho)
     sheet = workbook['Receita x Despesa']
@@ -273,8 +327,10 @@ def criaout(planilha,codigo,data1,data2):
     consulta_coordenador = consultaID(codigo)
     # print(consulta_coordenador)
     # print(type(consulta_coordenador))
-    sheet['H45'] = consulta_coordenador['NomePessoaResponsavel']
-    sheet['H47'] = formatar_cpf(consulta_coordenador['CPFCoordenador'])
+    stringCoordenador= f'H{tamanho+3}' # retorna lugar do coordanor
+    stringTamanhoCPF = f'H{tamanho+5}' # retorna lugar do coordanor
+    sheet[stringCoordenador] = consulta_coordenador['NomePessoaResponsavel']
+    sheet[stringTamanhoCPF] = formatar_cpf(consulta_coordenador['CPFCoordenador'])
     string_titulo = f"Título do Projeto: {consulta_coordenador['NomeConvenio']}"
     string_executora = f"Executora: {consulta_coordenador['NomePessoaFinanciador']}"
     string_participe = f"Partícipe: Fundação de Empreendimentos Científicos e Tecnológicos - FINATEC"
@@ -309,76 +365,32 @@ def criaout(planilha,codigo,data1,data2):
     10: "Outubro",
     11: "Novembro",
     12: "Dezembro"
-}
-
+}   
+    strintT = tamanho
+    stringTamanho = f'A{tamanho}' # retorna lugar de brasilia
     hoje = date.today()
     data_formatada = f"{hoje.day} de {meses_dict[hoje.month]} de {hoje.year}"
-    sheet["A42"] = f'Brasilia,{data_formatada}'
+    sheet[stringTamanho] = f'Brasilia, {data_formatada}'
     workbook.save(planilha)
     workbook.close()
 
-
-#################################################
-
-
-# ##########################################Pessoa Fisica######################################### CANCELADO
-def pessoa_fisica(codigo,data1,data2,keys,planilha,dadoRubrica):
+    return strintT
+    
+def execReceitaDespesa(codigo,data1,data2,keys,planilha,dadoRubrica,stringTamanho):
     tabela = pegar_caminho(planilha)
-    nomeTabela ="Outros Serviços Terceiros - PF"
-    tituloStyle = "pessoaFisica"
     workbook = openpyxl.load_workbook(tabela)
-    sheet2 = workbook.create_sheet(title="Outros Serviços Terceiros - PF")
+    sheet2 = workbook.create_sheet(title="Exec. Receita e Despesa")
     workbook.save(tabela)
     workbook.close()
-    # categorized_data= separarporrubrica(codigo,data1,data2)
-    categorized_data = dadoRubrica
-    if 87 not in categorized_data or not categorized_data[87]:
-                maior = 1
-                tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
-                print("Data not available or empty.")
-                return None  # or handle the case accordingly
-    maior = len(categorized_data[87])
+    tamanho = 15
+    queryConsulta = queryReceitaXDespesa(codigo,data1,data2)
+    print(queryConsulta)
     
-    print(len(categorized_data[87]))
-    tabela = pegar_caminho(planilha)
 
-    estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+    estiloExecReceitaDespesa(tabela,tamanho,stringTamanho)
+    return 0
 
-    coluna = 2
-    # caminho = pegar_caminho(planilha)
-
-    workb = openpyxl.load_workbook(tabela)
-    worksheet5 = workb['Outros Serviços Terceiros - PF']
-
-    for i in range(1,maior+1):
-        valor_coluna = 9 + i
-        worksheet5.cell(row=valor_coluna, column=1, value=i)  # column index starts from 1
-
-
-    for i in keys:
-        li = [i]
-        if 87 not in categorized_data or not categorized_data[87]:
-                print("Data not available or empty.")
-                maior = 1
-                tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
-                return None  # or handle the case accordingly
-        valores_preenchimento = retornavalores(categorized_data[87],li)
-        
-        n = len(valores_preenchimento)  
-        for rowkek, cell_data in enumerate(valores_preenchimento, start=10):
-            worksheet5.cell(row=rowkek, column=coluna, value=cell_data)  
-        # if coluna == 5 or coluna == 7 :
-        #         coluna = coluna + 1  
-        coluna = coluna + 1
-
-    workb.save(tabela)
-    workb.close()
-
-###################################################
-
-def pessoaFisica(codigo,data1,data2,keys,planilha,dadoRubrica):
+def pessoaFisica(codigo,data1,data2,keys,planilha,dadoRubrica,stringTamanho):
    
     tabela = pegar_caminho(planilha)
     nomeTabela ="Outros Serviços Terceiros - PF"
@@ -392,37 +404,37 @@ def pessoaFisica(codigo,data1,data2,keys,planilha,dadoRubrica):
 
     tamanho = []
    
-    rubricas = [25,79,54,55]
-    if 87 in categorized_data:
+    rubricas = [79,54,55]
+    if 25 in categorized_data:
         for num in rubricas:
             if num in categorized_data:
-                    categorized_data[87].extend(categorized_data[num])
+                    categorized_data[25].extend(categorized_data[num])
     elif any(num in categorized_data for num in rubricas):
         for num in rubricas:
             if num in categorized_data:
-                if 87 not in categorized_data:
-                    categorized_data[87] = categorized_data[num]
+                if 25 not in categorized_data:
+                    categorized_data[25] = categorized_data[num]
                 else:
-                    categorized_data[87].extend(categorized_data[num])
+                    categorized_data[25].extend(categorized_data[num])
     else:
         print("Data not available or empty.")
         maior = 1
         tabela = pegar_caminho(planilha)
-        estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+        estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
         return None  # or handle the case accordingly
     
-    if 87 not in categorized_data or not categorized_data[87]:
+    if 25 not in categorized_data or not categorized_data[25]:
                 maior = 1
                 tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
                 print("Data not available or empty.")
                 return None  # or handle the case accordingly
-    maior = len(categorized_data[87])
+    maior = len(categorized_data[25])
     print(maior)
-    print(len(categorized_data[87]))
+    print(len(categorized_data[25]))
     tabela = pegar_caminho(planilha)
 
-    estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+    estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
 
 
     coluna = 2
@@ -438,13 +450,13 @@ def pessoaFisica(codigo,data1,data2,keys,planilha,dadoRubrica):
 
     for i in keys:
         li = [i]
-        if 87 not in categorized_data or not categorized_data[87]:
+        if 25 not in categorized_data or not categorized_data[25]:
                 print("Data not available or empty.")
                 maior = 1
                 tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
                 return None  # or handle the case accordingly
-        valores_preenchimento = retornavalores(categorized_data[87],li)
+        valores_preenchimento = retornavalores(categorized_data[25],li)
         
      
         for rowkek, cell_data in enumerate(valores_preenchimento, start=10):
@@ -461,9 +473,8 @@ def pessoaFisica(codigo,data1,data2,keys,planilha,dadoRubrica):
     workb.save(tabela)
     workb.close()
 
-
 # ##########################################Pessoa Juridica#########################################
-def pessoaJuridica(codigo,data1,data2,keys,planilha,dadoRubrica):
+def pessoaJuridica(codigo,data1,data2,keys,planilha,dadoRubrica,stringTamanho):
    
    
 
@@ -496,13 +507,13 @@ def pessoaJuridica(codigo,data1,data2,keys,planilha,dadoRubrica):
         print("Data not available or empty.")
         maior = 1
         tabela = pegar_caminho(planilha)
-        estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+        estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
         return None  # or handle the case accordingly
     
     if 75 not in categorized_data or not categorized_data[75]:
                 maior = 1
                 tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
                 print("Data not available or empty.")
                 return None  # or handle the case accordingly
     maior = len(categorized_data[75])
@@ -510,7 +521,7 @@ def pessoaJuridica(codigo,data1,data2,keys,planilha,dadoRubrica):
     print(len(categorized_data[75]))
     tabela = pegar_caminho(planilha)
 
-    estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+    estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
 
 
     coluna = 2
@@ -530,7 +541,7 @@ def pessoaJuridica(codigo,data1,data2,keys,planilha,dadoRubrica):
                 print("Data not available or empty.")
                 maior = 1
                 tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
                 return None  # or handle the case accordingly
         valores_preenchimento = retornavalores(categorized_data[75],li)
         
@@ -545,7 +556,7 @@ def pessoaJuridica(codigo,data1,data2,keys,planilha,dadoRubrica):
     workb.close()
 
 # ##########################################ISS#########################################CANCELADO
-def iss(codigo,data1,data2,keys,planilha,dadoRubrica):
+def iss(codigo,data1,data2,keys,planilha,dadoRubrica,stringTamanho):
     tabela = pegar_caminho(planilha)
     nomeTabela ="ISS"
     tituloStyle = "isss"
@@ -556,11 +567,29 @@ def iss(codigo,data1,data2,keys,planilha,dadoRubrica):
     # categorized_data= separarporrubrica(codigo,data1,data2)
     categorized_data = dadoRubrica
 
+    rubricas = [88]
+    if 67 in categorized_data:
+        for num in rubricas:
+            if num in categorized_data:
+                    categorized_data[67].extend(categorized_data[num])
+    elif any(num in categorized_data for num in rubricas):
+        for num in rubricas:
+            if num in categorized_data:
+                if 67 not in categorized_data:
+                    categorized_data[67] = categorized_data[num]
+                else:
+                    categorized_data[67].extend(categorized_data[num])
+    else:
+        print("Data not available or empty.")
+        maior = 1
+        tabela = pegar_caminho(planilha)
+        estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
+        return None  # or handle the case accordingly
     
     if 67 not in categorized_data or not categorized_data[67]:
                 maior = 1
                 tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
                 print("Data not available or empty.")
                 return None  # or handle the case accordingly
     maior = len(categorized_data[67])
@@ -568,17 +597,18 @@ def iss(codigo,data1,data2,keys,planilha,dadoRubrica):
     print(len(categorized_data[67]))
     tabela = pegar_caminho(planilha)
 
-    estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+    estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
+
 
     coluna = 2
     # caminho = pegar_caminho(planilha)
 
     workb = openpyxl.load_workbook(tabela)
-    worksheet5 = workb['ISS']
+    worksheet3 = workb["ISS"]
 
     for i in range(1,maior+1):
         valor_coluna = 9 + i
-        worksheet5.cell(row=valor_coluna, column=1, value=i)  # column index starts from 1
+        worksheet3.cell(row=valor_coluna, column=1, value=i)  # column index starts from 1
 
 
     for i in keys:
@@ -587,22 +617,23 @@ def iss(codigo,data1,data2,keys,planilha,dadoRubrica):
                 print("Data not available or empty.")
                 maior = 1
                 tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
                 return None  # or handle the case accordingly
         valores_preenchimento = retornavalores(categorized_data[67],li)
         
         n = len(valores_preenchimento)  
         for rowkek, cell_data in enumerate(valores_preenchimento, start=10):
-            worksheet5.cell(row=rowkek, column=coluna, value=cell_data)  
+            worksheet3.cell(row=rowkek, column=coluna, value=cell_data)  
         # if coluna == 5 or coluna == 7 :
         #         coluna = coluna + 1  
         coluna = coluna + 1
+    
 
     workb.save(tabela)
     workb.close()
 
-# ##########################################Passagem Locomoção#########################################
-def passagemLocomocao(codigo,data1,data2,keys,planilha,dadoRubrica):
+# #########################################Passagem Locomoção#########################################
+def passagemLocomocao(codigo,data1,data2,keys,planilha,dadoRubrica,stringTamanho):
     tabela = pegar_caminho(planilha)
     nomeTabela ="Passagens e Desp. Locomoção"
     tituloStyle = "passagenDespLocomo"
@@ -629,13 +660,13 @@ def passagemLocomocao(codigo,data1,data2,keys,planilha,dadoRubrica):
         print("Data not available or empty.")
         maior = 1
         tabela = pegar_caminho(planilha)
-        estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+        estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
         return None  # or handle the case accordingly
     
     if 7 not in categorized_data or not categorized_data[7]:
                 maior = 1
                 tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
                 print("Data not available or empty.")
                 return None  # or handle the case accordingly
     maior = len(categorized_data[7])
@@ -643,7 +674,7 @@ def passagemLocomocao(codigo,data1,data2,keys,planilha,dadoRubrica):
     print(len(categorized_data[7]))
     tabela = pegar_caminho(planilha)
 
-    estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+    estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
 
 
     coluna = 2
@@ -663,7 +694,7 @@ def passagemLocomocao(codigo,data1,data2,keys,planilha,dadoRubrica):
                 print("Data not available or empty.")
                 maior = 1
                 tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
                 return None  # or handle the case accordingly
         valores_preenchimento = retornavalores(categorized_data[7],li)
         
@@ -679,7 +710,7 @@ def passagemLocomocao(codigo,data1,data2,keys,planilha,dadoRubrica):
     workb.close()
 
 # ##########################################Serv.Terceiro CLTa#########################################CANCELADO
-def terclt(codigo,data1,data2,keys,planilha,dadoRubrica):
+def terclt(codigo,data1,data2,keys,planilha,dadoRubrica,stringTamanho):
     tabela = pegar_caminho(planilha)
     nomeTabela ="Serv. Terceiro CLT"
     tituloStyle = "outrosServiçosTerceiros"
@@ -690,52 +721,73 @@ def terclt(codigo,data1,data2,keys,planilha,dadoRubrica):
     # categorized_data= separarporrubrica(codigo,data1,data2)
     categorized_data = dadoRubrica
     
-    if 25 not in categorized_data or not categorized_data[25]:
+    
+    rubricas = [87,68,69,70]
+    if 156 in categorized_data:
+        for num in rubricas:
+            if num in categorized_data:
+                    categorized_data[156].extend(categorized_data[num])
+    elif any(num in categorized_data for num in rubricas):
+        for num in rubricas:
+            if num in categorized_data:
+                if 156 not in categorized_data:
+                    categorized_data[156] = categorized_data[num]
+                else:
+                    categorized_data[156].extend(categorized_data[num])
+    else:
+        print("Data not available or empty.")
+        maior = 1
+        tabela = pegar_caminho(planilha)
+        estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
+        return None  # or handle the case accordingly
+    
+    if 156 not in categorized_data or not categorized_data[156]:
                 maior = 1
                 tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
                 print("Data not available or empty.")
                 return None  # or handle the case accordingly
-    maior = len(categorized_data[25])
+    maior = len(categorized_data[156])
     print(maior)
-    print(len(categorized_data[25]))
+    print(len(categorized_data[156]))
     tabela = pegar_caminho(planilha)
 
-    estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+    estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
+
 
     coluna = 2
     # caminho = pegar_caminho(planilha)
 
     workb = openpyxl.load_workbook(tabela)
-    worksheet4 = workb['Serv. Terceiro CLT']
+    worksheet3 = workb["Serv. Terceiro CLT"]
 
     for i in range(1,maior+1):
         valor_coluna = 9 + i
-        worksheet4.cell(row=valor_coluna, column=1, value=i)  # column index starts from 1
+        worksheet3.cell(row=valor_coluna, column=1, value=i)  # column index starts from 1
 
 
     for i in keys:
         li = [i]
-        if 25 not in categorized_data or not categorized_data[25]:
+        if 156 not in categorized_data or not categorized_data[156]:
                 print("Data not available or empty.")
                 maior = 1
                 tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
                 return None  # or handle the case accordingly
-        valores_preenchimento = retornavalores(categorized_data[25],li)
+        valores_preenchimento = retornavalores(categorized_data[156],li)
         
         n = len(valores_preenchimento)  
         for rowkek, cell_data in enumerate(valores_preenchimento, start=10):
-            worksheet4.cell(row=rowkek, column=coluna, value=cell_data)  
+            worksheet3.cell(row=rowkek, column=coluna, value=cell_data)  
         # if coluna == 5 or coluna == 7 :
         #         coluna = coluna + 1  
         coluna = coluna + 1
+    
 
-    workb.save(planilha)
+    workb.save(tabela)
     workb.close()
-
 # ##########################################Obrigaçoes tributárias #########################################
-def obricacaoTributaria(codigo,data1,data2,keys,planilha,dadoRubrica):
+def obricacaoTributaria(codigo,data1,data2,keys,planilha,dadoRubrica,stringTamanho):
     tabela = pegar_caminho(planilha)
     nomeTabela ="Obrigações Trib. - Encargos 20%"
     tituloStyle = "obrigacoesTribu"
@@ -761,13 +813,13 @@ def obricacaoTributaria(codigo,data1,data2,keys,planilha,dadoRubrica):
         print("Data not available or empty.")
         maior = 1
         tabela = pegar_caminho(planilha)
-        estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+        estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
         return None  # or handle the case accordingly
     
     if 66 not in categorized_data or not categorized_data[66]:
                 maior = 1
                 tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
                 print("Data not available or empty.")
                 return None  # or handle the case accordingly
     maior = len(categorized_data[66])
@@ -775,7 +827,7 @@ def obricacaoTributaria(codigo,data1,data2,keys,planilha,dadoRubrica):
     print(len(categorized_data[66]))
     tabela = pegar_caminho(planilha)
 
-    estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+    estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
     coluna = 2
     # caminho = pegar_caminho(planilha)
 
@@ -793,7 +845,7 @@ def obricacaoTributaria(codigo,data1,data2,keys,planilha,dadoRubrica):
                 print("Data not available or empty.")
                 maior = 1
                 tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
 
                 return None  # or handle the case accordingly
         valores_preenchimento = retornavalores(categorized_data[66],li)
@@ -809,7 +861,7 @@ def obricacaoTributaria(codigo,data1,data2,keys,planilha,dadoRubrica):
     workb.close()
 
 # ##########################################Conciliação Bancária #########################################
-def conciliacaoBancaria(codigo,data1,data2,planilha,dadoRubrica):
+def conciliacaoBancaria(codigo,data1,data2,planilha,dadoRubrica,stringTamanho):
     tabela = pegar_caminho(planilha)
     workbook = openpyxl.load_workbook(tabela)
     sheet2 = workbook.create_sheet(title="Conciliação Bancária")
@@ -826,7 +878,7 @@ def conciliacaoBancaria(codigo,data1,data2,planilha,dadoRubrica):
                 maior = 5
                 maior2= 5
                 tabela = pegar_caminho(planilha)
-                estilo_conciliacoes_bancaria(tabela,maior,maior2)
+                estilo_conciliacoes_bancaria(tabela,maior,maior2,stringTamanho)
                 return None  # or handle the case accordingly
     else:
         
@@ -863,7 +915,7 @@ def conciliacaoBancaria(codigo,data1,data2,planilha,dadoRubrica):
         tamanho = tamanho-tamanho2                
         tabela = pegar_caminho(planilha)
         #print(tabela)
-        estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2)
+        estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2,stringTamanho)
        
 
         workb = openpyxl.load_workbook(tabela)
@@ -937,7 +989,7 @@ def conciliacaoBancaria(codigo,data1,data2,planilha,dadoRubrica):
         workb.close
 
 # ##########################################Rendimento de Aplicação#########################################
-def rendimentodeaplicacao(codigo,data1,data2,planilha,dadoRubrica):
+def rendimentodeaplicacao(codigo,data1,data2,planilha,dadoRubrica,stringTamanho):
     tabela = pegar_caminho(planilha)
     workbook = openpyxl.load_workbook(tabela)
     sheet2 = workbook.create_sheet(title="Rendimento de Aplicação")
@@ -954,7 +1006,7 @@ def rendimentodeaplicacao(codigo,data1,data2,planilha,dadoRubrica):
                 maior = 1
                 maior2= 2
                 tabela = pegar_caminho(planilha)
-                estilo_rendimento_de_aplicacao(tabela,maior)
+                estilo_rendimento_de_aplicacao(tabela,maior,stringTamanho)
                 return None  # or handle the case accordingly
     else:
         
@@ -978,7 +1030,7 @@ def rendimentodeaplicacao(codigo,data1,data2,planilha,dadoRubrica):
         tamanho = len(grupos_por_ano_mes)     
         tabela = pegar_caminho(planilha)
         #print(tabela)
-        estilo_rendimento_de_aplicacao(tabela,tamanho)
+        estilo_rendimento_de_aplicacao(tabela,tamanho,stringTamanho)
        
 
         workb = openpyxl.load_workbook(tabela)
@@ -1023,7 +1075,7 @@ def rendimentodeaplicacao(codigo,data1,data2,planilha,dadoRubrica):
         workb.close
    ##############################
 
-def diaria(codigo,data1,data2,keys,planilha,dadoRubrica):
+def diaria(codigo,data1,data2,keys,planilha,dadoRubrica,stringTamanho):
     tabela = pegar_caminho(planilha)
     workbook = openpyxl.load_workbook(tabela)
     nomeTabela ="Diárias"
@@ -1054,13 +1106,13 @@ def diaria(codigo,data1,data2,keys,planilha,dadoRubrica):
         print("Data not available or empty.")
         maior = 1
         tabela = pegar_caminho(planilha)
-        estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+        estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
         return None  # or handle the case accordingly
     
     if 53 not in categorized_data or not categorized_data[53]:
                 maior = 1
                 tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
                 print("Data not available or empty.")
                 return None  # or handle the case accordingly
     maior = len(categorized_data[53])
@@ -1068,7 +1120,7 @@ def diaria(codigo,data1,data2,keys,planilha,dadoRubrica):
     print(len(categorized_data[53]))
     tabela = pegar_caminho(planilha)
 
-    estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+    estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
 
 
     coluna = 2
@@ -1088,7 +1140,7 @@ def diaria(codigo,data1,data2,keys,planilha,dadoRubrica):
                 print("Data not available or empty.")
                 maior = 1
                 tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
                 return None  # or handle the case accordingly
         valores_preenchimento = retornavalores(categorized_data[53],li)
         
@@ -1102,7 +1154,7 @@ def diaria(codigo,data1,data2,keys,planilha,dadoRubrica):
     workb.save(tabela)
     workb.close()
 
-def auxilio(codigo,data1,data2,keys,planilha,dadoRubrica):
+def auxilio(codigo,data1,data2,keys,planilha,dadoRubrica,stringTamanho):
     tabela = pegar_caminho(planilha)
     nomeTabela ="Auxílio Financeiro Estudante"
     tituloStyle = "auxilioEstudante"
@@ -1129,13 +1181,13 @@ def auxilio(codigo,data1,data2,keys,planilha,dadoRubrica):
         print("Data not available or empty.")
         maior = 1
         tabela = pegar_caminho(planilha)
-        estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+        estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
         return None  # or handle the case accordingly
     
     if 31 not in categorized_data or not categorized_data[31]:
                 maior = 1
                 tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
                 print("Data not available or empty.")
                 return None  # or handle the case accordingly
     maior = len(categorized_data[31])
@@ -1143,7 +1195,7 @@ def auxilio(codigo,data1,data2,keys,planilha,dadoRubrica):
     print(len(categorized_data[31]))
     tabela = pegar_caminho(planilha)
 
-    estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+    estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
     coluna = 2
     # caminho = pegar_caminho(planilha)
 
@@ -1161,7 +1213,7 @@ def auxilio(codigo,data1,data2,keys,planilha,dadoRubrica):
                 print("Data not available or empty.")
                 maior = 1
                 tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
 
                 return None  # or handle the case accordingly
         valores_preenchimento = retornavalores(categorized_data[31],li)
@@ -1176,7 +1228,7 @@ def auxilio(codigo,data1,data2,keys,planilha,dadoRubrica):
     workb.save(planilha)
     workb.close()
 
-def bolsaExtensao(codigo,data1,data2,keys,planilha,dadoRubrica):
+def bolsaExtensao(codigo,data1,data2,keys,planilha,dadoRubrica,stringTamanho):
     tabela = pegar_caminho(planilha)
     workbook = openpyxl.load_workbook(tabela)
     nomeTabela ="Bolsa Extensão"
@@ -1202,13 +1254,13 @@ def bolsaExtensao(codigo,data1,data2,keys,planilha,dadoRubrica):
         print("Data not available or empty.")
         maior = 1
         tabela = pegar_caminho(planilha)
-        estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+        estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
         return None  # or handle the case accordingly
     
     if 4 not in categorized_data or not categorized_data[4]:
                 maior = 1
                 tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
                 print("Data not available or empty.")
                 return None  # or handle the case accordingly
     maior = len(categorized_data[4])
@@ -1216,7 +1268,7 @@ def bolsaExtensao(codigo,data1,data2,keys,planilha,dadoRubrica):
     print(len(categorized_data[4]))
     tabela = pegar_caminho(planilha)
 
-    estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+    estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
 
 
     coluna = 2
@@ -1236,7 +1288,7 @@ def bolsaExtensao(codigo,data1,data2,keys,planilha,dadoRubrica):
                 print("Data not available or empty.")
                 maior = 1
                 tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
                 return None  # or handle the case accordingly
         valores_preenchimento = retornavalores(categorized_data[4],li)
         
@@ -1251,7 +1303,7 @@ def bolsaExtensao(codigo,data1,data2,keys,planilha,dadoRubrica):
     workb.save(tabela)
     workb.close()
 
-def estagiario(codigo,data1,data2,keys,planilha,dadoRubrica):
+def estagiario(codigo,data1,data2,keys,planilha,dadoRubrica,stringTamanho):
     tabela = pegar_caminho(planilha)
     workbook = openpyxl.load_workbook(tabela)
     nomeTabela ="Estagiário"
@@ -1277,13 +1329,13 @@ def estagiario(codigo,data1,data2,keys,planilha,dadoRubrica):
         print("Data not available or empty.")
         maior = 1
         tabela = pegar_caminho(planilha)
-        estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+        estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
         return None  # or handle the case accordingly
     
     if 31 not in categorized_data or not categorized_data[31]:
                 maior = 1
                 tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
                 print("Data not available or empty.")
                 return None  # or handle the case accordingly
     maior = len(categorized_data[31])
@@ -1291,7 +1343,7 @@ def estagiario(codigo,data1,data2,keys,planilha,dadoRubrica):
     print(len(categorized_data[31]))
     tabela = pegar_caminho(planilha)
 
-    estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+    estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
     coluna = 2
     # caminho = pegar_caminho(planilha)
 
@@ -1309,7 +1361,7 @@ def estagiario(codigo,data1,data2,keys,planilha,dadoRubrica):
                 print("Data not available or empty.")
                 maior = 1
                 tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
 
                 return None  # or handle the case accordingly
         valores_preenchimento = retornavalores(categorized_data[31],li)
@@ -1324,11 +1376,7 @@ def estagiario(codigo,data1,data2,keys,planilha,dadoRubrica):
     workb.save(planilha)
     workb.close()
 
-
-
-
-
-def custoIndireto(codigo,data1,data2,keys,planilha,dadoRubrica):
+def custoIndireto(codigo,data1,data2,keys,planilha,dadoRubrica,stringTamanho):
     tabela = pegar_caminho(planilha)
     workbook = openpyxl.load_workbook(tabela)
     nomeTabela ="Custos Indiretos - FUB"
@@ -1353,13 +1401,13 @@ def custoIndireto(codigo,data1,data2,keys,planilha,dadoRubrica):
         print("Data not available or empty.")
         maior = 1
         tabela = pegar_caminho(planilha)
-        estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+        estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
         return None  # or handle the case accordingly
     
     if 49 not in categorized_data or not categorized_data[49]:
                 maior = 1
                 tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
                 print("Data not available or empty.")
                 return None  # or handle the case accordingly
     maior = len(categorized_data[49])
@@ -1367,7 +1415,7 @@ def custoIndireto(codigo,data1,data2,keys,planilha,dadoRubrica):
     print(len(categorized_data[49]))
     tabela = pegar_caminho(planilha)
 
-    estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+    estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
     coluna = 2
     # caminho = pegar_caminho(planilha)
 
@@ -1385,7 +1433,7 @@ def custoIndireto(codigo,data1,data2,keys,planilha,dadoRubrica):
                 print("Data not available or empty.")
                 maior = 1
                 tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
 
                 return None  # or handle the case accordingly
         valores_preenchimento = retornavalores(categorized_data[49],li)
@@ -1400,10 +1448,7 @@ def custoIndireto(codigo,data1,data2,keys,planilha,dadoRubrica):
     workb.save(planilha)
     workb.close()
 
-
-
-
-def relacaodeBens(codigo,data1,data2,planilha,dadoRubrica):
+def relacaodeBens(codigo,data1,data2,planilha,dadoRubrica,stringTamanho):
     tabela = pegar_caminho(planilha)
     workbook = openpyxl.load_workbook(tabela)
     nomeTabela ="Relação de Bens"
@@ -1429,12 +1474,12 @@ def relacaodeBens(codigo,data1,data2,planilha,dadoRubrica):
         print("Data not available or empty.")
         maior = 15
         tabela = pegar_caminho(planilha)
-        estiloRelacaoBens(tabela,maior,tituloStyle,nomeTabela)
+        estiloRelacaoBens(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
         return None  # or handle the case accordingly
     if 138 not in categorized_data or not categorized_data[138]:
                 maior = 15
                 tabela = pegar_caminho(planilha)
-                estiloRelacaoBens(tabela,maior,tituloStyle,nomeTabela)
+                estiloRelacaoBens(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
                 print("Data not available or empty.")
                 return None  # or handle the case accordingly
     maior = len(categorized_data[138])
@@ -1442,9 +1487,11 @@ def relacaodeBens(codigo,data1,data2,planilha,dadoRubrica):
     print(len(categorized_data[138]))
     tabela = pegar_caminho(planilha)
 
-    estiloRelacaoBens(tabela,maior,tituloStyle,nomeTabela)
+    estiloRelacaoBens(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
 
-def materialDeConsumo(codigo,data1,data2,keys,planilha,dadoRubrica):
+    #### falta preencher
+
+def materialDeConsumo(codigo,data1,data2,keys,planilha,dadoRubrica,stringTamanho):
     tabela = pegar_caminho(planilha)
     workbook = openpyxl.load_workbook(tabela)
     nomeTabela ="Material de Consumo"
@@ -1472,13 +1519,13 @@ def materialDeConsumo(codigo,data1,data2,keys,planilha,dadoRubrica):
         print("Data not available or empty.")
         maior = 1
         tabela = pegar_caminho(planilha)
-        estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+        estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
         return None  # or handle the case accordingly
      
     if 47 not in categorized_data or not categorized_data[47]:
                 maior = 1
                 tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
                 print("Data not available or empty.")
                 return None  # or handle the case accordingly
     maior = len(categorized_data[47])
@@ -1486,7 +1533,7 @@ def materialDeConsumo(codigo,data1,data2,keys,planilha,dadoRubrica):
     print(len(categorized_data[47]))
     tabela = pegar_caminho(planilha)
 
-    estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+    estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
 
 
     coluna = 2
@@ -1506,7 +1553,7 @@ def materialDeConsumo(codigo,data1,data2,keys,planilha,dadoRubrica):
                 print("Data not available or empty.")
                 maior = 1
                 tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
                 return None  # or handle the case accordingly
         valores_preenchimento = retornavalores(categorized_data[47],li)
         
@@ -1521,7 +1568,7 @@ def materialDeConsumo(codigo,data1,data2,keys,planilha,dadoRubrica):
     workb.save(tabela)
     workb.close()
 
-def equipamentoMaterialPermanente(codigo,data1,data2,keys,planilha,dadoRubrica):
+def equipamentoMaterialPermanente(codigo,data1,data2,keys,planilha,dadoRubrica,stringTamanho):
     tabela = pegar_caminho(planilha)
     workbook = openpyxl.load_workbook(tabela)
     nomeTabela ="Equipamento Material Permanente"
@@ -1554,13 +1601,13 @@ def equipamentoMaterialPermanente(codigo,data1,data2,keys,planilha,dadoRubrica):
         print("Data not available or empty.")
         maior = 1
         tabela = pegar_caminho(planilha)
-        estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+        estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
         return None  # or handle the case accordingly
     
     if 39 not in categorized_data or not categorized_data[39]:
                 maior = 1
                 tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
                 print("Data not available or empty.")
                 return None  # or handle the case accordingly
     maior = len(categorized_data[39])
@@ -1568,7 +1615,7 @@ def equipamentoMaterialPermanente(codigo,data1,data2,keys,planilha,dadoRubrica):
     print(len(categorized_data[39]))
     tabela = pegar_caminho(planilha)
 
-    estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+    estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
 
 
     coluna = 2
@@ -1588,7 +1635,7 @@ def equipamentoMaterialPermanente(codigo,data1,data2,keys,planilha,dadoRubrica):
                 print("Data not available or empty.")
                 maior = 1
                 tabela = pegar_caminho(planilha)
-                estiloGeral(tabela,maior,tituloStyle,nomeTabela)
+                estiloGeral(tabela,maior,tituloStyle,nomeTabela,stringTamanho)
                 return None  # or handle the case accordingly
         valores_preenchimento = retornavalores(categorized_data[39],li)
         
@@ -1602,37 +1649,38 @@ def equipamentoMaterialPermanente(codigo,data1,data2,keys,planilha,dadoRubrica):
     workb.save(tabela)
     workb.close()
 
-def demonstrativo(codigo,data1,data2,planilha):
+def demonstrativo(codigo,data1,data2,planilha,tamanco):
     tabela = pegar_caminho(planilha)
     workbook = openpyxl.load_workbook(tabela)
     sheet2 = workbook.create_sheet(title="Demonstrativo de Receita")
     workbook.save(tabela)
     workbook.close()
     tamanho = 20
-    estilo_demonstrativoDeReceita(tabela,tamanho)
+    estilo_demonstrativoDeReceita(tabela,tamanho,tamanco)
 
 def preencher_fub_teste(codigo,data1,data2,keys,tabela):
     dadoRubrica= separarporrubrica(codigo,data1,data2)
     #print(dadoRubrica)
-    criaout(tabela,codigo,data1,data2)
+    tamanho = criaReceitaXDespesa(tabela,codigo,data1,data2)
+    execReceitaDespesa(codigo,data1,data2,keys,tabela,dadoRubrica,tamanho)
     #preencherCapa(codigo,tabela)
-    pessoaFisica(codigo,data1,data2,keys,tabela,dadoRubrica)
-    pessoaJuridica(codigo,data1,data2,keys,tabela,dadoRubrica)
+    pessoaFisica(codigo,data1,data2,keys,tabela,dadoRubrica,tamanho)
+    pessoaJuridica(codigo,data1,data2,keys,tabela,dadoRubrica,tamanho)
     #iss(codigo,data1,data2,keys,tabela,dadoRubrica)
-    passagemLocomocao(codigo,data1,data2,keys,tabela,dadoRubrica)
-    #terclt(codigo,data1,data2,keys,tabela,dadoRubrica)
-    obricacaoTributaria(codigo,data1,data2,keys,tabela,dadoRubrica)
-    conciliacaoBancaria(codigo,data1,data2,tabela,dadoRubrica)
-    rendimentodeaplicacao(codigo,data1,data2,tabela,dadoRubrica)
-    diaria(codigo,data1,data2,keys,tabela,dadoRubrica)
-    auxilio(codigo,data1,data2,keys,tabela,dadoRubrica)
-    bolsaExtensao(codigo,data1,data2,keys,tabela,dadoRubrica)
-    estagiario(codigo,data1,data2,keys,tabela,dadoRubrica)
-    custoIndireto(codigo,data1,data2,keys,tabela,dadoRubrica)
-    materialDeConsumo(codigo,data1,data2,keys,tabela,dadoRubrica)
-    equipamentoMaterialPermanente(codigo,data1,data2,keys,tabela,dadoRubrica)
-    demonstrativo(codigo,data1,data2,tabela)
-    relacaodeBens(codigo,data1,data2,tabela,dadoRubrica)
+    passagemLocomocao(codigo,data1,data2,keys,tabela,dadoRubrica,tamanho)
+    terclt(codigo,data1,data2,keys,tabela,dadoRubrica,tamanho)
+    obricacaoTributaria(codigo,data1,data2,keys,tabela,dadoRubrica,tamanho)
+    conciliacaoBancaria(codigo,data1,data2,tabela,dadoRubrica,tamanho)
+    rendimentodeaplicacao(codigo,data1,data2,tabela,dadoRubrica,tamanho)
+    diaria(codigo,data1,data2,keys,tabela,dadoRubrica,tamanho)
+    auxilio(codigo,data1,data2,keys,tabela,dadoRubrica,tamanho)
+    bolsaExtensao(codigo,data1,data2,keys,tabela,dadoRubrica,tamanho)
+    estagiario(codigo,data1,data2,keys,tabela,dadoRubrica,tamanho)
+    custoIndireto(codigo,data1,data2,keys,tabela,dadoRubrica,tamanho)
+    materialDeConsumo(codigo,data1,data2,keys,tabela,dadoRubrica,tamanho)
+    equipamentoMaterialPermanente(codigo,data1,data2,keys,tabela,dadoRubrica,tamanho)
+    demonstrativo(codigo,data1,data2,tabela,tamanho)
+    relacaodeBens(codigo,data1,data2,tabela,dadoRubrica,tamanho)
     
     
 
