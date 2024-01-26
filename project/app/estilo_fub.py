@@ -50,7 +50,7 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
 
     size = tamanho + 16;
     size2 = size + 1
-    cinza = "d9d9d9"
+    cinza = "f1f1f1"
     azul_claro = '1c8cbc'
     # sheet.row_dimensions[3] = 28
 
@@ -133,6 +133,97 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
     sheet['F12'].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
 
 
+    #totais
+    #total espesas correntes linha 15
+
+    formula = f"=SUM(B16:B{size})"
+    sheet['B15'] = formula
+    formula = f"=SUM(C16:C{size})"
+    sheet['C15'] = formula
+    formula = f"=SUM(D16:D{size})"
+    sheet['D15'] = formula
+
+    formula = f"=SUM(F16:F{size})"
+    sheet['F15'] = formula
+    formula = f"=SUM(G16:G{size})"
+    sheet['G15'] = formula
+    formula = f"=SUM(H16:H{size})"
+    sheet['H15'] = formula
+
+    #Total Despesas de Capital
+    formula = f"=SUM(B{size2+2}:B{size2+4})"
+    sheet[f'B{size2}'] = formula
+
+    formula = f"=SUM(C{size2+2}:C{size2+4})"
+    sheet[f'C{size2}'] = formula
+
+    formula = f"=SUM(D{size2+2}:D{size2+4})"
+    sheet[f'D{size2}'] = formula
+
+    formula = f"=SUM(F{size2+2}:F{size2+4})"
+    sheet[f'F{size2}'] = formula
+
+    formula = f"=SUM(G{size2+2}:G{size2+4})"
+    sheet[f'G{size2}'] = formula
+
+    formula = f"=SUM(H{size2+2}:H{size2+4})"
+    sheet[f'H{size2}'] = formula
+
+
+    #Total Utilização de rendimentos
+
+    formula = f"=B{size2+6}"
+    sheet[f'B{size2+5}'] = formula
+
+    formula = f"=C{size2+6}"
+    sheet[f'C{size2+5}'] = formula
+
+    formula = f"=D{size2+6}"
+    sheet[f'D{size2+5}'] = formula
+
+    formula = f"=F{size2+6}"
+    sheet[f'F{size2+5}'] = formula
+
+    formula = f"=G{size2+6})"
+    sheet[f'G{size2+5}'] = formula
+
+    formula = f"=H{size2+6}"
+    sheet[f'H{size2+5}'] = formula
+
+   
+
+
+    #%porcentagem Despesas correntes
+    #IFERROR (C16/B16;0)
+    #%porcentagem Despesas de Capital
+    #IFERROR (C16/B16;0)
+    percentage_style = NamedStyle(name='percentage', number_format='0%')
+
+    for row in sheet.iter_rows(min_row=15, max_row=size2+7, min_col=1, max_col=9):
+        for cell in row:
+            if cell.column == 4:
+                stringSaldo = f"=B{cell.row} - C{cell.row}"
+                cell.value = stringSaldo
+            if cell.column == 8:
+                stringSaldo = f"=F{cell.row} - G{cell.row}"
+                cell.value = stringSaldo
+
+            if cell.column == 5:
+                stringPorcentagem = f"=IFERROR(C{cell.row}/B{cell.row}, 0)"
+                cell.value = stringPorcentagem
+                cell.style = percentage_style
+            if cell.column == 9:
+                stringPorcentagem = f"=IFERROR(G{cell.row}/F{cell.row}, 0)"
+                cell.value = stringPorcentagem
+                cell.style = percentage_style
+            
+
+   
+                
+        
+
+
+
 
 
     #adicionar borda em tudo
@@ -150,9 +241,14 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
     #preenche a coluna A e        F com cinza
     for row in sheet.iter_rows(min_row=16, max_row=size2+7,min_col=1,max_col=9):
         for cell in row:
-            if cell.column == 1 or cell.column == 6:
+            if cell.column == 1 or cell.column == 6 or cell.column == 2:
                 cell.fill = PatternFill(start_color=cinza, end_color=cinza,
                                             fill_type = "solid")
+            if cell.column == 6 or cell.column == 2:
+                cell.fill = PatternFill(start_color=cinza, end_color=cinza,
+                                            fill_type = "solid")
+                cell.font = cell.font = Font(name='Arial', size=12,bold= True)
+                
 ###pinta de azul a linha desejada
     for row in sheet.iter_rows(min_row=15, max_row=sheet.max_row, min_col=sheet.min_row, max_col= 9):
         for cell in row:
@@ -253,6 +349,28 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
     sheet[totalStringCelula] = totalString
     cell=sheet[totalStringCelula]
     cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+    cell.fill = PatternFill(start_color='9c9c9c', end_color='9c9c9c',fill_type = "solid")
+
+      #total total
+
+    formula = f"=SUM(B{size2}, B15)"
+    sheet[f'B{size2+7}'] = formula
+
+    formula = f"=SUM(C{size2}, C15)"
+    sheet[f'C{size2+7}'] = formula
+
+    formula = f"=SUM(D{size2}, D15)"
+    sheet[f'D{size2+7}'] = formula
+
+    formula = f"=SUM(F{size2}, F15)"
+    sheet[f'F{size2+7}'] = formula
+
+    formula = f"=SUM(G{size2}, G15)"
+    sheet[f'G{size2+7}'] = formula
+
+    formula = f"=SUM(H{size2},H15)"
+    sheet[f'H{size2+7}'] = formula
+
 
 
  
@@ -273,9 +391,9 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
     diretor_cargo_row = size2 + 11
     diretor_cpf_row = size2 + 12
     
-    diretor_nome_formula = f"='Receita x Despesa'!A{stringTamanho+3}"
-    diretor_cargo_formula = f"='Receita x Despesa'!A{stringTamanho+4}"
-    diretor_cpf_formula = f"='Receita x Despesa'!A{stringTamanho+5}"
+    diretor_nome_formula = f"Daniel Monteiro Rosa"
+    diretor_cargo_formula = f"='Diretor-Financeiro"
+    diretor_cpf_formula = f"102.962.716-91"
     diretor_merge_cells = f'A{diretor_row}:D{diretor_row}'
     diretor_cargo_merge_cells = f'A{diretor_cargo_row}:D{diretor_cargo_row}'
     diretor_cpf_merge_cells = f'A{diretor_cpf_row}:D{diretor_cpf_row}'
@@ -338,6 +456,9 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
                 cell.border = Border(top=Side(border_style="none") ,left = Side(border_style="none") ,right =Side(border_style="medium") ,bottom=Side(border_style="medium") )
             else:
                 cell.border = Border(top=Side(border_style="none") ,left = Side(border_style="none") ,right =Side(border_style="none") ,bottom=Side(border_style="medium") )
+
+
+   
 
     workbook.save(tabela)
     workbook.close()
@@ -431,7 +552,7 @@ def estiloReceitaXDespesa(tabela,stringTamanho):
             cell.border = borda
 
 
-
+    
 
 
     #merge das receitas
@@ -552,6 +673,12 @@ def estiloReceitaXDespesa(tabela,stringTamanho):
                                             fill_type = "solid")
     cell.font = Font(name="Arial", size=12, color="000000",bold = True)
     cell.number_format = 'R$ #,##0.00'
+
+    #mergecelulasabaixo de Rendimento de Aplicação financeira
+    for i in range(size2+4,size2+6):
+        sttring = f"A{i}:D{i}"
+        sheet.merge_cells(sttring)
+    
   
     
     contaCorrenteEmString= f"Conta Corrente"
@@ -737,14 +864,23 @@ def estiloReceitaXDespesa(tabela,stringTamanho):
             else:
                 cell.border = Border(top=Side(border_style="none") ,left = Side(border_style="none") ,right =Side(border_style="none") ,bottom=Side(border_style="medium") )
     
+    #deixar azul a letra de receita
+    cell=sheet['E16']
+    cell.font = Font(name="Arial", size=12,color="0000FF")
+    #deixar VERMELHO a letra de receita
+    cell=sheet[f'E{17}']
+    cell.font = Font(name="Arial", size=12,color="FF0000") 
 
+    cell=sheet[f'E{18}']
+    cell.font = Font(name="Arial", size=12,color="FF0000") 
 
     workbook.save(tabela)
     workbook.close()
 
-    print(f'printandosize2')
-    print(size2)
-    return size2 + 16
+    # print(f'printandosize2')
+    # print(size2)
+    #retorna tamanho de brasilia e de equipamentos
+    return size2 + 16,size+3
 
 def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
     
@@ -793,8 +929,8 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
         worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - PASSAGENS E DESPESAS COM LOCOMOÇÃO'
     elif nomeSheet == "outrosServiçosTerceiros":
         worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - O U T R O S  S E R V I Ç O S D E T E R C E I R O S - C E L E T I S T A S'
-    elif nomeSheet == "auxilioEstudante":
-        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  AUXÍLIO FINANCEIRO A ESTUDANTE'
+    elif nomeSheet == "auxilio":
+        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  AUXÍLIO FINANCEIRO A ESTUDANTE E PESQUISADOR'
     elif nomeSheet == "bolsaExtensao":
         worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  BOLSA DE EXTENSÃO'
     elif nomeSheet == "estagiario":
