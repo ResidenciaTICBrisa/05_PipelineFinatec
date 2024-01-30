@@ -217,7 +217,11 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
                 cell.value = stringPorcentagem
                 cell.style = percentage_style
             
-
+    #adicionara mascara do numero
+    for row in sheet.iter_rows(min_row=15, max_row=size2+7, min_col=1, max_col=9):
+        for cell in row:
+            if cell.column != 5 and cell.column != 9:
+                cell.number_format ='#,##0.00'
    
                 
         
@@ -950,27 +954,27 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
     worksheet['A1'].alignment = Alignment(horizontal="center",vertical="center")
     worksheet['A1'].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
     
-    worksheet.merge_cells('A3:F3')
+    worksheet.merge_cells('A3:J3')
     worksheet['A3'] = "='Receita x Despesa'!A3:J3"
     worksheet['A3'].font = Font(name="Arial", size=12, color="000000")
     worksheet['A3'].alignment = Alignment(horizontal="left",vertical="center")
 
-    worksheet.merge_cells('A4:F4')
+    worksheet.merge_cells('A4:J4')
     worksheet['A4'] = "='Receita x Despesa'!A4:J4"
     worksheet['A4'].font = Font(name="Arial", size=12, color="000000")
     worksheet['A4'].alignment = Alignment(horizontal="left",vertical="center")
     
-    worksheet.merge_cells('A5:F5')
+    worksheet.merge_cells('A5:J5')
     worksheet['A5'] = "='Receita x Despesa'!A5:J5"
     worksheet['A5'].font = Font(name="Arial", size=12, color="000000")
     worksheet['A5'].alignment = Alignment(horizontal="left",vertical="center")
     
-    worksheet.merge_cells('A6:F6')
+    worksheet.merge_cells('A6:J6')
     worksheet['A6'] = "='Receita x Despesa'!A6:J6"
     worksheet['A6'].font = Font(name="Arial", size=12, color="000000")
     worksheet['A6'].alignment = Alignment(horizontal="left",vertical="center")
     
-    worksheet.merge_cells('A7:F7')
+    worksheet.merge_cells('A7:J7')
     worksheet['A7'] = "='Receita x Despesa'!A7:J7"
     worksheet['A7'].font = Font(name="Arial", size=12, color="000000")
     worksheet['A7'].alignment = Alignment(horizontal="left",vertical="center")
