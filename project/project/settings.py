@@ -27,10 +27,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_admin_logs',
     'app',
     'backend',
     
 ]
+
+PGHISTORY_CONFIG = {
+    'schema_name': 'automatec',
+    'history_table_suffix': '_history',
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

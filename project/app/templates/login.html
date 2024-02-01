@@ -34,20 +34,20 @@
             return false;
     }
 
-    $(document).ready(function() {
-        $('#cpf').mask('000.000.000-00', {reverse: true});
+    // $(document).ready(function() {
+    //     $('#cpf').mask('000.000.000-00', {reverse: true});
 
-        $('#cpf').on('blur', function() {
-            var cpfValue = $(this).val().replace(/\D/g, '');
-            if (cpfValue && cpfValue.length === 11) {
-                if (!valida_cpf(cpfValue)) {
-                    alert('O CPF digitado é inválido.');
-                    $(this).val('');
-                    $(this).focus();
-                }
-            }
-        });
-    });
+    //     $('#cpf').on('blur', function() {
+    //         var cpfValue = $(this).val().replace(/\D/g, '');
+    //         if (cpfValue && cpfValue.length === 11) {
+    //             if (!valida_cpf(cpfValue)) {
+    //                 alert('O CPF digitado é inválido.');
+    //                 $(this).val('');
+    //                 $(this).focus();
+    //             }
+    //         }
+    //     });
+    // });
 </script>
 <style>
     .content {
@@ -73,8 +73,9 @@
             {% csrf_token %}
             <div class="inputGroup">
                 <div class="input">
-                    <label class="name">CPF</label>
-                    <input type="text" id="cpf" name="usuario" class="placeholder" placeholder="000.000.000-00" maxlength="14" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" title="Digite um CPF válido no formato 000.000.000-00." required>
+                    <label class="name">Usuário</label>
+                    <!-- <input type="text" id="cpf" name="usuario" class="placeholder" placeholder="000.000.000-00" maxlength="14" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" title="Digite um CPF válido no formato 000.000.000-00." required> -->
+                    <input type="text" id="cpf" name="usuario" class="placeholder" placeholder="nome.sobrenome" maxlength="50" title="Digite um CPF válido no formato 000.000.000-00." required>
                 </div>
                 <div class="input">
                     <label class="name">Senha</label>

@@ -18,6 +18,7 @@ import os
 import datetime
 import re
 from .capa import inserir_round_retangulo
+from django.contrib.admin.models import LogEntry
 
 def convert_datetime_to_string(value):
     if isinstance(value, datetime.datetime):
@@ -99,15 +100,19 @@ def projeto(request):
         result = {}
         current_key = None
         mapeamento = None
-        coduaigo = request.POST.get('usuario')
+        codigo = request.POST.get('usuario')
         template_id = request.POST.get('template')
         download = request.POST.get('Baixar')
         data1 = request.POST.get('inicio')
         data2 = request.POST.get('fim')
+
+        print(f"----------------------\n{codigo}\n{template_id}\n{download}\n{data1}\n{data2}\n{request.POST}\n-----------------------")
+
         print(type(data1))
         print(data2)
+        # LogEntry.objects.log_action(user_id, content_type_id, object_id, object_repr, action_flag, change_message)
         try:
-            db_fin = consultaID(coduaigo)
+            db_fin = consultaID(codigo)
         except:
              return render(request,'projeto.html',{
         "templates":Template.objects.all(),
@@ -318,13 +323,13 @@ def projeto(request):
             # data1 = data_obj.strftime("%d/%m/%Y")
             # data_obj2 = datetime.strptime(data2, "%Y-%m-%d")
             # data2 = data_obj2.strftime("%d/%m/%Y")
-            preencheFub(coduaigo,convert_datetime_to_string(data1),convert_datetime_to_string(data2),file_path)
+            preencheFub(codigo,convert_datetime_to_string(data1),convert_datetime_to_string(data2),file_path)
             inserir_round_retangulo(file_path,data1,data2,db_fin)
         elif template_id == '2':
             keys = ['NomeFavorecido','FavorecidoCPFCNPJ','NomeRubrica','NumDocPago','DataEmissao','NumChequeDeposito','DataPagamento', 'ValorPago']            
             file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"planilhaPreenchidaModeloFUNDEP.xlsx")
             #file_path = pegar_caminho('/home/ubuntu/Desktop/05_PipelineFinatec/planilhas_preenchidas/planilhaPreenchidaModeloFUNDEP.xlsx')
-            preenche_fundep(coduaigo,convert_datetime_to_string(data1),convert_datetime_to_string(data2),keys,file_path)
+            preenche_fundep(codigo,convert_datetime_to_string(data1),convert_datetime_to_string(data2),keys,file_path)
         elif template_id == '3':
             p_opas = os.path.join(caminhoPastaPlanilhasPreenchidas, "ModeloOPAS.xlsx")
             file_path = p_opas
