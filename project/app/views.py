@@ -11,13 +11,14 @@ from django.views.generic import TemplateView
 from .models import Template
 from .oracle_cruds import consultaPorID
 from .new_dev import preenche_planilha,extrair,pegar_caminho
-from .preenche_fub import preencher_fub_teste,consultaID
+#from .preenche_fub import preencher_fub_teste,consultaID
 from .preenche_fundep import preenche_fundep
+from .preencheFub import consultaID,preencheFub
 import os
 import datetime
 import re
-
 from .capa import inserir_round_retangulo
+
 def convert_datetime_to_string(value):
     if isinstance(value, datetime.datetime):
         return value.strftime('%d/%m/%Y')
@@ -317,7 +318,7 @@ def projeto(request):
             # data1 = data_obj.strftime("%d/%m/%Y")
             # data_obj2 = datetime.strptime(data2, "%Y-%m-%d")
             # data2 = data_obj2.strftime("%d/%m/%Y")
-            preencher_fub_teste(coduaigo,convert_datetime_to_string(data1),convert_datetime_to_string(data2),keys,file_path)
+            preencheFub(coduaigo,convert_datetime_to_string(data1),convert_datetime_to_string(data2),file_path)
             inserir_round_retangulo(file_path,data1,data2,db_fin)
         elif template_id == '2':
             keys = ['NomeFavorecido','FavorecidoCPFCNPJ','NomeRubrica','NumDocPago','DataEmissao','NumChequeDeposito','DataPagamento', 'ValorPago']            

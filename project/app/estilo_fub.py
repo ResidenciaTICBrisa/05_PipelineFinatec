@@ -397,7 +397,7 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
     
     diretor_nome_formula = f"Daniel Monteiro Rosa"
     diretor_cargo_formula = f"='Diretor-Financeiro"
-    diretor_cpf_formula = f"102.962.716-91"
+    diretor_cpf_formula = f"450.720.272-87"
     diretor_merge_cells = f'A{diretor_row}:D{diretor_row}'
     diretor_cargo_merge_cells = f'A{diretor_cargo_row}:D{diretor_cargo_row}'
     diretor_cpf_merge_cells = f'A{diretor_cpf_row}:D{diretor_cpf_row}'
@@ -868,15 +868,15 @@ def estiloReceitaXDespesa(tabela,stringTamanho):
             else:
                 cell.border = Border(top=Side(border_style="none") ,left = Side(border_style="none") ,right =Side(border_style="none") ,bottom=Side(border_style="medium") )
     
-    #deixar azul a letra de receita
-    cell=sheet['E16']
-    cell.font = Font(name="Arial", size=12,color="0000FF")
-    #deixar VERMELHO a letra de receita
-    cell=sheet[f'E{17}']
-    cell.font = Font(name="Arial", size=12,color="FF0000") 
+    # #deixar azul a letra de receita
+    # cell=sheet['E16']
+    # cell.font = Font(name="Arial", size=12,color="0000FF")
+    # #deixar VERMELHO a letra de receita
+    # cell=sheet[f'E{17}']
+    # cell.font = Font(name="Arial", size=12,color="FF0000") 
 
-    cell=sheet[f'E{18}']
-    cell.font = Font(name="Arial", size=12,color="FF0000") 
+    # cell=sheet[f'E{18}']
+    # cell.font = Font(name="Arial", size=12,color="FF0000") 
 
     workbook.save(tabela)
     workbook.close()
@@ -923,30 +923,33 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
 
     #cabecario relação de pagamentos - outro servicoes de terceiros
     worksheet.merge_cells('A1:J2')
-    if nomeSheet == "diarias":
-        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - DIÁRIAS'
-    elif nomeSheet == "pessoaFisica":
-        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  OUTROS SERVIÇOS DE TERCEIROS - PF'
-    elif nomeSheet == "pessoaJuridica":
-        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - OUTROS SERVIÇOS DE TERCEIROS - PESSOA JURÍDICA'
-    elif nomeSheet == "passagenDespLocomo":
-        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - PASSAGENS E DESPESAS COM LOCOMOÇÃO'
-    elif nomeSheet == "outrosServiçosTerceiros":
-        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - O U T R O S  S E R V I Ç O S D E T E R C E I R O S - C E L E T I S T A S'
-    elif nomeSheet == "auxilio":
-        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  AUXÍLIO FINANCEIRO A ESTUDANTE E PESQUISADOR'
-    elif nomeSheet == "bolsaExtensao":
-        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  BOLSA DE EXTENSÃO'
-    elif nomeSheet == "estagiario":
-        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  ESTAGIÁRIO'
-    elif nomeSheet == "custosIndiretos":
-        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - CUSTOS INDIRETOS - FUB'
-    elif nomeSheet == "materialDeConsumo":
-        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  MATERIAL DE CONSUMO'
-    elif nomeSheet == "equipamentoMaterialPermanente":
-        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  EQUIPAMENTO E MATERIAL PERMANENTE'
-    elif nomeSheet == "isss":
-        worksheet['A1'] = f'ISS 5% e ISS 2%'
+    nomeTabela = nomeTabela.upper()
+    worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - {nomeTabela}'
+
+    # if nomeSheet == "diarias":
+    #     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - DIÁRIAS'
+    # elif nomeSheet == "pessoaFisica":
+    #     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  OUTROS SERVIÇOS DE TERCEIROS - PF'
+    # elif nomeSheet == "pessoaJuridica":
+    #     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - OUTROS SERVIÇOS DE TERCEIROS - PESSOA JURÍDICA'
+    # elif nomeSheet == "passagenDespLocomo":
+    #     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - PASSAGENS E DESPESAS COM LOCOMOÇÃO'
+    # elif nomeSheet == "outrosServiçosTerceiros":
+    #     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - O U T R O S  S E R V I Ç O S D E T E R C E I R O S - C E L E T I S T A S'
+    # elif nomeSheet == "auxilio":
+    #     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  AUXÍLIO FINANCEIRO A ESTUDANTE E PESQUISADOR'
+    # elif nomeSheet == "bolsaExtensao":
+    #     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  BOLSA DE EXTENSÃO'
+    # elif nomeSheet == "estagiario":
+    #     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  ESTAGIÁRIO'
+    # elif nomeSheet == "custosIndiretos":
+    #     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - CUSTOS INDIRETOS - FUB'
+    # elif nomeSheet == "materialDeConsumo":
+    #     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  MATERIAL DE CONSUMO'
+    # elif nomeSheet == "equipamentoMaterialPermanente":
+    #     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  EQUIPAMENTO E MATERIAL PERMANENTE'
+    # elif nomeSheet == "isss":
+    #     worksheet['A1'] = f'ISS 5% e ISS 2%'
 
   
 
@@ -2080,15 +2083,15 @@ def estilo_demonstrativoDeReceita(tabela,tamanho,stringTamanho):
             cell.border = borda
             
 
-    worksheet.column_dimensions['a'].width = 35
-    worksheet.column_dimensions['b'].width = 35
-    worksheet.column_dimensions['c'].width = 35
-    worksheet.column_dimensions['d'].width = 35#descrição
+    worksheet.column_dimensions['a'].width = 30
+    worksheet.column_dimensions['b'].width = 70
+    worksheet.column_dimensions['c'].width = 30
+    worksheet.column_dimensions['d'].width = 50#descrição
    
 
     #cabecario relação de pagamentos - outro servicoes de terceiros
     worksheet.merge_cells('A1:D2')
-    worksheet['A1'] = f'D E M O N S T R A T I V O   D E   R E C E I T A'
+    worksheet['A1'] = f'D E M O N S T R A T I V O   D E   R E C E I T A  E    ISS 5% E ISS 2%'
     worksheet['A1'].font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
     worksheet['A1'].alignment = Alignment(horizontal="center",vertical="center")
     worksheet['A1'].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
@@ -2141,7 +2144,7 @@ def estilo_demonstrativoDeReceita(tabela,tamanho,stringTamanho):
 
     #Aumentar  a altura das celulas 
     for row in worksheet.iter_rows(min_row=10, max_row=size, min_col=1, max_col=4):
-        worksheet.row_dimensions[row[0].row].height = 35
+        worksheet.row_dimensions[row[0].row].height = 80
 
     custom_number_format_demonstrativo = []
     # MASCARA R$
@@ -2292,9 +2295,9 @@ def estilo_demonstrativoDeReceita(tabela,tamanho,stringTamanho):
     diretor_row = size + 8
     diretor_cargo_row = size + 9
     diretor_cpf_row = size + 10
-    diretor_nome_formula = f"='Receita x Despesa'!A{stringTamanho+4}"
-    diretor_cargo_formula = f"='Receita x Despesa'!A{stringTamanho+5}"
-    diretor_cpf_formula = f"='Receita x Despesa'!A{stringTamanho+6}"
+    diretor_nome_formula = f"='Receita x Despesa'!A{stringTamanho+3}"
+    diretor_cargo_formula = f"='Receita x Despesa'!A{stringTamanho+4}"
+    diretor_cpf_formula = f"='Receita x Despesa'!A{stringTamanho+5}"
     diretor_merge_cells = f'A{diretor_row}:B{diretor_row}'
     diretor_cargo_merge_cells = f'A{diretor_cargo_row}:B{diretor_cargo_row}'
     diretor_cpf_merge_cells = f'A{diretor_cpf_row}:B{diretor_cpf_row}'
