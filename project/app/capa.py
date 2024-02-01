@@ -99,22 +99,17 @@ def inserir_round_retangulo(planilha,data1,data2,dicionariofin):
 
     planilha_local_dados = {
         "Capa Finatec":[
-        ("E6",'NOME_FINANCIADOR'),
-        ("E9",'NOME'),
-        ("E14",'COORDENADOR'),
-        ("E17",'PROCESSO'),
-        ("E19",'CODIGO'),
-        ("K17",'BANCO'),
-        ("K19",'CONTA_BANCARIA'),
-        ("K21",'AGENCIA_BANCARIA'),
-        ("E35",'Suellen Santos Diniz de Carvalho') 
+        ("E6",'NomePessoaFinanciador'),
+        ("E9",'NomeConvenio'),
+        ("E14",'NomePessoaResponsavel'),
+        ("E17",'Processo'),
+        ("E19",'CodConvenio'),
+        ("K17",'NomeBanco'),
+        ("K19",'Conta'),
+        ("K21",'Agencia')
+        
         ]
     }
-
-
-
-
-
 
     # Create an empty dictionary to store the values from the second dictionary
     result_dict = {}
@@ -159,7 +154,7 @@ def inserir_round_retangulo(planilha,data1,data2,dicionariofin):
         'gerente_branco.png',#17
         'periodo.png',#18
         'periodo_branco.png',#19
-        'prestaçãodecontasparcial.png',#20
+        'prestacaodecontaparcial.png',#20
         'processo.png',#21
         'processo_branco.png',#22
         'projeto.png',#23
@@ -173,7 +168,7 @@ def inserir_round_retangulo(planilha,data1,data2,dicionariofin):
     # List to hold Image objects
     images = []
 
-    nomePasta = "imagensCapa"
+    nomePasta = "../../imagensCapa"
     diretorio = os.path.dirname(__file__)
 
     # Loop through the list of image names and create Image objects

@@ -1,19 +1,38 @@
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment,NamedStyle,Border, Side
 import os
+import random
 #pegar o caminho do arquivo
-def pegar_caminho(nome_arquivo):
+# def pegar_caminho(nome_arquivo):
 
-    # Obter o caminho absoluto do arquivo Python em execução
-    caminho_script = os.path.abspath(__file__)
+#     # Obter o caminho absoluto do arquivo Python em execução
+#     caminho_script = os.path.abspath(__file__)
 
-    # Obter o diretório da pasta onde o script está localizado
-    pasta_script = os.path.dirname(caminho_script)
+#     # Obter o diretório da pasta onde o script está localizado
+#     pasta_script = os.path.dirname(caminho_script)
 
-    # Combinar o caminho da pasta com o nome do arquivo Excel
-    caminho = os.path.join(pasta_script, nome_arquivo)
+#     # Combinar o caminho da pasta com o nome do arquivo Excel
+#     caminho = os.path.join(pasta_script, nome_arquivo)
 
-    return caminho
+#     return caminho
+
+def pegar_caminho(subdiretorio):
+    # Obtém o caminho do script atual
+    arq_atual = os.path.abspath(__file__)
+    
+    # Obtém o diretório do script
+    app = os.path.dirname(arq_atual)
+    
+    # Obtém o diretório pai do script
+    project = os.path.dirname(app)
+    
+    # Obtém o diretório pai do projeto
+    pipeline = os.path.dirname(project)
+    
+    # Junta o diretório pai do projeto com o subdiretório desejado
+    caminho_pipeline = os.path.join(pipeline, subdiretorio)
+    
+    return caminho_pipeline
 
 def create_variable(name1, name2):
     # Create a dictionary to store values with keys based on inputs
@@ -24,8 +43,855 @@ def create_variable(name1, name2):
        # Assign the value to the dynamically created variable name
     return variables
 
-def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela):
+def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
+    caminho = pegar_caminho(tabela)
+    workbook = openpyxl.load_workbook(caminho)
+    sheet = workbook['Exec. Receita e Despesa']
+
+    size = tamanho + 16;
+    size2 = size + 1
+    cinza = "f1f1f1"
+    azul_claro = '1c8cbc'
+    # sheet.row_dimensions[3] = 28
+
+    
+
+    #cabecario 
+    sheet.merge_cells('A1:I2')
+    sheet['A1'] = f'E X E C U Ç Ã O   D A  R E C E I T A   E  D E S P E S A '
+    sheet['A1'].font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
+    sheet['A1'].alignment = Alignment(horizontal="center",vertical="center")
+    sheet['A1'].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
+    
+    sheet.merge_cells('A3:F3')
+    sheet['A3'] = "='Receita x Despesa'!A3:I3"
+    sheet['A3'].font = Font(name="Arial", size=12, color="000000")
+    sheet['A3'].alignment = Alignment(horizontal="left",vertical="center")
+
+    sheet.merge_cells('A4:F4')
+    sheet['A4'] = "='Receita x Despesa'!A4:I4"
+    sheet['A4'].font = Font(name="Arial", size=12, color="000000")
+    sheet['A4'].alignment = Alignment(horizontal="left",vertical="center")
+    
+    sheet.merge_cells('A5:F5')
+    sheet['A5'] = "='Receita x Despesa'!A5:I5"
+    sheet['A5'].font = Font(name="Arial", size=12, color="000000")
+    sheet['A5'].alignment = Alignment(horizontal="left",vertical="center")
+    
+    sheet.merge_cells('A6:F6')
+    sheet['A6'] = "='Receita x Despesa'!A6:I6"
+    sheet['A6'].font = Font(name="Arial", size=12, color="000000")
+    sheet['A6'].alignment = Alignment(horizontal="left",vertical="center")
+    
+    sheet.merge_cells('A7:F7')
+    sheet['A7'] = "='Receita x Despesa'!A7:I7"
+    sheet['A7'].font = Font(name="Arial", size=12, color="000000")
+    sheet['A7'].alignment = Alignment(horizontal="left",vertical="center")
+    
+    sheet.merge_cells('A9:I10')
+    sheet['A9'] = 'E X E C U Ç Ã O    D A   R E C E I T A    E    D E S P E S A'
+    sheet['A9'].font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
+    sheet['A9'].alignment = Alignment(horizontal="center",vertical="center")
+    sheet['A9'].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
+    
+    #aumentao altura
+    for i in range(1,10):
+        sheet.row_dimensions[i].height = 20
+
+    sheet.row_dimensions[1].height = 25
+    sheet.row_dimensions[3].height = 35
+    sheet.row_dimensions[2].height = 25
+    sheet.row_dimensions[9].height = 30
+
+
+ 
+    #esticando coluna A e pintando ela
+    sheet.merge_cells('A12:A13')
+    sheet['A12'].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
+
+    sheet.column_dimensions['a'].width = 55
+    sheet.column_dimensions['b'].width = 20
+    sheet.column_dimensions['c'].width = 20
+    sheet.column_dimensions['d'].width = 20
+    sheet.column_dimensions['e'].width = 20
+    sheet.column_dimensions['f'].width = 20
+    sheet.column_dimensions['g'].width = 20
+    sheet.column_dimensions['h'].width = 20
+    sheet.column_dimensions['i'].width = 20
+    sheet.column_dimensions['j'].width = 1
+    #resto do cabecario
+    sheet.merge_cells('B12:E13')
+    sheet['B12'] = 'EXECUTADO NO PERÍODO\n(Valores em R$)'
+    sheet['B12'].font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
+    sheet['B12'].alignment = Alignment(horizontal="center",vertical="center")
+    sheet['B12'].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
+
+    sheet.merge_cells('F12:I13')
+    sheet['F12'] = 'ACUMULADO ATÉ O PERÍODO\n(Valores em R$)'
+    sheet['F12'].font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
+    sheet['F12'].alignment = Alignment(horizontal="center",vertical="center")
+    sheet['F12'].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
+
+
+    #totais
+    #total espesas correntes linha 15
+
+    formula = f"=SUM(B16:B{size})"
+    sheet['B15'] = formula
+    formula = f"=SUM(C16:C{size})"
+    sheet['C15'] = formula
+    formula = f"=SUM(D16:D{size})"
+    sheet['D15'] = formula
+
+    formula = f"=SUM(F16:F{size})"
+    sheet['F15'] = formula
+    formula = f"=SUM(G16:G{size})"
+    sheet['G15'] = formula
+    formula = f"=SUM(H16:H{size})"
+    sheet['H15'] = formula
+
+    #Total Despesas de Capital
+    formula = f"=SUM(B{size2+2}:B{size2+4})"
+    sheet[f'B{size2}'] = formula
+
+    formula = f"=SUM(C{size2+2}:C{size2+4})"
+    sheet[f'C{size2}'] = formula
+
+    formula = f"=SUM(D{size2+2}:D{size2+4})"
+    sheet[f'D{size2}'] = formula
+
+    formula = f"=SUM(F{size2+2}:F{size2+4})"
+    sheet[f'F{size2}'] = formula
+
+    formula = f"=SUM(G{size2+2}:G{size2+4})"
+    sheet[f'G{size2}'] = formula
+
+    formula = f"=SUM(H{size2+2}:H{size2+4})"
+    sheet[f'H{size2}'] = formula
+
+
+    #Total Utilização de rendimentos
+
+    formula = f"=B{size2+6}"
+    sheet[f'B{size2+5}'] = formula
+
+    formula = f"=C{size2+6}"
+    sheet[f'C{size2+5}'] = formula
+
+    formula = f"=D{size2+6}"
+    sheet[f'D{size2+5}'] = formula
+
+    formula = f"=F{size2+6}"
+    sheet[f'F{size2+5}'] = formula
+
+    formula = f"=G{size2+6})"
+    sheet[f'G{size2+5}'] = formula
+
+    formula = f"=H{size2+6}"
+    sheet[f'H{size2+5}'] = formula
+
+   
+
+
+    #%porcentagem Despesas correntes
+    #IFERROR (C16/B16;0)
+    #%porcentagem Despesas de Capital
+    #IFERROR (C16/B16;0)
+    percentage_style = NamedStyle(name='percentage', number_format='0%')
+
+    for row in sheet.iter_rows(min_row=15, max_row=size2+7, min_col=1, max_col=9):
+        for cell in row:
+            if cell.column == 4:
+                stringSaldo = f"=B{cell.row} - C{cell.row}"
+                cell.value = stringSaldo
+            if cell.column == 8:
+                stringSaldo = f"=F{cell.row} - G{cell.row}"
+                cell.value = stringSaldo
+
+            if cell.column == 5:
+                stringPorcentagem = f"=IFERROR(C{cell.row}/B{cell.row}, 0)"
+                cell.value = stringPorcentagem
+                cell.style = percentage_style
+            if cell.column == 9:
+                stringPorcentagem = f"=IFERROR(G{cell.row}/F{cell.row}, 0)"
+                cell.value = stringPorcentagem
+                cell.style = percentage_style
+            
+    #adicionara mascara do numero
+    for row in sheet.iter_rows(min_row=15, max_row=size2+7, min_col=1, max_col=9):
+        for cell in row:
+            if cell.column != 5 and cell.column != 9:
+                cell.number_format ='#,##0.00'
+   
+                
+        
+
+
+
+
+
+    #adicionar borda em tudo
+    borda = Border(right=Side(border_style="medium"))
+    sheet.sheet_view.showGridLines = False
+    for row in sheet.iter_rows(min_row=1, max_row=size2+12,min_col=9,max_col=9):
+        for cell in row:
+            cell.border = borda
+
+    font = Font(name='Arial', size=12)
+    #Colocar tudo arial 12
+    for row in sheet.iter_rows(min_row=16):
+        for cell in row:
+            cell.font = font
+    #preenche a coluna A e        F com cinza
+    for row in sheet.iter_rows(min_row=16, max_row=size2+7,min_col=1,max_col=9):
+        for cell in row:
+            if cell.column == 1 or cell.column == 6 or cell.column == 2:
+                cell.fill = PatternFill(start_color=cinza, end_color=cinza,
+                                            fill_type = "solid")
+            if cell.column == 6 or cell.column == 2:
+                cell.fill = PatternFill(start_color=cinza, end_color=cinza,
+                                            fill_type = "solid")
+                cell.font = cell.font = Font(name='Arial', size=12,bold= True)
+                
+###pinta de azul a linha desejada
+    for row in sheet.iter_rows(min_row=15, max_row=sheet.max_row, min_col=sheet.min_row, max_col= 9):
+        for cell in row:
+            if cell.row == 15:
+                cell.fill = PatternFill(start_color=azul_claro, end_color=azul_claro,
+                                            fill_type = "solid")
+                cell.font = Font(name='Arial', size=12,bold= True)
+
+            if cell.row == size2 or cell.row == size2 +5 or cell.row == size2 + 7 :
+                cell.fill = PatternFill(start_color=azul_claro, end_color=azul_claro,
+                                            fill_type = "solid")
+                cell.font = Font(name='Arial', size=12,bold= True)    
+    
+    
+
+    
+    #cabecario negrito sem fundo
+    
+    valores = ["RUBRICA","PREVISTO","REALIZADO","SALDO",'(%)\nREALIZADO',"PREVISTO","REALIZADO","SALDO","(%)\nREALIZADO"]
+    col = 1
+    for a,b in enumerate(valores):
+        sheet.cell(row=14, column=col, value=b)
+        col = col + 1
+    #coloca em negrito
+    font = Font(name='Arial', size=12,bold=True)
+    #Colocar tudo arial 12
+    for row in sheet.iter_rows(min_row=14,max_row=14):
+        for cell in row:
+            cell.font = font
+
+
+    #depsesas e capital
+    despesasDeCapitalString = f"I. DESPESAS CORRENTES"
+    despesasDeCapitalStringCelula = f'A{15}'
+    sheet[despesasDeCapitalStringCelula] = despesasDeCapitalString
+    cell=sheet[despesasDeCapitalStringCelula]
+    cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+    
+
+
+
+     #depsesas e capital
+    despesasDeCapitalString = f"II. DESPESAS DE CAPITAL"
+    despesasDeCapitalStringCelula = f'A{size2}'
+    sheet[despesasDeCapitalStringCelula] = despesasDeCapitalString
+    cell=sheet[despesasDeCapitalStringCelula]
+    cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+    
+    
+    
+
+    obrasEInstalacoeslString = f"Obras e Instalações"
+    obrasEInstalacoeslStringCelula = f'A{size2+1}'
+    sheet[obrasEInstalacoeslStringCelula] = obrasEInstalacoeslString
+ 
+
+    equipamentoseMaterialPermanenteString = f"Equipamentos e Material Permanente"
+    equipamentoseMaterialPermanenteStringCelula = f'A{size2+2}'
+    sheet[equipamentoseMaterialPermanenteStringCelula] = equipamentoseMaterialPermanenteString
+    cell=sheet[equipamentoseMaterialPermanenteStringCelula]
+    cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+    cell=sheet[f'B{size2+2}']
+    cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+    
+    
+
+    nacionalString = f"     a) Nacional"
+    nacionalStringCelula = f'A{size2+3}'
+    sheet[nacionalStringCelula] = nacionalString
+
+    
+    
+
+    importadoString = f"    b) Importado"
+    importadoStringCelula = f'A{size2+4}'
+    sheet[importadoStringCelula] = importadoString
+    
+    
+
+    #depsesas e capital
+    utilRendimentosString = f"III.UTILIZAÇÃO DE RENDIMENTOS"
+    utilRendimentosStringCelula = f'A{size2+5}'
+    sheet[utilRendimentosStringCelula] = utilRendimentosString
+    cell=sheet[utilRendimentosStringCelula]
+    cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+    cell=sheet[f'B{size2+1}']
+    cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+    
+
+    
+    apliFinString = f"Aplicação Financeira"
+    apliFinStringCelula = f'A{size2+6}'
+    sheet[apliFinStringCelula] = apliFinString
+
+
+    totalString = f"TOTAL"
+    totalStringCelula = f'A{size2+7}'
+    sheet[totalStringCelula] = totalString
+    cell=sheet[totalStringCelula]
+    cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+    cell.fill = PatternFill(start_color='9c9c9c', end_color='9c9c9c',fill_type = "solid")
+
+      #total total
+
+    formula = f"=SUM(B{size2}, B15)"
+    sheet[f'B{size2+7}'] = formula
+
+    formula = f"=SUM(C{size2}, C15)"
+    sheet[f'C{size2+7}'] = formula
+
+    formula = f"=SUM(D{size2}, D15)"
+    sheet[f'D{size2+7}'] = formula
+
+    formula = f"=SUM(F{size2}, F15)"
+    sheet[f'F{size2+7}'] = formula
+
+    formula = f"=SUM(G{size2}, G15)"
+    sheet[f'G{size2+7}'] = formula
+
+    formula = f"=SUM(H{size2},H15)"
+    sheet[f'H{size2+7}'] = formula
+
+
+
+ 
+
+
+     #brasilia
+    brasilia_row = size2 + 9
+    brasilia_formula = f"='Receita x Despesa'!A{stringTamanho}:I{stringTamanho}"
+    brasilia_merge_cells = f'A{brasilia_row}:I{brasilia_row}'
+    sheet.merge_cells(brasilia_merge_cells)
+    top_left_brasilia_cell_formula = f'A{brasilia_row}'
+    top_left_brasilia_cell = sheet[top_left_brasilia_cell_formula]
+    top_left_brasilia_cell.value = brasilia_formula
+    top_left_brasilia_cell.alignment = Alignment(horizontal="center",vertical="center")
+
+    #DiretorFinanceiro
+    diretor_row = size2 + 10
+    diretor_cargo_row = size2 + 11
+    diretor_cpf_row = size2 + 12
+    
+    diretor_nome_formula = f"Daniel Monteiro Rosa"
+    diretor_cargo_formula = f"='Diretor-Financeiro"
+    diretor_cpf_formula = f"450.720.272-87"
+    diretor_merge_cells = f'A{diretor_row}:D{diretor_row}'
+    diretor_cargo_merge_cells = f'A{diretor_cargo_row}:D{diretor_cargo_row}'
+    diretor_cpf_merge_cells = f'A{diretor_cpf_row}:D{diretor_cpf_row}'
+    sheet.merge_cells(diretor_merge_cells)
+    sheet.merge_cells(diretor_cargo_merge_cells)
+    sheet.merge_cells(diretor_cpf_merge_cells)
+    top_left_diretor_cell_formula = f'A{diretor_row}'
+    top_left_diretor_cell_cargo_formula = f'A{diretor_cargo_row}'
+    top_left_diretor_cell_cpf_formula = f'A{diretor_cpf_row}'
+    top_left_diretor_cell = sheet[top_left_diretor_cell_formula]
+    top_left_diretor_cell_cargo_formula = sheet[top_left_diretor_cell_cargo_formula]
+    top_left_diretor_cell_cpf_formula = sheet[top_left_diretor_cell_cpf_formula]
+    top_left_diretor_cell.value = diretor_nome_formula
+    top_left_diretor_cell_cargo_formula.value = diretor_cargo_formula
+    top_left_diretor_cell_cpf_formula.value = diretor_cpf_formula
+    top_left_diretor_cell.alignment = Alignment(horizontal="center",vertical="center")
+    top_left_diretor_cell.font = Font(bold=True)
+    top_left_diretor_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
+    top_left_diretor_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
+    #Coordenadora
+    coordenadora_row = size2 + 10
+    coordenadora_cargo_row = size2 + 11
+    coordenadora_cpf_row = size2 + 12
+    coordenadora_nome_formula = f"='Receita x Despesa'!H{stringTamanho+3}"
+    coordenadora_cargo_formula = f"='Receita x Despesa'!H{stringTamanho+4}"
+    coordenadora_cpf_formula = f"='Receita x Despesa'!H{stringTamanho+5}"
+    coordenadora_merge_cells = f'F{coordenadora_row}:I{coordenadora_row}'
+    coordenadora_cargo_merge_cells = f'F{coordenadora_cargo_row}:I{coordenadora_cargo_row}'
+    coordenadora_cpf_merge_cells = f'F{coordenadora_cpf_row}:I{coordenadora_cpf_row}'
+    sheet.merge_cells(coordenadora_merge_cells)
+    sheet.merge_cells(coordenadora_cargo_merge_cells)
+    sheet.merge_cells(coordenadora_cpf_merge_cells)
+    top_left_coordenadora_cell_formula = f'F{coordenadora_row}'
+    top_left_coordenadora_cell_cargo_formula = f'F{coordenadora_cargo_row}'
+    top_left_coordenadora_cell_cpf_formula = f'F{coordenadora_cpf_row}'
+    top_left_coordenadora_cell = sheet[top_left_coordenadora_cell_formula]
+    top_left_coordenadora_cell_cargo_formula = sheet[top_left_coordenadora_cell_cargo_formula]
+    top_left_coordenadora_cell_cpf_formula = sheet[top_left_coordenadora_cell_cpf_formula]
+    top_left_coordenadora_cell.value = coordenadora_nome_formula
+    top_left_coordenadora_cell_cargo_formula.value = coordenadora_cargo_formula
+    top_left_coordenadora_cell_cpf_formula.value = coordenadora_cpf_formula
+    top_left_coordenadora_cell.alignment = Alignment(horizontal="center",vertical="center")
+    top_left_coordenadora_cell.font= Font(name="Arial", size=12, color="000000",bold = True)
+    top_left_coordenadora_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
+    top_left_coordenadora_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
+
+    
+    # borda = Border(right=Side(border_style="medium"))
+    # sheet.sheet_view.showGridLines = False
+    # # 
+    # for row in sheet.iter_rows(min_row=1, max_row=coordenadora_cpf_row+1,min_col=10,max_col=10):
+    #     for cell in row:
+    #         cell.border = borda
+            
+    
+
+    for row in sheet.iter_rows(min_row=coordenadora_cpf_row+1, max_row=coordenadora_cpf_row+1,min_col=1,max_col=9):
+        for cell in row:
+            if cell.column == 9:
+                cell.border = Border(top=Side(border_style="none") ,left = Side(border_style="none") ,right =Side(border_style="medium") ,bottom=Side(border_style="medium") )
+            else:
+                cell.border = Border(top=Side(border_style="none") ,left = Side(border_style="none") ,right =Side(border_style="none") ,bottom=Side(border_style="medium") )
+
+
+   
+
+    workbook.save(tabela)
+    workbook.close()
+
+
+    
+
+
+    
+    return 0
+
+def estiloReceitaXDespesa(tabela,stringTamanho):
+    caminho = pegar_caminho(tabela)
+    #Plan = planilha
+    # carrega a planilha de acordo com o caminho
+    workbook = openpyxl.load_workbook(caminho)
+    sheet = workbook['Receita x Despesa']
+    size = stringTamanho + 16;
+    size2 = size + 5
+    cinza = "d9d9d9"
+    azul_claro = '1c8cbc'
+    # sheet.row_dimensions[3] = 28
+
+    
+
+    #cabecario relação de pagamentos - outro servicoes de terceiros
+    sheet.merge_cells('A1:J2')
+    sheet['A1'] = f'D E M O N S T R A T I V O   D E   R E C E I T A   E   D E S P E S A'
+    sheet['A1'].font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
+    sheet['A1'].alignment = Alignment(horizontal="center",vertical="center")
+    sheet['A1'].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
+    
+    sheet.merge_cells('A3:J3')
+    sheet['A3'] = ""
+    sheet['A3'].font = Font(name="Arial", size=12, color="000000")
+    sheet['A3'].alignment = Alignment(horizontal="left",vertical="center",wrap_text=True)
+
+    sheet.merge_cells('A4:J4')
+    sheet['A4'] =  ""
+    sheet['A4'].font = Font(name="Arial", size=12, color="000000")
+    sheet['A4'].alignment = Alignment(horizontal="left",vertical="center")
+    
+    sheet.merge_cells('A5:J5')
+    sheet['A5'] =  ""
+    sheet['A5'].font = Font(name="Arial", size=12, color="000000")
+    sheet['A5'].alignment = Alignment(horizontal="left",vertical="center")
+    
+    sheet.merge_cells('A6:J6')
+    sheet['A6'] =  ""
+    sheet['A6'].font = Font(name="Arial", size=12, color="000000")
+    sheet['A6'].alignment = Alignment(horizontal="left",vertical="center")
+    
+    sheet.merge_cells('A7:J7')
+    sheet['A7'] =  ""
+    sheet['A7'].font = Font(name="Arial", size=12, color="000000")
+    sheet['A7'].alignment = Alignment(horizontal="left",vertical="center")
+    
+    sheet.merge_cells('A9:J9')
+    sheet['A9'] = 'R E C E I T A   E   D E S P E S A'
+    sheet['A9'].font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
+    sheet['A9'].alignment = Alignment(horizontal="center",vertical="center")
+    sheet['A9'].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
+    
+    for i in range(1,10):
+        sheet.row_dimensions[i].height = 20
+
+    sheet.row_dimensions[1].height = 25
+    sheet.row_dimensions[3].height = 35
+    sheet.row_dimensions[2].height = 25
+    sheet.row_dimensions[9].height = 30
+
+
+    #barra cinza
+
+    barrazinzaMerge = f"A{11}:J{11}"
+    sheet.merge_cells(barrazinzaMerge)
+    barrazinzaStringCelula = f"A{11}"
+    cell = sheet[barrazinzaStringCelula]
+    cell.fill = PatternFill(start_color=cinza, end_color=cinza,
+                                            fill_type = "solid")
+    cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
+
+
+
+
+    #adicionar borda em tudo
+    borda = Border(right=Side(border_style="medium"))
+    sheet.sheet_view.showGridLines = False
+    for row in sheet.iter_rows(min_row=1, max_row=size2+21,min_col=10,max_col=10):
+        for cell in row:
+            cell.border = borda
+
+
+    
+
+
+    #merge das receitas
+    for i in range(16,size):
+        sttring = f"C{i}:D{i}"
+        sheet.merge_cells(sttring)
+
+
+    font = Font(name='Arial', size=12)
+    #Colocar tudo arial 12
+    for row in sheet.iter_rows(min_row=16):
+        for cell in row:
+            cell.font = font
+    
+    #mascara de dinheiro despesas correntes
+    for row in sheet.iter_rows(min_row=16,max_row=size,min_col=5,max_col=5):
+        for cell in row:
+            cell.number_format = 'R$ #,##0.00'
+
+    #mascara de dinehrio despesas realizadas
+    for row in sheet.iter_rows(min_row=16,max_row=size,min_col=9,max_col=9):
+        for cell in row:
+            cell.number_format = 'R$ #,##0.00'
+
+
+    #preenche qualquer linha com cinza
+    for row in sheet.iter_rows(min_row=16, max_row=sheet.max_row, min_col=sheet.min_row, max_col= sheet.max_column):
+        for cell in row:
+            if cell.row == size2+2 or cell.row == size2 +12:
+                cell.fill = PatternFill(start_color=cinza, end_color=cinza,
+                                            fill_type = "solid")
+            
+
+
+
+    #Receita
+
+    rendimentoDeAplicacaoFinanceiraMerge = f"A{size2+2}:E{size2+2}"
+    sheet.merge_cells(rendimentoDeAplicacaoFinanceiraMerge)
+    rendimentoDeAplicacaoFinanceiraString= f"Rendimento de Aplicação financeira"
+    rendimentoDeAplicacaoFinanceiraStringCelula = f"A{size2+2}"
+    sheet[rendimentoDeAplicacaoFinanceiraStringCelula] = rendimentoDeAplicacaoFinanceiraString
+    cell=sheet[f'A{size2+2}']
+    cell.fill = PatternFill(start_color=cinza, end_color=cinza,
+                                            fill_type = "solid")
+    cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+
+
+    #Rendimento de aplicação financeira formula
+    cell=sheet[f'F{size2+2}']
+    cell.fill = PatternFill(start_color=cinza, end_color=cinza,
+                                            fill_type = "solid")
+    cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+    cell.number_format = 'R$ #,##0.00'
+
+
+
+
+   #Despesas realizadas
+    #depsesas e capital
+    despesasDeCapitalString = f"II. DESPESAS DE CAPITAL"
+    despesasDeCapitalStringCelula = f'H{size+1}'
+    sheet[despesasDeCapitalStringCelula] = despesasDeCapitalString
+    cell=sheet[despesasDeCapitalStringCelula]
+    cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+    cell=sheet[f'I{size+1}']
+    cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+    cell.number_format = 'R$ #,##0.00'
+    
+    
+
+    obrasEInstalacoeslString = f"Obras e Instalações"
+    obrasEInstalacoeslStringCelula = f'H{size+2}'
+    sheet[obrasEInstalacoeslStringCelula] = obrasEInstalacoeslString
+    cell=sheet[f'I{size+2}']
+    cell.font = Font(name="Arial", size=12, color="000000")
+    cell.number_format = 'R$ #,##0.00'
+    
+
+    equipamentoseMaterialPermanenteString = f"Equipamentos e Material Permanente"
+    equipamentoseMaterialPermanenteStringCelula = f'H{size+3}'
+    sheet[equipamentoseMaterialPermanenteStringCelula] = equipamentoseMaterialPermanenteString
+    cell=sheet[equipamentoseMaterialPermanenteStringCelula]
+    cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+    cell=sheet[f'I{size+3}']
+    cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+    cell.number_format = 'R$ #,##0.00'
+    
+
+    nacionalString = f"     a) Nacional"
+    nacionalStringCelula = f'H{size+4}'
+    sheet[nacionalStringCelula] = nacionalString
+    cell=sheet[f'I{size+4}']
+    cell.font = Font(name="Arial", size=12, color="000000")
+    cell.number_format = 'R$ #,##0.00'
+    
+
+    importadoString = f"    b) Importado"
+    importadoStringCelula = f'H{size+5}'
+    sheet[importadoStringCelula] = importadoString
+    cell=sheet[f'I{size+5}']
+    cell.font = Font(name="Arial", size=12, color="000000")
+    cell.number_format = 'R$ #,##0.00'
+
+    #saldo conciliado em:
+
+    saldoConciliadoEmString= f"Saldo Conciliado em: "
+    saldoConciliadoEmStringCelula = f"H{size2+2}"
+    sheet[saldoConciliadoEmStringCelula] = saldoConciliadoEmString
+    cell=sheet[saldoConciliadoEmStringCelula]
+    cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+    cell.fill = PatternFill(start_color=cinza, end_color=cinza,
+                                            fill_type = "solid")
+   
+   ##saldo conciliado formula
+    cell=sheet[f'J{size2+2}']
+    cell.fill = PatternFill(start_color=cinza, end_color=cinza,
+                                            fill_type = "solid")
+    cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+    cell.number_format = 'R$ #,##0.00'
+
+    #mergecelulasabaixo de Rendimento de Aplicação financeira
+    for i in range(size2+4,size2+6):
+        sttring = f"A{i}:D{i}"
+        sheet.merge_cells(sttring)
+    
+  
+    
+    contaCorrenteEmString= f"Conta Corrente"
+    contaCorrenteEmStringCelula = f"H{size2+4}"
+    sheet[contaCorrenteEmStringCelula] = contaCorrenteEmString
+    cell=sheet[f'I{size2+4}']
+    cell.font = Font(name="Arial", size=12, color="000000")
+    cell.number_format = 'R$ #,##0.00'
+    
+    devolucaoRecursosEmString= f"Devolução de recursos - GRU SIMPLES"
+    devolucaoRecursosEmStringCelula = f"H{size2+5}"
+    sheet[devolucaoRecursosEmStringCelula] = devolucaoRecursosEmString
+    cell=sheet[f'I{size2+5}']
+    cell.font = Font(name="Arial", size=12, color="000000")
+    cell.number_format = 'R$ #,##0.00'
+    
+    tarifaBancariaSaldoEmString= f"Tarifa Bancária - Saldo"
+    tarifaBancariaSaldoEmStringCelula = f"H{size2+6}"
+    sheet[tarifaBancariaSaldoEmStringCelula] = tarifaBancariaSaldoEmString
+    cell=sheet[saldoConciliadoEmStringCelula]
+    cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+    cell=sheet[f'J{size2+6}']
+    cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+    cell.number_format = 'R$ #,##0.00'
+    
+    tarifaBancariaDespesaEmString= f"Tarifa Bancária - Despesa (-)"
+    tarifaBancariaDespesaEmStringCelula = f"H{size2+7}"
+    sheet[tarifaBancariaDespesaEmStringCelula] = tarifaBancariaDespesaEmString
+    cell=sheet[f'I{size2+7}']
+    cell.font = Font(name="Arial", size=12, color="000000")
+    cell.number_format = 'R$ #,##0.00'
+    
+    TarifaBancariaRestituicaoEmString= f"Tarifa Bancária - Restituição (+)"
+    TarifaBancariaRestituicaoEmStringCelula = f"H{size2+8}"
+    sheet[TarifaBancariaRestituicaoEmStringCelula] = TarifaBancariaRestituicaoEmString
+    cell=sheet[f'I{size2+8}']
+    cell.number_format = 'R$ #,##0.00'
+    
+    aplicacaoFinanceiraEmString= f"Aplicação Financeira"
+    aplicacaoFinanceiraEmStringCelula = f"H{size2+9}"
+    sheet[aplicacaoFinanceiraEmStringCelula] = aplicacaoFinanceiraEmString
+    cell=sheet[aplicacaoFinanceiraEmStringCelula]
+    cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+    cell=sheet[f'I{size2+9}']
+    cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+    cell.number_format = 'R$ #,##0.00'
+    
+    rendimentoDeaplicacaoEmString= f"Rendimento de aplicação financeira"
+    rendimentoDeaplicacaoEmStringCelula = f"H{size2+10}"
+    sheet[rendimentoDeaplicacaoEmStringCelula] = rendimentoDeaplicacaoEmString
+
+    cell=sheet[f'I{size2+10}']
+    cell.number_format = 'R$ #,##0.00'
+
+    #Total Receita
+
+    totalMerge = f"A{size2+12}:E{size2+12}"
+    sheet.merge_cells(totalMerge)
+    totalString= f"TOTAL"
+    totalStringCelula = f"A{size2+12}"
+    sheet[totalStringCelula] = totalString
+    
+    cell = sheet[totalStringCelula]
+    cell.fill = PatternFill(start_color=cinza, end_color=cinza,
+                                            fill_type = "solid")
+    cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+    cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
+
+    #TotalReceitaFormula
+    cell=sheet[f'F{size2+12}']
+    cell.fill = PatternFill(start_color=cinza, end_color=cinza,
+                                            fill_type = "solid")
+    cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+    cell.number_format = 'R$ #,##0.00'
+     #Total Despesa
+
+    totalMerge = f"H{size2+12}:I{size2+12}"
+    sheet.merge_cells(totalMerge)
+    totalString= f"TOTAL"
+    totalStringCelula = f"H{size2+12}"
+    sheet[totalStringCelula] = totalString
+    cell = sheet[totalStringCelula]
+    cell.fill = PatternFill(start_color=cinza, end_color=cinza,
+                                            fill_type = "solid")
+    cell.font = Font(name="Arial", size=12, color="000000",bold=True)
+    cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
+    #Total Despesa Formula
+    cell=sheet[f'J{size2+12}']
+    cell.fill = PatternFill(start_color=cinza, end_color=cinza,
+                                            fill_type = "solid")
+    cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+    cell.number_format = 'R$ #,##0.00'
+
+
+
+
+
+    #Barraazul
+
+    barrazulMerge = f"A{size2+14}:J{size2+14}"
+    sheet.merge_cells(barrazulMerge)
+    barrazulStringCelula = f"A{size2+14}"
+    cell = sheet[barrazulStringCelula]
+    
+    cell.fill = PatternFill(start_color=azul_claro, end_color=azul_claro,
+                                            fill_type = "solid")
+    cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
+
+
+     #brasilia
+    brasilia_row = size2 + 16
+    brasilia_formula = f""
+    brasilia_merge_cells = f'A{brasilia_row}:I{brasilia_row}'
+    sheet.merge_cells(brasilia_merge_cells)
+    top_left_brasilia_cell_formula = f'A{brasilia_row}'
+    top_left_brasilia_cell = sheet[top_left_brasilia_cell_formula]
+    top_left_brasilia_cell.value = brasilia_formula
+    top_left_brasilia_cell.alignment = Alignment(horizontal="center",vertical="center")
+
+    #DiretorFinanceiro
+    diretor_row = size2 + 19
+    diretor_cargo_row = size2 + 20
+    diretor_cpf_row = size2 + 21
+    diretor_nome_formula = f"Daniel Monteiro Rosa"
+    diretor_cargo_formula = f"Diretor-Financeiro"
+    diretor_cpf_formula = f"450.720.272-87"
+    diretor_merge_cells = f'A{diretor_row}:D{diretor_row}'
+    diretor_cargo_merge_cells = f'A{diretor_cargo_row}:D{diretor_cargo_row}'
+    diretor_cpf_merge_cells = f'A{diretor_cpf_row}:D{diretor_cpf_row}'
+    sheet.merge_cells(diretor_merge_cells)
+    sheet.merge_cells(diretor_cargo_merge_cells)
+    sheet.merge_cells(diretor_cpf_merge_cells)
+    top_left_diretor_cell_formula = f'A{diretor_row}'
+    top_left_diretor_cell_cargo_formula = f'A{diretor_cargo_row}'
+    top_left_diretor_cell_cpf_formula = f'A{diretor_cpf_row}'
+    top_left_diretor_cell = sheet[top_left_diretor_cell_formula]
+    top_left_diretor_cell_cargo_formula = sheet[top_left_diretor_cell_cargo_formula]
+    top_left_diretor_cell_cpf_formula = sheet[top_left_diretor_cell_cpf_formula]
+    top_left_diretor_cell.value = diretor_nome_formula
+    top_left_diretor_cell_cargo_formula.value = diretor_cargo_formula
+    top_left_diretor_cell_cpf_formula.value = diretor_cpf_formula
+    top_left_diretor_cell.alignment = Alignment(horizontal="center",vertical="center")
+    top_left_diretor_cell.font = Font(name="Arial", size=12,bold=True)
+    top_left_diretor_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
+    top_left_diretor_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
+
+  #Coordenadora
+    coordenadora_row = size2 + 19
+    coordenadora_cargo_row = size2 + 20
+    coordenadora_cpf_row = size2 + 21
+    coordenadora_nome_formula = f"teste"
+    coordenadora_cargo_formula = f"Coordenador(a)"
+    coordenadora_cpf_formula = f"teste"
+    coordenadora_merge_cells = f'H{coordenadora_row}:J{coordenadora_row}'
+    coordenadora_cargo_merge_cells = f'H{coordenadora_cargo_row}:J{coordenadora_cargo_row}'
+    coordenadora_cpf_merge_cells = f'H{coordenadora_cpf_row}:J{coordenadora_cpf_row}'
+    sheet.merge_cells(coordenadora_merge_cells)
+    sheet.merge_cells(coordenadora_cargo_merge_cells)
+    sheet.merge_cells(coordenadora_cpf_merge_cells)
+    top_left_coordenadora_cell_formula = f'H{coordenadora_row}'
+    top_left_coordenadora_cell_cargo_formula = f'H{coordenadora_cargo_row}'
+    top_left_coordenadora_cell_cpf_formula = f'H{coordenadora_cpf_row}'
+    top_left_coordenadora_cell = sheet[top_left_coordenadora_cell_formula]
+    top_left_coordenadora_cell_cargo_formula = sheet[top_left_coordenadora_cell_cargo_formula]
+    top_left_coordenadora_cell_cpf_formula = sheet[top_left_coordenadora_cell_cpf_formula]
+    top_left_coordenadora_cell.value = coordenadora_nome_formula
+    top_left_coordenadora_cell_cargo_formula.value = coordenadora_cargo_formula
+    top_left_coordenadora_cell_cpf_formula.value = coordenadora_cpf_formula
+    top_left_coordenadora_cell.alignment = Alignment(horizontal="center",vertical="center")
+    top_left_coordenadora_cell.font= Font(name="Arial", size=12, color="000000",bold = True)
+    top_left_coordenadora_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
+    top_left_coordenadora_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
+
+    
+    for row in sheet.iter_rows(min_row=1,max_row=coordenadora_cpf_row,min_col=10,max_col=10):
+        for cell in row:
+            cell.border = Border(top=Side(border_style="none") ,left = Side(border_style="none") ,right =Side(border_style="medium") ,bottom=Side(border_style="none") )
+   
+    for row in sheet.iter_rows(min_row=coordenadora_cpf_row+1, max_row=coordenadora_cpf_row+1,min_col=1,max_col=10):
+        for cell in row:
+            if cell.column == 10:
+                cell.border = Border(top=Side(border_style="none") ,left = Side(border_style="none") ,right =Side(border_style="medium") ,bottom=Side(border_style="medium") )
+            else:
+                cell.border = Border(top=Side(border_style="none") ,left = Side(border_style="none") ,right =Side(border_style="none") ,bottom=Side(border_style="medium") )
+    
+    # #deixar azul a letra de receita
+    # cell=sheet['E16']
+    # cell.font = Font(name="Arial", size=12,color="0000FF")
+    # #deixar VERMELHO a letra de receita
+    # cell=sheet[f'E{17}']
+    # cell.font = Font(name="Arial", size=12,color="FF0000") 
+
+    # cell=sheet[f'E{18}']
+    # cell.font = Font(name="Arial", size=12,color="FF0000") 
+
+    workbook.save(tabela)
+    workbook.close()
+
+    # print(f'printandosize2')
+    # print(size2)
+    #retorna tamanho de brasilia e de equipamentos
+    return size2 + 16,size+3
+
+def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
+    
+    
     nomeSheet=nomeVariavel
+    random_number = random.randint(1, 10000)
+    nomeVariavel = f'{nomeVariavel}{random_number}'
     caminho = pegar_caminho(tabela)
     workbook = openpyxl.load_workbook(caminho)
     worksheet = workbook[nomeTabela]
@@ -57,55 +923,61 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela):
 
     #cabecario relação de pagamentos - outro servicoes de terceiros
     worksheet.merge_cells('A1:J2')
-    if nomeSheet == "diarias":
-        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - DIÁRIAS'
-    elif nomeSheet == "pessoaFisica":
-        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  OUTROS SERVIÇOS DE TERCEIROS - PF'
-    elif nomeSheet == "pessoaJuridica":
-        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - OUTROS SERVIÇOS DE TERCEIROS - PESSOA JURÍDICA'
-    elif nomeSheet == "passagenDespLocomo":
-        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - PASSAGENS E DESPESAS COM LOCOMOÇÃO'
+    nomeTabela = nomeTabela.upper()
+    worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - {nomeTabela}'
+
+    # if nomeSheet == "diarias":
+    #     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - DIÁRIAS'
+    # elif nomeSheet == "pessoaFisica":
+    #     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  OUTROS SERVIÇOS DE TERCEIROS - PF'
+    # elif nomeSheet == "pessoaJuridica":
+    #     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - OUTROS SERVIÇOS DE TERCEIROS - PESSOA JURÍDICA'
+    # elif nomeSheet == "passagenDespLocomo":
+    #     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - PASSAGENS E DESPESAS COM LOCOMOÇÃO'
     # elif nomeSheet == "outrosServiçosTerceiros":
     #     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - O U T R O S  S E R V I Ç O S D E T E R C E I R O S - C E L E T I S T A S'
-    elif nomeSheet == "auxilioEstudante":
-        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  AUXÍLIO FINANCEIRO A ESTUDANTE'
-    elif nomeSheet == "bolsaExtensao":
-        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  BOLSA DE EXTENSÃO'
-    elif nomeSheet == "estagiario":
-        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  ESTAGIÁRIO'
-    elif nomeSheet == "custosIndiretos":
-        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - CUSTOS INDIRETOS - FUB'
-    elif nomeSheet == "materialDeConsumo":
-        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  MATERIAL DE CONSUMO'
-    elif nomeSheet == "equipamentoMaterialPermanente":
-        worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  EQUIPAMENTO E MATERIAL PERMANENTE'
+    # elif nomeSheet == "auxilio":
+    #     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  AUXÍLIO FINANCEIRO A ESTUDANTE E PESQUISADOR'
+    # elif nomeSheet == "bolsaExtensao":
+    #     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  BOLSA DE EXTENSÃO'
+    # elif nomeSheet == "estagiario":
+    #     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  ESTAGIÁRIO'
+    # elif nomeSheet == "custosIndiretos":
+    #     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - CUSTOS INDIRETOS - FUB'
+    # elif nomeSheet == "materialDeConsumo":
+    #     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  MATERIAL DE CONSUMO'
+    # elif nomeSheet == "equipamentoMaterialPermanente":
+    #     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S -  EQUIPAMENTO E MATERIAL PERMANENTE'
+    # elif nomeSheet == "isss":
+    #     worksheet['A1'] = f'ISS 5% e ISS 2%'
+
   
 
     worksheet['A1'].font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
     worksheet['A1'].alignment = Alignment(horizontal="center",vertical="center")
     worksheet['A1'].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
     
-    worksheet.merge_cells('A3:F3')
+    worksheet.merge_cells('A3:J3')
     worksheet['A3'] = "='Receita x Despesa'!A3:J3"
     worksheet['A3'].font = Font(name="Arial", size=12, color="000000")
     worksheet['A3'].alignment = Alignment(horizontal="left",vertical="center")
 
-    worksheet.merge_cells('A4:F4')
+    worksheet.merge_cells('A4:J4')
     worksheet['A4'] = "='Receita x Despesa'!A4:J4"
     worksheet['A4'].font = Font(name="Arial", size=12, color="000000")
     worksheet['A4'].alignment = Alignment(horizontal="left",vertical="center")
     
-    worksheet.merge_cells('A5:F5')
+    worksheet.merge_cells('A5:J5')
     worksheet['A5'] = "='Receita x Despesa'!A5:J5"
     worksheet['A5'].font = Font(name="Arial", size=12, color="000000")
     worksheet['A5'].alignment = Alignment(horizontal="left",vertical="center")
     
-    worksheet.merge_cells('A6:F6')
+    worksheet.merge_cells('A6:J6')
     worksheet['A6'] = "='Receita x Despesa'!A6:J6"
     worksheet['A6'].font = Font(name="Arial", size=12, color="000000")
     worksheet['A6'].alignment = Alignment(horizontal="left",vertical="center")
     
-    worksheet.merge_cells('A7:F7')
+    worksheet.merge_cells('A7:J7')
     worksheet['A7'] = "='Receita x Despesa'!A7:J7"
     worksheet['A7'].font = Font(name="Arial", size=12, color="000000")
     worksheet['A7'].alignment = Alignment(horizontal="left",vertical="center")
@@ -268,7 +1140,7 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela):
 
     #total_formula
     total_formula_row = size + 6
-    total_formulaa = f'=J{size}'
+    total_formulaa = f'=J{size+2}'
     total_formula_row_celula = f'J{total_formula_row}'
     worksheet[total_formula_row_celula].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
     worksheet[total_formula_row_celula].font = Font(name="Arial", size=12, color="000000",bold=True)
@@ -278,10 +1150,11 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela):
     worksheet.row_dimensions[total_formula_row].height = 30
     worksheet[total_formula_row_celula] = total_formulaa
 
+    
 
     #brasilia
     brasilia_row = size + 7
-    brasilia_formula = f"='Receita x Despesa'!A42:J42"
+    brasilia_formula = f"='Receita x Despesa'!A{stringTamanho}:J{stringTamanho}"
     brasilia_merge_cells = f'A{brasilia_row}:I{brasilia_row}'
     worksheet.merge_cells(brasilia_merge_cells)
     top_left_brasilia_cell_formula = f'A{brasilia_row}'
@@ -293,9 +1166,10 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela):
     diretor_row = size + 8
     diretor_cargo_row = size + 9
     diretor_cpf_row = size + 10
-    diretor_nome_formula = f"='Receita x Despesa'!A45"
-    diretor_cargo_formula = f"='Receita x Despesa'!A46"
-    diretor_cpf_formula = f"='Receita x Despesa'!A47"
+    
+    diretor_nome_formula = f"='Receita x Despesa'!A{stringTamanho+3}"
+    diretor_cargo_formula = f"='Receita x Despesa'!A{stringTamanho+4}"
+    diretor_cpf_formula = f"='Receita x Despesa'!A{stringTamanho+5}"
     diretor_merge_cells = f'A{diretor_row}:D{diretor_row}'
     diretor_cargo_merge_cells = f'A{diretor_cargo_row}:D{diretor_cargo_row}'
     diretor_cpf_merge_cells = f'A{diretor_cpf_row}:D{diretor_cpf_row}'
@@ -319,9 +1193,9 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela):
     coordenadora_row = size + 8
     coordenadora_cargo_row = size + 9
     coordenadora_cpf_row = size + 10
-    coordenadora_nome_formula = f"='Receita x Despesa'!H45"
-    coordenadora_cargo_formula = f"='Receita x Despesa'!H46"
-    coordenadora_cpf_formula = f"='Receita x Despesa'!H47"
+    coordenadora_nome_formula = f"='Receita x Despesa'!H{stringTamanho+3}"
+    coordenadora_cargo_formula = f"='Receita x Despesa'!H{stringTamanho+4}"
+    coordenadora_cpf_formula = f"='Receita x Despesa'!H{stringTamanho+5}"
     coordenadora_merge_cells = f'F{coordenadora_row}:J{coordenadora_row}'
     coordenadora_cargo_merge_cells = f'F{coordenadora_cargo_row}:J{coordenadora_cargo_row}'
     coordenadora_cpf_merge_cells = f'F{coordenadora_cpf_row}:J{coordenadora_cpf_row}'
@@ -338,7 +1212,7 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela):
     top_left_coordenadora_cell_cargo_formula.value = coordenadora_cargo_formula
     top_left_coordenadora_cell_cpf_formula.value = coordenadora_cpf_formula
     top_left_coordenadora_cell.alignment = Alignment(horizontal="center",vertical="center")
-    top_left_coordenadora_cell.font= Font(bold = True)
+    top_left_coordenadora_cell.font= Font(name="Arial", size=12, color="000000",bold = True)
     top_left_coordenadora_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
     top_left_coordenadora_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
 
@@ -362,13 +1236,13 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela):
     workbook.save(tabela)
     workbook.close()
 
-def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2):
+def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2,stringTamanho):
     
-  
+    
     caminho = pegar_caminho(tabela)
     workbook = openpyxl.load_workbook(caminho)
     worksheet = workbook['Conciliação Bancária']
-
+    
    
     size = tamanho + 16
     #worksheet.row_dimensions[27].height = 50
@@ -449,14 +1323,16 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2):
         sttring = f"D{i}:F{i}"
         worksheet.merge_cells(sttring)
         
-    for i in range(size+3,size+3+tamanho2):
+    for i in range(size+3,size+4+tamanho2):
         sttring = f"D{i}:F{i}"
         worksheet.merge_cells(sttring)
+
+    random_number = random.randint(1, 10000)
 
     custom_number_format_conciliacoes = []
     # MASCARA R$
     if custom_number_format_conciliacoes!= False: 
-        custom_number_format_conciliacoes = NamedStyle(name='custom_number_format_conciliacoes')
+        custom_number_format_conciliacoes = NamedStyle(name=f'custom_number_format_conciliacoes{random_number}')
         custom_number_format_conciliacoes.number_format = 'R$ #,##0.00'
         custom_number_format_conciliacoes.font = Font(name="Arial", size=12, color="000000")
         custom_number_format_conciliacoes.alignment = Alignment(horizontal="general",vertical="bottom",wrap_text=True)
@@ -526,7 +1402,7 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2):
         cell = worksheet[f'B{row}']
         cell.style = custom_number_format_conciliacoes
         
-    for rows in worksheet.iter_rows(min_row=size+3, max_row=size+3+tamanho, min_col=1, max_col=6):
+    for rows in worksheet.iter_rows(min_row=size+3, max_row=size+3+tamanho2, min_col=1, max_col=6):
             for cell in rows:
                 if cell.row % 2:
                     cell.fill = PatternFill(start_color=cinza, end_color=cinza,
@@ -539,12 +1415,12 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2):
 
     # FORMULATOTALrestituição
     formula = f"=SUM(B{size+4}:B{size+tamanho2+3})"
-    celula = f'B{size+tamanho2+4}'
+    celula = f'B{size+tamanho2+5}'
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
     #Total
-    celula_total = F'A{size+tamanho2+4}'
+    celula_total = F'A{size+tamanho2+5}'
     worksheet[celula_total] = f'TOTAL'
     worksheet[celula_total].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     worksheet[celula_total].font = Font(name="Arial", size=12, color="000000",bold=True)
@@ -558,18 +1434,18 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2):
     string_merge_saldo_disponivel = f'E{size+3+tamanho2+3}:F{size+3+tamanho2+3}'
     celula_string_total = f'E{size+tamanho2+6}'
     worksheet.merge_cells(string_merge_saldo_disponivel)
-    saldodiposnivelformat_conciliacoes = NamedStyle(name='saldodiposnivelformat_conciliacoes')
+    saldodiposnivelformat_conciliacoes = NamedStyle(name=f'saldodiposnivelformat_conciliacoes{random_number}')
     saldodiposnivelformat_conciliacoes.number_format = 'R$ #,##0.00'
     saldodiposnivelformat_conciliacoes.font = Font(name="Arial", size=12, color="000000")
     saldodiposnivelformat_conciliacoes.alignment = Alignment(horizontal="general",vertical="bottom",wrap_text=True)
     saldodiposnivelformat_conciliacoes.fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     celular = worksheet[celula_string_total]
     celular.style = saldodiposnivelformat_conciliacoes
-    celular.value = f'=F10+F11+B{size} -B{size+tamanho2+4}'
+    celular.value = f'=F10+F11+B{size} -B{size+tamanho2+5}'
 
      #brasilia
     brasilia_row = size + tamanho2+ 8
-    brasilia_formula = f"='Receita x Despesa'!A42:F42"
+    brasilia_formula = f"='Receita x Despesa'!A{stringTamanho}:J{stringTamanho}"
     brasilia_merge_cells = f'A{brasilia_row}:F{brasilia_row}'
     worksheet.merge_cells(brasilia_merge_cells)
     top_left_brasilia_cell_formula = f'A{brasilia_row}'
@@ -581,9 +1457,9 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2):
     diretor_row = size + 10 + tamanho2
     diretor_cargo_row = size + 11 + tamanho2
     diretor_cpf_row = size + 12 + tamanho2
-    diretor_nome_formula = f"='Receita x Despesa'!A45"
-    diretor_cargo_formula = f"='Receita x Despesa'!A46"
-    diretor_cpf_formula = f"='Receita x Despesa'!A47"
+    diretor_nome_formula = f"='Receita x Despesa'!A{stringTamanho+3}"
+    diretor_cargo_formula = f"='Receita x Despesa'!A{stringTamanho+4}"
+    diretor_cpf_formula = f"='Receita x Despesa'!A{stringTamanho+5}"
     diretor_merge_cells = f'A{diretor_row}:B{diretor_row}'
     diretor_cargo_merge_cells = f'A{diretor_cargo_row}:B{diretor_cargo_row}'
     diretor_cpf_merge_cells = f'A{diretor_cpf_row}:B{diretor_cpf_row}'
@@ -607,9 +1483,9 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2):
     coordenadora_row = size + tamanho2 + 10
     coordenadora_cargo_row = size + 11 + tamanho2
     coordenadora_cpf_row = size + 12+ tamanho2
-    coordenadora_nome_formula = f"='Receita x Despesa'!H45"
-    coordenadora_cargo_formula = f"='Receita x Despesa'!H46"
-    coordenadora_cpf_formula = f"='Receita x Despesa'!H47"
+    coordenadora_nome_formula = f"='Receita x Despesa'!H{stringTamanho+3}"
+    coordenadora_cargo_formula = f"='Receita x Despesa'!H{stringTamanho+4}"
+    coordenadora_cpf_formula = f"='Receita x Despesa'!H{stringTamanho+5}"
     coordenadora_merge_cells = f'D{coordenadora_row}:F{coordenadora_row}'
     coordenadora_cargo_merge_cells = f'D{coordenadora_cargo_row}:F{coordenadora_cargo_row}'
     coordenadora_cpf_merge_cells = f'D{coordenadora_cpf_row}:F{coordenadora_cpf_row}'
@@ -627,13 +1503,13 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2):
     top_left_coordenadora_cell_cpf_formula.value = coordenadora_cpf_formula
     top_left_coordenadora_cell.alignment = Alignment(horizontal="center",vertical="center")
     top_left_coordenadora_cell.border = borda
-    top_left_coordenadora_cell.font= Font(bold = True)
+    top_left_coordenadora_cell.font= Font(name="Arial", size=12, color="000000",bold = True)
     top_left_coordenadora_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
     top_left_coordenadora_cell_cargo_formula.border = borda
     top_left_coordenadora_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
     top_left_coordenadora_cell_cpf_formula.border = borda
 
-    for row in worksheet.iter_rows(min_row=1, max_row=size+11,min_col=6,max_col=6):
+    for row in worksheet.iter_rows(min_row=1, max_row=coordenadora_cpf_row+1,min_col=6,max_col=6):
         for cell in row:
             cell.border = borda
 
@@ -647,12 +1523,12 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2):
     workbook.save(tabela)
     workbook.close()
 
-def estilo_rendimento_de_aplicacao(tabela,tamanho):
+def estilo_rendimento_de_aplicacao(tabela,tamanho,stringTamanho):
     caminho = pegar_caminho(tabela)
     workbook = openpyxl.load_workbook(caminho)
     worksheet = workbook['Rendimento de Aplicação']
-
-   
+    
+    random_number = random.randint(1, 10000)    
     size = tamanho + 16
     worksheet.row_dimensions[10].height = 2
     worksheet.row_dimensions[9].height = 20
@@ -812,7 +1688,7 @@ def estilo_rendimento_de_aplicacao(tabela,tamanho):
 
     #brasilia
     brasilia_row = size + 2
-    brasilia_formula = f"='Receita x Despesa'!A42:F42"
+    brasilia_formula = f"='Receita x Despesa'!A{stringTamanho}:J{stringTamanho}"
     brasilia_merge_cells = f'A{brasilia_row}:F{brasilia_row}'
     worksheet.merge_cells(brasilia_merge_cells)
     top_left_brasilia_cell_formula = f'A{brasilia_row}'
@@ -824,9 +1700,9 @@ def estilo_rendimento_de_aplicacao(tabela,tamanho):
     diretor_row = size + 6 
     diretor_cargo_row = size + 7 
     diretor_cpf_row = size + 8
-    diretor_nome_formula = f"='Receita x Despesa'!A45"
-    diretor_cargo_formula = f"='Receita x Despesa'!A46"
-    diretor_cpf_formula = f"='Receita x Despesa'!A47"
+    diretor_nome_formula = f"='Receita x Despesa'!A{stringTamanho+3}"
+    diretor_cargo_formula = f"='Receita x Despesa'!A{stringTamanho+4}"
+    diretor_cpf_formula = f"='Receita x Despesa'!A{stringTamanho+5}"
     diretor_merge_cells = f'A{diretor_row}:C{diretor_row}'
     diretor_cargo_merge_cells = f'A{diretor_cargo_row}:C{diretor_cargo_row}'
     diretor_cpf_merge_cells = f'A{diretor_cpf_row}:C{diretor_cpf_row}'
@@ -850,9 +1726,9 @@ def estilo_rendimento_de_aplicacao(tabela,tamanho):
     coordenadora_row = size  + 6
     coordenadora_cargo_row = size + 7 
     coordenadora_cpf_row = size + 8
-    coordenadora_nome_formula = f"='Receita x Despesa'!H45"
-    coordenadora_cargo_formula = f"='Receita x Despesa'!H46"
-    coordenadora_cpf_formula = f"='Receita x Despesa'!H47"
+    coordenadora_nome_formula = f"='Receita x Despesa'!H{stringTamanho+3}"
+    coordenadora_cargo_formula = f"='Receita x Despesa'!H{stringTamanho+4}"
+    coordenadora_cpf_formula = f"='Receita x Despesa'!H{stringTamanho+5}"
     coordenadora_merge_cells = f'E{coordenadora_row}:G{coordenadora_row}'
     coordenadora_cargo_merge_cells = f'E{coordenadora_cargo_row}:G{coordenadora_cargo_row}'
     coordenadora_cpf_merge_cells = f'E{coordenadora_cpf_row}:G{coordenadora_cpf_row}'
@@ -869,7 +1745,7 @@ def estilo_rendimento_de_aplicacao(tabela,tamanho):
     top_left_coordenadora_cell_cargo_formula.value = coordenadora_cargo_formula
     top_left_coordenadora_cell_cpf_formula.value = coordenadora_cpf_formula
     top_left_coordenadora_cell.alignment = Alignment(horizontal="center",vertical="center")
-    top_left_coordenadora_cell.font= Font(bold = True)
+    top_left_coordenadora_cell.font= Font(name="Arial", size=12, color="000000",bold = True)
     top_left_coordenadora_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
     top_left_coordenadora_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
 
@@ -885,8 +1761,10 @@ def estilo_rendimento_de_aplicacao(tabela,tamanho):
     workbook.save(tabela)
     workbook.close()
 
-def estiloRelacaoBens(tabela,tamanho,nomeVariavel,nomeTabela):
-    nomeVariavel = f'material'
+def estiloRelacaoBens(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
+    random_number = random.randint(1, 10000)
+    
+    nomeVariavel = f'material{random_number}'
     caminho = pegar_caminho(tabela)
     workbook = openpyxl.load_workbook(caminho)
     worksheet = workbook[nomeTabela]
@@ -895,7 +1773,7 @@ def estiloRelacaoBens(tabela,tamanho,nomeVariavel,nomeTabela):
     cinza_escuro = "bfbfbf"
     azul = "336394"
     azul_claro = '1c8cbc'
-
+    
     borda = Border(right=Side(border_style="medium"))
     worksheet.sheet_view.showGridLines = False
     # 
@@ -1096,7 +1974,7 @@ def estiloRelacaoBens(tabela,tamanho,nomeVariavel,nomeTabela):
 
     #brasilia
     brasilia_row = size + 7
-    brasilia_formula = f"='Receita x Despesa'!A42:J42"
+    brasilia_formula = f"='Receita x Despesa'!A{stringTamanho}:J{stringTamanho}"
     brasilia_merge_cells = f'A{brasilia_row}:I{brasilia_row}'
     worksheet.merge_cells(brasilia_merge_cells)
     top_left_brasilia_cell_formula = f'A{brasilia_row}'
@@ -1108,9 +1986,9 @@ def estiloRelacaoBens(tabela,tamanho,nomeVariavel,nomeTabela):
     diretor_row = size + 8
     diretor_cargo_row = size + 9
     diretor_cpf_row = size + 10
-    diretor_nome_formula = f"='Receita x Despesa'!A45"
-    diretor_cargo_formula = f"='Receita x Despesa'!A46"
-    diretor_cpf_formula = f"='Receita x Despesa'!A47"
+    diretor_nome_formula = f"='Receita x Despesa'!A{stringTamanho+3}"
+    diretor_cargo_formula = f"='Receita x Despesa'!A{stringTamanho+4}"
+    diretor_cpf_formula = f"='Receita x Despesa'!A{stringTamanho+5}"
     diretor_merge_cells = f'A{diretor_row}:D{diretor_row}'
     diretor_cargo_merge_cells = f'A{diretor_cargo_row}:D{diretor_cargo_row}'
     diretor_cpf_merge_cells = f'A{diretor_cpf_row}:D{diretor_cpf_row}'
@@ -1127,16 +2005,16 @@ def estiloRelacaoBens(tabela,tamanho,nomeVariavel,nomeTabela):
     top_left_diretor_cell_cargo_formula.value = diretor_cargo_formula
     top_left_diretor_cell_cpf_formula.value = diretor_cpf_formula
     top_left_diretor_cell.alignment = Alignment(horizontal="center",vertical="center")
-    top_left_diretor_cell.font = Font(bold=True)
+    top_left_diretor_cell.font = Font(name="Arial", size=12, color="000000",bold = True)
     top_left_diretor_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
     top_left_diretor_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
     #Coordenadora
     coordenadora_row = size + 8
     coordenadora_cargo_row = size + 9
     coordenadora_cpf_row = size + 10
-    coordenadora_nome_formula = f"='Receita x Despesa'!H45"
-    coordenadora_cargo_formula = f"='Receita x Despesa'!H46"
-    coordenadora_cpf_formula = f"='Receita x Despesa'!H47"
+    coordenadora_nome_formula = f"='Receita x Despesa'!H{stringTamanho+3}"
+    coordenadora_cargo_formula = f"='Receita x Despesa'!H{stringTamanho+4}"
+    coordenadora_cpf_formula = f"='Receita x Despesa'!H{stringTamanho+5}"
     coordenadora_merge_cells = f'F{coordenadora_row}:J{coordenadora_row}'
     coordenadora_cargo_merge_cells = f'F{coordenadora_cargo_row}:J{coordenadora_cargo_row}'
     coordenadora_cpf_merge_cells = f'F{coordenadora_cpf_row}:J{coordenadora_cpf_row}'
@@ -1153,7 +2031,7 @@ def estiloRelacaoBens(tabela,tamanho,nomeVariavel,nomeTabela):
     top_left_coordenadora_cell_cargo_formula.value = coordenadora_cargo_formula
     top_left_coordenadora_cell_cpf_formula.value = coordenadora_cpf_formula
     top_left_coordenadora_cell.alignment = Alignment(horizontal="center",vertical="center")
-    top_left_coordenadora_cell.font= Font(bold = True)
+    top_left_coordenadora_cell.font= Font(name="Arial", size=12, color="000000",bold = True)
     top_left_coordenadora_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
     top_left_coordenadora_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
 
@@ -1186,8 +2064,9 @@ def estiloRelacaoBens(tabela,tamanho,nomeVariavel,nomeTabela):
     workbook.save(tabela)
     workbook.close()
 
-def estilo_demonstrativoDeReceita(tabela,tamanho):
+def estilo_demonstrativoDeReceita(tabela,tamanho,stringTamanho):
     caminho = pegar_caminho(tabela)
+    
     workbook = openpyxl.load_workbook(caminho)
     worksheet = workbook['Demonstrativo de Receita']
     size = tamanho + 10
@@ -1195,7 +2074,7 @@ def estilo_demonstrativoDeReceita(tabela,tamanho):
     cinza_escuro = "bfbfbf"
     azul = "336394"
     azul_claro = '1c8cbc'
-
+    random_number = random.randint(1, 10000)
     borda = Border(right=Side(border_style="medium"))
     worksheet.sheet_view.showGridLines = False
     # 
@@ -1204,15 +2083,15 @@ def estilo_demonstrativoDeReceita(tabela,tamanho):
             cell.border = borda
             
 
-    worksheet.column_dimensions['a'].width = 35
-    worksheet.column_dimensions['b'].width = 35
-    worksheet.column_dimensions['c'].width = 35
-    worksheet.column_dimensions['d'].width = 35#descrição
+    worksheet.column_dimensions['a'].width = 30
+    worksheet.column_dimensions['b'].width = 70
+    worksheet.column_dimensions['c'].width = 30
+    worksheet.column_dimensions['d'].width = 50#descrição
    
 
     #cabecario relação de pagamentos - outro servicoes de terceiros
     worksheet.merge_cells('A1:D2')
-    worksheet['A1'] = f'D E M O N S T R A T I V O   D E   R E C E I T A'
+    worksheet['A1'] = f'D E M O N S T R A T I V O   D E   R E C E I T A  E    ISS 5% E ISS 2%'
     worksheet['A1'].font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
     worksheet['A1'].alignment = Alignment(horizontal="center",vertical="center")
     worksheet['A1'].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
@@ -1243,7 +2122,7 @@ def estilo_demonstrativoDeReceita(tabela,tamanho):
     worksheet['A7'].alignment = Alignment(horizontal="left",vertical="center")
 
     #colunas azul cabecario
-    row_style_demonstrativo = NamedStyle(name='row_style_demonstrativo')
+    row_style_demonstrativo = NamedStyle(name=f'row_style_demonstrativo{random_number}')
     row_style_demonstrativo.font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
     row_style_demonstrativo.fill = openpyxl.styles.PatternFill(start_color=azul_claro, end_color=azul_claro, fill_type='solid')
     row_style_demonstrativo.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
@@ -1265,12 +2144,12 @@ def estilo_demonstrativoDeReceita(tabela,tamanho):
 
     #Aumentar  a altura das celulas 
     for row in worksheet.iter_rows(min_row=10, max_row=size, min_col=1, max_col=4):
-        worksheet.row_dimensions[row[0].row].height = 35
+        worksheet.row_dimensions[row[0].row].height = 80
 
     custom_number_format_demonstrativo = []
     # MASCARA R$
     if custom_number_format_demonstrativo!= False: 
-        custom_number_format_demonstrativo = NamedStyle(name='custom_number_format_demonstrativo')
+        custom_number_format_demonstrativo = NamedStyle(name=f'custom_number_format_demonstrativo{random_number}')
         custom_number_format_demonstrativo.number_format = 'R$ #,##0.00'
         custom_number_format_demonstrativo.font = Font(name="Arial", size=12, color="000000")
         custom_number_format_demonstrativo.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
@@ -1329,7 +2208,7 @@ def estilo_demonstrativoDeReceita(tabela,tamanho):
     worksheet.row_dimensions[restituicoes].height = 30
 
     #estilo colunas restitucoes creditadas
-    row_style_demonstrativo_append = NamedStyle(name='row_style_demonstrativo_append')
+    row_style_demonstrativo_append = NamedStyle(name=f'row_style_demonstrativo_append{random_number}')
     row_style_demonstrativo_append.font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
     row_style_demonstrativo_append.fill = openpyxl.styles.PatternFill(start_color=azul_claro, end_color=azul_claro, fill_type='solid')
     row_style_demonstrativo_append.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
@@ -1404,7 +2283,7 @@ def estilo_demonstrativoDeReceita(tabela,tamanho):
 
     #brasilia
     brasilia_row = size + 7
-    brasilia_formula = f"='Receita x Despesa'!A42:D42"
+    brasilia_formula = f"='Receita x Despesa'!A{stringTamanho}:J{stringTamanho}"
     brasilia_merge_cells = f'A{brasilia_row}:D{brasilia_row}'
     worksheet.merge_cells(brasilia_merge_cells)
     top_left_brasilia_cell_formula = f'A{brasilia_row}'
@@ -1416,9 +2295,9 @@ def estilo_demonstrativoDeReceita(tabela,tamanho):
     diretor_row = size + 8
     diretor_cargo_row = size + 9
     diretor_cpf_row = size + 10
-    diretor_nome_formula = f"='Receita x Despesa'!A45"
-    diretor_cargo_formula = f"='Receita x Despesa'!A46"
-    diretor_cpf_formula = f"='Receita x Despesa'!A47"
+    diretor_nome_formula = f"='Receita x Despesa'!A{stringTamanho+3}"
+    diretor_cargo_formula = f"='Receita x Despesa'!A{stringTamanho+4}"
+    diretor_cpf_formula = f"='Receita x Despesa'!A{stringTamanho+5}"
     diretor_merge_cells = f'A{diretor_row}:B{diretor_row}'
     diretor_cargo_merge_cells = f'A{diretor_cargo_row}:B{diretor_cargo_row}'
     diretor_cpf_merge_cells = f'A{diretor_cpf_row}:B{diretor_cpf_row}'
@@ -1435,16 +2314,16 @@ def estilo_demonstrativoDeReceita(tabela,tamanho):
     top_left_diretor_cell_cargo_formula.value = diretor_cargo_formula
     top_left_diretor_cell_cpf_formula.value = diretor_cpf_formula
     top_left_diretor_cell.alignment = Alignment(horizontal="center",vertical="center")
-    top_left_diretor_cell.font = Font(bold=True)
+    top_left_diretor_cell.font = Font(name="Arial", size=12, color="000000",bold = True)
     top_left_diretor_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
     top_left_diretor_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
     #Coordenadora
     coordenadora_row = size + 8
     coordenadora_cargo_row = size + 9
     coordenadora_cpf_row = size + 10
-    coordenadora_nome_formula = f"='Receita x Despesa'!H45"
-    coordenadora_cargo_formula = f"='Receita x Despesa'!H46"
-    coordenadora_cpf_formula = f"='Receita x Despesa'!H47"
+    coordenadora_nome_formula = f"='Receita x Despesa'!H{stringTamanho+3}"
+    coordenadora_cargo_formula = f"='Receita x Despesa'!H{stringTamanho+4}"
+    coordenadora_cpf_formula = f"='Receita x Despesa'!H{stringTamanho+5}"
     coordenadora_merge_cells = f'C{coordenadora_row}:D{coordenadora_row}'
     coordenadora_cargo_merge_cells = f'C{coordenadora_cargo_row}:D{coordenadora_cargo_row}'
     coordenadora_cpf_merge_cells = f'C{coordenadora_cpf_row}:D{coordenadora_cpf_row}'
@@ -1461,7 +2340,7 @@ def estilo_demonstrativoDeReceita(tabela,tamanho):
     top_left_coordenadora_cell_cargo_formula.value = coordenadora_cargo_formula
     top_left_coordenadora_cell_cpf_formula.value = coordenadora_cpf_formula
     top_left_coordenadora_cell.alignment = Alignment(horizontal="center",vertical="center")
-    top_left_coordenadora_cell.font= Font(bold = True)
+    top_left_coordenadora_cell.font= Font(name="Arial", size=12, color="000000",bold = True)
     top_left_coordenadora_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
     top_left_coordenadora_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
 
@@ -1484,2315 +2363,3 @@ def estilo_demonstrativoDeReceita(tabela,tamanho):
 
     workbook.save(tabela)
     workbook.close()
-
-# def estilo_fub_fisica(tabela,tamanho):
-    
-#     # caminho = pegar_caminho(tabela)
-#     workbook = openpyxl.load_workbook(tabela)
-#     worksheet = workbook['Pessoa Fisica']
-
-   
-#     size = tamanho + 10
-#     #worksheet.row_dimensions[27].height = 50
-
-#     cinza = "979CA8"
-#     azul = "336394"
-    
-                
-                
-#     for row in worksheet.iter_rows(min_row=10, max_row=size, min_col=1, max_col=10):
-#         worksheet.row_dimensions[row[0].row].height = 35
-
-#     custom_number_format_fisica = []
-#     # MASCARA R$
-#     if custom_number_format_fisica!= False: 
-#         custom_number_format_fisica = NamedStyle(name='custom_number_format_fisica')
-#         custom_number_format_fisica.number_format = 'R$ #,##0.00'
-#         custom_number_format_fisica.font = Font(name="Arial", size=12, color="000000")
-#         custom_number_format_fisica.alignment = Alignment(horizontal="general",vertical="bottom",wrap_text=True)
-    
-#     #stylecinza
-    
-
-#     value_to_stop = size  
-#     start_row = 10
-
-#     for row in range(start_row,size+1):
-#         cell = worksheet[f'J{row}']
-#         cell.style = custom_number_format_fisica
-        
-#     for rows in worksheet.iter_rows(min_row=10, max_row=size, min_col=1, max_col=10):
-#             for cell in rows:
-#                 if cell.row % 2:
-#                     cell.fill = PatternFill(start_color=cinza, end_color=cinza,
-#                                             fill_type = "solid")
-#                 cell.font = Font(name="Arial", size=12, color="000000")
-#                 cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
-#                 cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="hair") ,bottom=Side(border_style="hair") )
-                
-
-    
-
-
-#     #subtotal
-#     celulas_mergidas_subtotal = f"A{size}:I{size}"
-#     worksheet.merge_cells(celulas_mergidas_subtotal)
-#     left_celula_cell = f"A{size}"
-#     top_left_cell = worksheet[left_celula_cell]
-#     top_left_cell.value = "Sub Total"
-#     top_left_cell.fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     top_left_cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-#     top_left_cell.alignment = Alignment(horizontal="center",vertical="center")
-
-
-  
-
-#     # FORMULATOTAL
-#     formula = f"=SUM(J10:J{size-1})"
-#     celula = f'J{size}'
-#     worksheet[celula] = formula
-#     worksheet[celula].fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
-
-
-#     #restituições creditadas
-#     restituicoes = size + 1
-#     celula_restituicoes=f'A{restituicoes}'
-#     worksheet[celula_restituicoes].value = "RESTITUIÇÕES CREDITADAS"
-#     worksheet[celula_restituicoes].font = Font(name="Arial", size=12, color="000000",bold=True)
-#     worksheet.row_dimensions[restituicoes].height = 30
-
-
-#     #colunas azul
-#     row_style_fisica = NamedStyle(name='row_style_fisica')
-#     row_style_fisica.font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
-#     row_style_fisica.fill = openpyxl.styles.PatternFill(start_color=azul, end_color=azul, fill_type='solid')
-#     row_style_fisica.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
-#     row_style_fisica.height = 30
-
-#     row_number = size + 2
-   
-#     for column in range(1, 11):  
-#         cell = worksheet.cell(row=row_number, column=column)
-#         cell.style = row_style_fisica
-
-
-#     values = ["Item","Restituidor","CNPJ/CPF",'Descrição',"Cheque equivalente","Data do Cheque",'Nº do Depósito','Data da Devolução','Valor']
-#     coluna = 1
-#     for a,b in enumerate(values):
-#         worksheet.cell(row=row_number, column=coluna, value=b)
-#         if coluna == 4:
-#             coluna = coluna + 1
-#         coluna = coluna + 1
-        
-
-#     merge_formula = f'D{row_number}:E{row_number}'
-#     worksheet.merge_cells(merge_formula)
-
-#     #subtotal2
-#     sub_total2_row = size + 4
-#     subtotal_merge_cells= f'A{sub_total2_row}:I{sub_total2_row}'
-#     worksheet.merge_cells(subtotal_merge_cells)
-#     top_left_subtotal2_cell_formula = f'A{sub_total2_row}'
-#     top_left_subtotal2_cell = worksheet[top_left_subtotal2_cell_formula]
-#     top_left_subtotal2_cell.value = "Sub Total 2"
-#     top_left_subtotal2_cell.fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     top_left_subtotal2_cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-#     top_left_subtotal2_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     sub_formula_row_celula = f'J{sub_total2_row}'
-#     worksheet[sub_formula_row_celula].fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     worksheet[sub_formula_row_celula].font = Font(name="Arial", size=12, color="000000",bold=True)
-
-#      #subtotal12_Formula
-#     # sub_formula_row = size + 4
-#     # sub_formula = f'=SOMA(J{sub_formula_row}:J{sub_formula_row})'
-#     # sub_formula_row_celula = f'J{sub_formula_row}'
-#     # worksheet[sub_formula_row_celula].fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     # worksheet[sub_formula_row_celula] = sub_formula
-
-
-#     #total1-2
-#     total12_row = size + 5
-#     total12_merge_cells = f'A{total12_row}:I{total12_row}'
-#     worksheet.merge_cells(total12_merge_cells)
-#     top_left_total12_cell_formula = f'A{total12_row}'
-#     top_left_total12_cell = worksheet[top_left_total12_cell_formula]
-#     top_left_total12_cell.value = "Total(1 -2)"
-#     top_left_total12_cell.fill = PatternFill(start_color=azul, end_color=azul,fill_type = "solid")
-#     top_left_total12_cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-#     top_left_total12_cell.alignment = Alignment(horizontal="center",vertical="center")
-
-#     #total_formula
-#     total_formula_row = size + 5
-#     total_formulaa = f'=J{size}'
-#     total_formula_row_celula = f'J{total_formula_row}'
-#     worksheet[total_formula_row_celula].fill = PatternFill(start_color=azul, end_color=azul,fill_type = "solid")
-#     worksheet[total_formula_row_celula].font = Font(name="Arial", size=12, color="000000",bold=True)
-#     worksheet[total_formula_row_celula].number_format = 'R$ #,##0.00'
-#     worksheet.row_dimensions[total_formula_row].height = 30
-#     worksheet[total_formula_row_celula] = total_formulaa
-
-#     #brasilia
-#     brasilia_row = size + 7
-#     brasilia_formula = f"='Receita x Despesa'!A42:J42"
-#     brasilia_merge_cells = f'A{brasilia_row}:I{brasilia_row}'
-#     worksheet.merge_cells(brasilia_merge_cells)
-#     top_left_brasilia_cell_formula = f'A{brasilia_row}'
-#     top_left_brasilia_cell = worksheet[top_left_brasilia_cell_formula]
-#     top_left_brasilia_cell.value = brasilia_formula
-#     top_left_brasilia_cell.alignment = Alignment(horizontal="center",vertical="center")
-
-#     #DiretorFinanceiro
-#     diretor_row = size + 8
-#     diretor_cargo_row = size + 9
-#     diretor_cpf_row = size + 10
-#     diretor_nome_formula = f"='Receita x Despesa'!A45"
-#     diretor_cargo_formula = f"='Receita x Despesa'!A46"
-#     diretor_cpf_formula = f"='Receita x Despesa'!A47"
-#     diretor_merge_cells = f'A{diretor_row}:D{diretor_row}'
-#     diretor_cargo_merge_cells = f'A{diretor_cargo_row}:D{diretor_cargo_row}'
-#     diretor_cpf_merge_cells = f'A{diretor_cpf_row}:D{diretor_cpf_row}'
-#     worksheet.merge_cells(diretor_merge_cells)
-#     worksheet.merge_cells(diretor_cargo_merge_cells)
-#     worksheet.merge_cells(diretor_cpf_merge_cells)
-#     top_left_diretor_cell_formula = f'A{diretor_row}'
-#     top_left_diretor_cell_cargo_formula = f'A{diretor_cargo_row}'
-#     top_left_diretor_cell_cpf_formula = f'A{diretor_cpf_row}'
-#     top_left_diretor_cell = worksheet[top_left_diretor_cell_formula]
-#     top_left_diretor_cell_cargo_formula = worksheet[top_left_diretor_cell_cargo_formula]
-#     top_left_diretor_cell_cpf_formula = worksheet[top_left_diretor_cell_cpf_formula]
-#     top_left_diretor_cell.value = diretor_nome_formula
-#     top_left_diretor_cell_cargo_formula.value = diretor_cargo_formula
-#     top_left_diretor_cell_cpf_formula.value = diretor_cpf_formula
-#     top_left_diretor_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_diretor_cell.font = Font(bold=True)
-#     top_left_diretor_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_diretor_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
-#     #Coordenadora
-#     coordenadora_row = size + 8
-#     coordenadora_cargo_row = size + 9
-#     coordenadora_cpf_row = size + 10
-#     coordenadora_nome_formula = f"='Receita x Despesa'!H45"
-#     coordenadora_cargo_formula = f"='Receita x Despesa'!H46"
-#     coordenadora_cpf_formula = f"='Receita x Despesa'!H47"
-#     coordenadora_merge_cells = f'F{coordenadora_row}:J{coordenadora_row}'
-#     coordenadora_cargo_merge_cells = f'F{coordenadora_cargo_row}:J{coordenadora_cargo_row}'
-#     coordenadora_cpf_merge_cells = f'F{coordenadora_cpf_row}:J{coordenadora_cpf_row}'
-#     worksheet.merge_cells(coordenadora_merge_cells)
-#     worksheet.merge_cells(coordenadora_cargo_merge_cells)
-#     worksheet.merge_cells(coordenadora_cpf_merge_cells)
-#     top_left_coordenadora_cell_formula = f'F{coordenadora_row}'
-#     top_left_coordenadora_cell_cargo_formula = f'F{coordenadora_cargo_row}'
-#     top_left_coordenadora_cell_cpf_formula = f'F{coordenadora_cpf_row}'
-#     top_left_coordenadora_cell = worksheet[top_left_coordenadora_cell_formula]
-#     top_left_coordenadora_cell_cargo_formula = worksheet[top_left_coordenadora_cell_cargo_formula]
-#     top_left_coordenadora_cell_cpf_formula = worksheet[top_left_coordenadora_cell_cpf_formula]
-#     top_left_coordenadora_cell.value = coordenadora_nome_formula
-#     top_left_coordenadora_cell_cargo_formula.value = coordenadora_cargo_formula
-#     top_left_coordenadora_cell_cpf_formula.value = coordenadora_cpf_formula
-#     top_left_coordenadora_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_coordenadora_cell.font= Font(bold = True)
-#     top_left_coordenadora_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_coordenadora_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
-
-#     #nome dos indices
-
-#     azul_claro = '1c89b8'
-#     row_style_fisica_cabecario = NamedStyle(name='row_style_fisica_cabecario')
-#     row_style_fisica_cabecario.font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
-#     row_style_fisica_cabecario.fill = openpyxl.styles.PatternFill(start_color=azul_claro, end_color=azul_claro, fill_type='solid')
-#     row_style_fisica_cabecario.alignment = Alignment(horizontal="center",vertical="center",wrap_text = True)
-#     worksheet.row_dimensions[9].height = 50
-#     worksheet.column_dimensions['b'].width = 35
-#     worksheet.column_dimensions['c'].width = 20
-#     worksheet.column_dimensions['d'].width = 35
-#     worksheet.column_dimensions['e'].width = 60
-#     worksheet.column_dimensions['f'].width = 35
-#     worksheet.column_dimensions['g'].width = 30
-#     worksheet.column_dimensions['h'].width = 30
-#     worksheet.column_dimensions['i'].width = 30
-#     worksheet.column_dimensions['j'].width = 30
-#     worksheet.column_dimensions['e'].height = 20
-  
-  
-#     linha_number = 9
-#     # Apply the style to each cell in the row
-#     for cell in worksheet[linha_number]:
-#         cell.style = row_style_fisica_cabecario
-
-#     valores = ["ITEM","NOME","CNPJ/CPF",'ESPECIFICAÇÃO DA DESPESA','DESCRIÇÃO',"Nº DO RECIBO OU EQUIVALENTE","DATA DE EMISSÃO",'CHEQUE / ORDEM BANCÁRIA','DATA DE PGTO','Valor']
-#     col = 1
-#     for a,b in enumerate(valores):
-#         worksheet.cell(row=linha_number, column=col, value=b)
-#         col = col + 1
-
-
-#     #cabecario relação de pagamentos - outro servicoes de terceiros
-#     worksheet.merge_cells('A1:J2')
-#     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - O U T R O S   S E R V I Ç O S   T E R C E I R O S   -   P E S S O A   F Í S I C A '
-#     worksheet['A1'].font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
-#     worksheet['A1'].alignment = Alignment(horizontal="center",vertical="center")
-#     worksheet['A1'].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
-#     worksheet.merge_cells('A3:I3')
-#     worksheet['A3'] = "='Receita x Despesa'!A3:J3"
-#     worksheet['A3'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A3'].alignment = Alignment(horizontal="left",vertical="center")
-
-#     worksheet.merge_cells('A4:I4')
-#     worksheet['A4'] = "='Receita x Despesa'!A4:J4"
-#     worksheet['A4'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A4'].alignment = Alignment(horizontal="left",vertical="center")
-    
-#     worksheet.merge_cells('A5:I5')
-#     worksheet['A5'] = "='Receita x Despesa'!A5:J5"
-#     worksheet['A5'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A5'].alignment = Alignment(horizontal="left",vertical="center")
-    
-#     worksheet.merge_cells('A6:I6')
-#     worksheet['A6'] = "='Receita x Despesa'!A6:J6"
-#     worksheet['A6'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A6'].alignment = Alignment(horizontal="left",vertical="center")
-    
-#     worksheet.merge_cells('A7:I7')
-#     worksheet['A7'] = "='Receita x Despesa'!A7:J7"
-#     worksheet['A7'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A7'].alignment = Alignment(horizontal="left",vertical="center")
-   
-#     altura = 45
-#     linha_inicio = 9
-#     for row_number in range(linha_inicio, linha_inicio + tamanho+1):
-#         worksheet.row_dimensions[row_number].height = altura
-
-#     workbook.save('output.xlsx')
-#     workbook.close()
-
-# def estilo_fub_juridica(tabela,tamanho):
-    
-#     caminho = pegar_caminho(tabela)
-#     workbook = openpyxl.load_workbook(caminho)
-#     worksheet = workbook['Pessoa Fisica']
-
-   
-#     size = tamanho + 10
-#     #worksheet.row_dimensions[27].height = 50
-
-#     cinza = "979CA8"
-#     azul = "336394"
-    
-                
-                
-#     for row in worksheet.iter_rows(min_row=10, max_row=size, min_col=1, max_col=10):
-#         worksheet.row_dimensions[row[0].row].height = 35
-
-#     custom_number_format_juridica = []
-#     # MASCARA R$
-#     if custom_number_format_juridica!= False: 
-#         custom_number_format_juridica = NamedStyle(name='custom_number_format_juridica')
-#         custom_number_format_juridica.number_format = 'R$ #,##0.00'
-#         custom_number_format_juridica.font = Font(name="Arial", size=12, color="000000")
-#         custom_number_format_juridica.alignment = Alignment(horizontal="general",vertical="bottom",wrap_text=True)
-    
-#     #stylecinza
-    
-
-#     value_to_stop = size  
-#     start_row = 10
-# #
-#     for row in range(start_row,size+1):
-#         cell = worksheet[f'J{row}']
-#         cell.style = custom_number_format_juridica
-        
-#     for rows in worksheet.iter_rows(min_row=10, max_row=size, min_col=1, max_col=10):
-#             for cell in rows:
-#                 if cell.row % 2:
-#                     cell.fill = PatternFill(start_color=cinza, end_color=cinza,
-#                                             fill_type = "solid")
-#                 cell.font = Font(name="Arial", size=12, color="000000")
-#                 cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
-#                 cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="hair") ,bottom=Side(border_style="hair") )
-                
-
-    
-
-
-#     #subtotal
-#     celulas_mergidas_subtotal = f"A{size}:I{size}"
-#     worksheet.merge_cells(celulas_mergidas_subtotal)
-#     left_celula_cell = f"A{size}"
-#     top_left_cell = worksheet[left_celula_cell]
-#     top_left_cell.value = "Sub Total"
-#     top_left_cell.fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     top_left_cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-#     top_left_cell.alignment = Alignment(horizontal="center",vertical="center")
-
-
-  
-
-#     # FORMULATOTAL
-#     formula = f"=SUM(J10:J{size-1})"
-#     celula = f'J{size}'
-#     worksheet[celula] = formula
-#     worksheet[celula].fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
-
-
-#     #restituições creditadas
-#     restituicoes = size + 1
-#     celula_restituicoes=f'A{restituicoes}'
-#     worksheet[celula_restituicoes].value = "RESTITUIÇÕES CREDITADAS"
-#     worksheet[celula_restituicoes].font = Font(name="Arial", size=12, color="000000",bold=True)
-#     worksheet.row_dimensions[restituicoes].height = 30
-
-
-#     #colunas azul
-#     row_style_juridica = NamedStyle(name='row_style_juridica')
-#     row_style_juridica.font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
-#     row_style_juridica.fill = openpyxl.styles.PatternFill(start_color=azul, end_color=azul, fill_type='solid')
-#     row_style_juridica.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
-#     row_style_juridica.height = 30
-
-#     row_number = size + 2
-   
-#     for column in range(1, 11):  
-#         cell = worksheet.cell(row=row_number, column=column)
-#         cell.style = row_style_juridica
-
-
-#     values = ["Item","Restituidor","CNPJ/CPF",'Descrição',"Cheque equivalente","Data do Cheque",'Nº do Depósito','Data da Devolução','Valor']
-#     coluna = 1
-#     for a,b in enumerate(values):
-#         worksheet.cell(row=row_number, column=coluna, value=b)
-#         if coluna == 4:
-#             coluna = coluna + 1
-#         coluna = coluna + 1
-        
-
-#     merge_formula = f'D{row_number}:E{row_number}'
-#     worksheet.merge_cells(merge_formula)
-
-#     #subtotal2
-#     sub_total2_row = size + 4
-#     subtotal_merge_cells= f'A{sub_total2_row}:I{sub_total2_row}'
-#     worksheet.merge_cells(subtotal_merge_cells)
-#     top_left_subtotal2_cell_formula = f'A{sub_total2_row}'
-#     top_left_subtotal2_cell = worksheet[top_left_subtotal2_cell_formula]
-#     top_left_subtotal2_cell.value = "Sub Total 2"
-#     top_left_subtotal2_cell.fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     top_left_subtotal2_cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-#     top_left_subtotal2_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     sub_formula_row_celula = f'J{sub_total2_row}'
-#     worksheet[sub_formula_row_celula].fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     worksheet[sub_formula_row_celula].font = Font(name="Arial", size=12, color="000000",bold=True)
-
-#      #subtotal12_Formula
-#     # sub_formula_row = size + 4
-#     # sub_formula = f'=SOMA(J{sub_formula_row}:J{sub_formula_row})'
-#     # sub_formula_row_celula = f'J{sub_formula_row}'
-#     # worksheet[sub_formula_row_celula].fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     # worksheet[sub_formula_row_celula] = sub_formula
-
-
-#     #total1-2
-#     total12_row = size + 5
-#     total12_merge_cells = f'A{total12_row}:I{total12_row}'
-#     worksheet.merge_cells(total12_merge_cells)
-#     top_left_total12_cell_formula = f'A{total12_row}'
-#     top_left_total12_cell = worksheet[top_left_total12_cell_formula]
-#     top_left_total12_cell.value = "Total(1 -2)"
-#     top_left_total12_cell.fill = PatternFill(start_color=azul, end_color=azul,fill_type = "solid")
-#     top_left_total12_cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-#     top_left_total12_cell.alignment = Alignment(horizontal="center",vertical="center")
-
-#     #total_formula
-#     total_formula_row = size + 5
-#     total_formulaa = f'=J{size}'
-#     total_formula_row_celula = f'J{total_formula_row}'
-#     worksheet[total_formula_row_celula].fill = PatternFill(start_color=azul, end_color=azul,fill_type = "solid")
-#     worksheet[total_formula_row_celula].font = Font(name="Arial", size=12, color="000000",bold=True)
-#     worksheet[total_formula_row_celula].number_format = 'R$ #,##0.00'
-#     worksheet.row_dimensions[total_formula_row].height = 30
-#     worksheet[total_formula_row_celula] = total_formulaa
-
-#     #brasilia
-#     brasilia_row = size + 7
-#     brasilia_formula = f"='Receita x Despesa'!A42:J42"
-#     brasilia_merge_cells = f'A{brasilia_row}:I{brasilia_row}'
-#     worksheet.merge_cells(brasilia_merge_cells)
-#     top_left_brasilia_cell_formula = f'A{brasilia_row}'
-#     top_left_brasilia_cell = worksheet[top_left_brasilia_cell_formula]
-#     top_left_brasilia_cell.value = brasilia_formula
-#     top_left_brasilia_cell.alignment = Alignment(horizontal="center",vertical="center")
-
-#     #DiretorFinanceiro
-#     diretor_row = size + 8
-#     diretor_cargo_row = size + 9
-#     diretor_cpf_row = size + 10
-#     diretor_nome_formula = f"='Receita x Despesa'!A45"
-#     diretor_cargo_formula = f"='Receita x Despesa'!A46"
-#     diretor_cpf_formula = f"='Receita x Despesa'!A47"
-#     diretor_merge_cells = f'A{diretor_row}:D{diretor_row}'
-#     diretor_cargo_merge_cells = f'A{diretor_cargo_row}:D{diretor_cargo_row}'
-#     diretor_cpf_merge_cells = f'A{diretor_cpf_row}:D{diretor_cpf_row}'
-#     worksheet.merge_cells(diretor_merge_cells)
-#     worksheet.merge_cells(diretor_cargo_merge_cells)
-#     worksheet.merge_cells(diretor_cpf_merge_cells)
-#     top_left_diretor_cell_formula = f'A{diretor_row}'
-#     top_left_diretor_cell_cargo_formula = f'A{diretor_cargo_row}'
-#     top_left_diretor_cell_cpf_formula = f'A{diretor_cpf_row}'
-#     top_left_diretor_cell = worksheet[top_left_diretor_cell_formula]
-#     top_left_diretor_cell_cargo_formula = worksheet[top_left_diretor_cell_cargo_formula]
-#     top_left_diretor_cell_cpf_formula = worksheet[top_left_diretor_cell_cpf_formula]
-#     top_left_diretor_cell.value = diretor_nome_formula
-#     top_left_diretor_cell_cargo_formula.value = diretor_cargo_formula
-#     top_left_diretor_cell_cpf_formula.value = diretor_cpf_formula
-#     top_left_diretor_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_diretor_cell.font = Font(bold=True)
-#     top_left_diretor_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_diretor_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
-#     #Coordenadora
-#     coordenadora_row = size + 8
-#     coordenadora_cargo_row = size + 9
-#     coordenadora_cpf_row = size + 10
-#     coordenadora_nome_formula = f"='Receita x Despesa'!H45"
-#     coordenadora_cargo_formula = f"='Receita x Despesa'!H46"
-#     coordenadora_cpf_formula = f"='Receita x Despesa'!H47"
-#     coordenadora_merge_cells = f'F{coordenadora_row}:J{coordenadora_row}'
-#     coordenadora_cargo_merge_cells = f'F{coordenadora_cargo_row}:J{coordenadora_cargo_row}'
-#     coordenadora_cpf_merge_cells = f'F{coordenadora_cpf_row}:J{coordenadora_cpf_row}'
-#     worksheet.merge_cells(coordenadora_merge_cells)
-#     worksheet.merge_cells(coordenadora_cargo_merge_cells)
-#     worksheet.merge_cells(coordenadora_cpf_merge_cells)
-#     top_left_coordenadora_cell_formula = f'F{coordenadora_row}'
-#     top_left_coordenadora_cell_cargo_formula = f'F{coordenadora_cargo_row}'
-#     top_left_coordenadora_cell_cpf_formula = f'F{coordenadora_cpf_row}'
-#     top_left_coordenadora_cell = worksheet[top_left_coordenadora_cell_formula]
-#     top_left_coordenadora_cell_cargo_formula = worksheet[top_left_coordenadora_cell_cargo_formula]
-#     top_left_coordenadora_cell_cpf_formula = worksheet[top_left_coordenadora_cell_cpf_formula]
-#     top_left_coordenadora_cell.value = coordenadora_nome_formula
-#     top_left_coordenadora_cell_cargo_formula.value = coordenadora_cargo_formula
-#     top_left_coordenadora_cell_cpf_formula.value = coordenadora_cpf_formula
-#     top_left_coordenadora_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_coordenadora_cell.font= Font(bold = True)
-#     top_left_coordenadora_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_coordenadora_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
-
-#     #nome dos indices
-
-#     azul_claro = '1c89b8'
-#     row_style_cabecario_juridica = NamedStyle(name='row_style_cabecario_juridica')
-#     row_style_cabecario_juridica.font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
-#     row_style_cabecario_juridica.fill = openpyxl.styles.PatternFill(start_color=azul_claro, end_color=azul_claro, fill_type='solid')
-#     row_style_cabecario_juridica.alignment = Alignment(horizontal="center",vertical="center",wrap_text = True)
-#     worksheet.row_dimensions[9].height = 50
-#     worksheet.column_dimensions['b'].width = 35
-#     worksheet.column_dimensions['c'].width = 20
-#     worksheet.column_dimensions['d'].width = 35
-#     worksheet.column_dimensions['e'].width = 60
-#     worksheet.column_dimensions['f'].width = 35
-#     worksheet.column_dimensions['g'].width = 30
-#     worksheet.column_dimensions['h'].width = 30
-#     worksheet.column_dimensions['i'].width = 30
-#     worksheet.column_dimensions['j'].width = 30
-#     worksheet.column_dimensions['e'].height = 20
-  
-  
-#     linha_number = 9
-#     # Apply the style to each cell in the row
-#     for cell in worksheet[linha_number]:
-#         cell.style = row_style_cabecario_juridica
-
-#     valores = ["ITEM","NOME","CNPJ/CPF",'ESPECIFICAÇÃO DA DESPESA','DESCRIÇÃO',"Nº DO RECIBO OU EQUIVALENTE","DATA DE EMISSÃO",'CHEQUE / ORDEM BANCÁRIA','DATA DE PGTO','Valor']
-#     col = 1
-#     for a,b in enumerate(valores):
-#         worksheet.cell(row=linha_number, column=col, value=b)
-#         col = col + 1
-
-
-#     #cabecario relação de pagamentos - outro servicoes de terceiros
-#     worksheet.merge_cells('A1:J2')
-#     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - O U T R O S   S E R V I Ç O S   T E R C E I R O S   -   P E S S O A   F Í S I C A '
-#     worksheet['A1'].font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
-#     worksheet['A1'].alignment = Alignment(horizontal="center",vertical="center")
-#     worksheet['A1'].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
-#     worksheet.merge_cells('A3:I3')
-#     worksheet['A3'] = "='Receita x Despesa'!A3:J3"
-#     worksheet['A3'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A3'].alignment = Alignment(horizontal="left",vertical="center")
-
-#     worksheet.merge_cells('A4:I4')
-#     worksheet['A4'] = "='Receita x Despesa'!A4:J4"
-#     worksheet['A4'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A4'].alignment = Alignment(horizontal="left",vertical="center")
-    
-#     worksheet.merge_cells('A5:I5')
-#     worksheet['A5'] = "='Receita x Despesa'!A5:J5"
-#     worksheet['A5'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A5'].alignment = Alignment(horizontal="left",vertical="center")
-    
-#     worksheet.merge_cells('A6:I6')
-#     worksheet['A6'] = "='Receita x Despesa'!A6:J6"
-#     worksheet['A6'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A6'].alignment = Alignment(horizontal="left",vertical="center")
-    
-#     worksheet.merge_cells('A7:I7')
-#     worksheet['A7'] = "='Receita x Despesa'!A7:J7"
-#     worksheet['A7'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A7'].alignment = Alignment(horizontal="left",vertical="center")
-   
-#     altura = 45
-#     linha_inicio = 9
-#     for row_number in range(linha_inicio, linha_inicio + tamanho+1):
-#         worksheet.row_dimensions[row_number].height = altura
-    
-
-#     # Save the workbook to a file
-#     workbook.save(tabela)
-#     workbook.close()
-
-# def estilo_fub_juridica_juridica(tabela,tamanho):
-    
-#     caminho = pegar_caminho(tabela)
-#     workbook = openpyxl.load_workbook(caminho)
-#     worksheet = workbook['Pessoa Jurídica']
-
-   
-#     size = tamanho + 10
-#     #worksheet.row_dimensions[27].height = 50
-
-#     cinza = "979CA8"
-#     azul = "336394"
-    
-                
-                
-#     for row in worksheet.iter_rows(min_row=10, max_row=size, min_col=1, max_col=10):
-#         worksheet.row_dimensions[row[0].row].height = 35
-
-#     custom_number_formatjuridica_juridica = []
-#     # MASCARA R$
-#     if custom_number_formatjuridica_juridica!= False: 
-#         custom_number_formatjuridica_juridica = NamedStyle(name='custom_number_formatjuridica_juridica')
-#         custom_number_formatjuridica_juridica.number_format = 'R$ #,##0.00'
-#         custom_number_formatjuridica_juridica.font = Font(name="Arial", size=12, color="000000")
-#         custom_number_formatjuridica_juridica.alignment = Alignment(horizontal="general",vertical="bottom",wrap_text=True)
-    
-#     #stylecinza
-    
-
-#     value_to_stop = size  
-#     start_row = 10
-# #
-#     for row in range(start_row,size+1):
-#         cell = worksheet[f'J{row}']
-#         cell.style = custom_number_formatjuridica_juridica
-        
-#     for rows in worksheet.iter_rows(min_row=10, max_row=size, min_col=1, max_col=10):
-#             for cell in rows:
-#                 if cell.row % 2:
-#                     cell.fill = PatternFill(start_color=cinza, end_color=cinza,
-#                                             fill_type = "solid")
-#                 cell.font = Font(name="Arial", size=12, color="000000")
-#                 cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
-#                 cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="hair") ,bottom=Side(border_style="hair") )
-                
-
-    
-
-
-#     #subtotal
-#     celulas_mergidas_subtotal = f"A{size}:I{size}"
-#     worksheet.merge_cells(celulas_mergidas_subtotal)
-#     left_celula_cell = f"A{size}"
-#     top_left_cell = worksheet[left_celula_cell]
-#     top_left_cell.value = "Sub Total"
-#     top_left_cell.fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     top_left_cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-#     top_left_cell.alignment = Alignment(horizontal="center",vertical="center")
-
-
-  
-
-#     # FORMULATOTAL
-#     formula = f"=SUM(J10:J{size-1})"
-#     celula = f'J{size}'
-#     worksheet[celula] = formula
-#     worksheet[celula].fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
-
-
-#     #restituições creditadas
-#     restituicoes = size + 1
-#     celula_restituicoes=f'A{restituicoes}'
-#     worksheet[celula_restituicoes].value = "RESTITUIÇÕES CREDITADAS"
-#     worksheet[celula_restituicoes].font = Font(name="Arial", size=12, color="000000",bold=True)
-#     worksheet.row_dimensions[restituicoes].height = 30
-
-
-#     #colunas azul
-#     row_stylejuridica_juridica = NamedStyle(name='row_stylejuridica_juridica')
-#     row_stylejuridica_juridica.font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
-#     row_stylejuridica_juridica.fill = openpyxl.styles.PatternFill(start_color=azul, end_color=azul, fill_type='solid')
-#     row_stylejuridica_juridica.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
-#     row_stylejuridica_juridica.height = 30
-
-#     row_number = size + 2
-   
-#     for column in range(1, 11):  
-#         cell = worksheet.cell(row=row_number, column=column)
-#         cell.style = row_stylejuridica_juridica
-
-
-#     values = ["Item","Restituidor","CNPJ/CPF",'Descrição',"Cheque equivalente","Data do Cheque",'Nº do Depósito','Data da Devolução','Valor']
-#     coluna = 1
-#     for a,b in enumerate(values):
-#         worksheet.cell(row=row_number, column=coluna, value=b)
-#         if coluna == 4:
-#             coluna = coluna + 1
-#         coluna = coluna + 1
-        
-
-#     merge_formula = f'D{row_number}:E{row_number}'
-#     worksheet.merge_cells(merge_formula)
-
-#     #subtotal2
-#     sub_total2_row = size + 4
-#     subtotal_merge_cells= f'A{sub_total2_row}:I{sub_total2_row}'
-#     worksheet.merge_cells(subtotal_merge_cells)
-#     top_left_subtotal2_cell_formula = f'A{sub_total2_row}'
-#     top_left_subtotal2_cell = worksheet[top_left_subtotal2_cell_formula]
-#     top_left_subtotal2_cell.value = "Sub Total 2"
-#     top_left_subtotal2_cell.fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     top_left_subtotal2_cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-#     top_left_subtotal2_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     sub_formula_row_celula = f'J{sub_total2_row}'
-#     worksheet[sub_formula_row_celula].fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     worksheet[sub_formula_row_celula].font = Font(name="Arial", size=12, color="000000",bold=True)
-
-#      #subtotal12_Formula
-#     # sub_formula_row = size + 4
-#     # sub_formula = f'=SOMA(J{sub_formula_row}:J{sub_formula_row})'
-#     # sub_formula_row_celula = f'J{sub_formula_row}'
-#     # worksheet[sub_formula_row_celula].fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     # worksheet[sub_formula_row_celula] = sub_formula
-
-
-#     #total1-2
-#     total12_row = size + 5
-#     total12_merge_cells = f'A{total12_row}:I{total12_row}'
-#     worksheet.merge_cells(total12_merge_cells)
-#     top_left_total12_cell_formula = f'A{total12_row}'
-#     top_left_total12_cell = worksheet[top_left_total12_cell_formula]
-#     top_left_total12_cell.value = "Total(1 -2)"
-#     top_left_total12_cell.fill = PatternFill(start_color=azul, end_color=azul,fill_type = "solid")
-#     top_left_total12_cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-#     top_left_total12_cell.alignment = Alignment(horizontal="center",vertical="center")
-
-#     #total_formula
-#     total_formula_row = size + 5
-#     total_formulaa = f'=J{size}'
-#     total_formula_row_celula = f'J{total_formula_row}'
-#     worksheet[total_formula_row_celula].fill = PatternFill(start_color=azul, end_color=azul,fill_type = "solid")
-#     worksheet[total_formula_row_celula].font = Font(name="Arial", size=12, color="000000",bold=True)
-#     worksheet[total_formula_row_celula].number_format = 'R$ #,##0.00'
-#     worksheet.row_dimensions[total_formula_row].height = 30
-#     worksheet[total_formula_row_celula] = total_formulaa
-
-#     #brasilia
-#     brasilia_row = size + 7
-#     brasilia_formula = f"='Receita x Despesa'!A42:J42"
-#     brasilia_merge_cells = f'A{brasilia_row}:I{brasilia_row}'
-#     worksheet.merge_cells(brasilia_merge_cells)
-#     top_left_brasilia_cell_formula = f'A{brasilia_row}'
-#     top_left_brasilia_cell = worksheet[top_left_brasilia_cell_formula]
-#     top_left_brasilia_cell.value = brasilia_formula
-#     top_left_brasilia_cell.alignment = Alignment(horizontal="center",vertical="center")
-
-#     #DiretorFinanceiro
-#     diretor_row = size + 8
-#     diretor_cargo_row = size + 9
-#     diretor_cpf_row = size + 10
-#     diretor_nome_formula = f"='Receita x Despesa'!A45"
-#     diretor_cargo_formula = f"='Receita x Despesa'!A46"
-#     diretor_cpf_formula = f"='Receita x Despesa'!A47"
-#     diretor_merge_cells = f'A{diretor_row}:D{diretor_row}'
-#     diretor_cargo_merge_cells = f'A{diretor_cargo_row}:D{diretor_cargo_row}'
-#     diretor_cpf_merge_cells = f'A{diretor_cpf_row}:D{diretor_cpf_row}'
-#     worksheet.merge_cells(diretor_merge_cells)
-#     worksheet.merge_cells(diretor_cargo_merge_cells)
-#     worksheet.merge_cells(diretor_cpf_merge_cells)
-#     top_left_diretor_cell_formula = f'A{diretor_row}'
-#     top_left_diretor_cell_cargo_formula = f'A{diretor_cargo_row}'
-#     top_left_diretor_cell_cpf_formula = f'A{diretor_cpf_row}'
-#     top_left_diretor_cell = worksheet[top_left_diretor_cell_formula]
-#     top_left_diretor_cell_cargo_formula = worksheet[top_left_diretor_cell_cargo_formula]
-#     top_left_diretor_cell_cpf_formula = worksheet[top_left_diretor_cell_cpf_formula]
-#     top_left_diretor_cell.value = diretor_nome_formula
-#     top_left_diretor_cell_cargo_formula.value = diretor_cargo_formula
-#     top_left_diretor_cell_cpf_formula.value = diretor_cpf_formula
-#     top_left_diretor_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_diretor_cell.font = Font(bold=True)
-#     top_left_diretor_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_diretor_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
-#     #Coordenadora
-#     coordenadora_row = size + 8
-#     coordenadora_cargo_row = size + 9
-#     coordenadora_cpf_row = size + 10
-#     coordenadora_nome_formula = f"='Receita x Despesa'!H45"
-#     coordenadora_cargo_formula = f"='Receita x Despesa'!H46"
-#     coordenadora_cpf_formula = f"='Receita x Despesa'!H47"
-#     coordenadora_merge_cells = f'F{coordenadora_row}:J{coordenadora_row}'
-#     coordenadora_cargo_merge_cells = f'F{coordenadora_cargo_row}:J{coordenadora_cargo_row}'
-#     coordenadora_cpf_merge_cells = f'F{coordenadora_cpf_row}:J{coordenadora_cpf_row}'
-#     worksheet.merge_cells(coordenadora_merge_cells)
-#     worksheet.merge_cells(coordenadora_cargo_merge_cells)
-#     worksheet.merge_cells(coordenadora_cpf_merge_cells)
-#     top_left_coordenadora_cell_formula = f'F{coordenadora_row}'
-#     top_left_coordenadora_cell_cargo_formula = f'F{coordenadora_cargo_row}'
-#     top_left_coordenadora_cell_cpf_formula = f'F{coordenadora_cpf_row}'
-#     top_left_coordenadora_cell = worksheet[top_left_coordenadora_cell_formula]
-#     top_left_coordenadora_cell_cargo_formula = worksheet[top_left_coordenadora_cell_cargo_formula]
-#     top_left_coordenadora_cell_cpf_formula = worksheet[top_left_coordenadora_cell_cpf_formula]
-#     top_left_coordenadora_cell.value = coordenadora_nome_formula
-#     top_left_coordenadora_cell_cargo_formula.value = coordenadora_cargo_formula
-#     top_left_coordenadora_cell_cpf_formula.value = coordenadora_cpf_formula
-#     top_left_coordenadora_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_coordenadora_cell.font= Font(bold = True)
-#     top_left_coordenadora_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_coordenadora_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
-
-#     #nome dos indices
-
-#     azul_claro = '1c89b8'
-#     row_style_cabecariojuridica_juridica = NamedStyle(name='row_style_cabecariojuridica_juridica')
-#     row_style_cabecariojuridica_juridica.font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
-#     row_style_cabecariojuridica_juridica.fill = openpyxl.styles.PatternFill(start_color=azul_claro, end_color=azul_claro, fill_type='solid')
-#     row_style_cabecariojuridica_juridica.alignment = Alignment(horizontal="center",vertical="center",wrap_text = True)
-#     worksheet.row_dimensions[9].height = 50
-#     worksheet.column_dimensions['b'].width = 35
-#     worksheet.column_dimensions['c'].width = 20
-#     worksheet.column_dimensions['d'].width = 35
-#     worksheet.column_dimensions['e'].width = 60
-#     worksheet.column_dimensions['f'].width = 35
-#     worksheet.column_dimensions['g'].width = 30
-#     worksheet.column_dimensions['h'].width = 30
-#     worksheet.column_dimensions['i'].width = 30
-#     worksheet.column_dimensions['j'].width = 30
-#     worksheet.column_dimensions['e'].height = 20
-  
-  
-#     linha_number = 9
-#     # Apply the style to each cell in the row
-#     for cell in worksheet[linha_number]:
-#         cell.style = row_style_cabecariojuridica_juridica
-
-#     valores = ["ITEM","NOME","CNPJ/CPF",'ESPECIFICAÇÃO DA DESPESA','DESCRIÇÃO',"Nº DO RECIBO OU EQUIVALENTE","DATA DE EMISSÃO",'CHEQUE / ORDEM BANCÁRIA','DATA DE PGTO','Valor']
-#     col = 1
-#     for a,b in enumerate(valores):
-#         worksheet.cell(row=linha_number, column=col, value=b)
-#         col = col + 1
-
-
-#     #cabecario relação de pagamentos - outro servicoes de terceiros
-#     worksheet.merge_cells('A1:J2')
-#     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - O U T R O S   S E R V I Ç O S   D E   T E R C E I R O S   -   P E S S O A   J U R Í D I C A '
-#     worksheet['A1'].font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
-#     worksheet['A1'].alignment = Alignment(horizontal="center",vertical="center")
-#     worksheet['A1'].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
-#     worksheet.merge_cells('A3:I3')
-#     worksheet['A3'] = "='Receita x Despesa'!A3:J3"
-#     worksheet['A3'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A3'].alignment = Alignment(horizontal="left",vertical="center")
-
-#     worksheet.merge_cells('A4:I4')
-#     worksheet['A4'] = "='Receita x Despesa'!A4:J4"
-#     worksheet['A4'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A4'].alignment = Alignment(horizontal="left",vertical="center")
-    
-#     worksheet.merge_cells('A5:I5')
-#     worksheet['A5'] = "='Receita x Despesa'!A5:J5"
-#     worksheet['A5'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A5'].alignment = Alignment(horizontal="left",vertical="center")
-    
-#     worksheet.merge_cells('A6:I6')
-#     worksheet['A6'] = "='Receita x Despesa'!A6:J6"
-#     worksheet['A6'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A6'].alignment = Alignment(horizontal="left",vertical="center")
-    
-#     worksheet.merge_cells('A7:I7')
-#     worksheet['A7'] = "='Receita x Despesa'!A7:J7"
-#     worksheet['A7'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A7'].alignment = Alignment(horizontal="left",vertical="center")
-   
-#     altura = 45
-#     linha_inicio = 9
-#     for row_number in range(linha_inicio, linha_inicio + tamanho+1):
-#         worksheet.row_dimensions[row_number].height = altura
-    
-
-#     # Save the workbook to a file
-#     workbook.save(tabela)
-#     workbook.close()
-
-# def estilo_serv_terceiro(tabela,tamanho):
-    
-#     caminho = pegar_caminho(tabela)
-#     workbook = openpyxl.load_workbook(caminho)
-#     worksheet = workbook['Outros Serviços Terceiros - PF']
-
-   
-#     size = tamanho + 10
-#     #worksheet.row_dimensions[27].height = 50
-
-#     cinza = "979CA8"
-#     azul = "336394"
-    
-                
-                
-#     for row in worksheet.iter_rows(min_row=10, max_row=size, min_col=1, max_col=10):
-#         worksheet.row_dimensions[row[0].row].height = 35
-
-#     custom_number_format = []
-#     # MASCARA R$
-#     if custom_number_format!= False: 
-#         custom_number_format = NamedStyle(name='custom_number_format')
-#         custom_number_format.number_format = 'R$ #,##0.00'
-#         custom_number_format.font = Font(name="Arial", size=12, color="000000")
-#         custom_number_format.alignment = Alignment(horizontal="general",vertical="bottom",wrap_text=True)
-    
-#     #stylecinza
-    
-
-#     value_to_stop = size  
-#     start_row = 10
-# #
-#     for row in range(start_row,size+1):
-#         cell = worksheet[f'J{row}']
-#         cell.style = custom_number_format
-        
-#     for rows in worksheet.iter_rows(min_row=10, max_row=size, min_col=1, max_col=10):
-#             for cell in rows:
-#                 if cell.row % 2:
-#                     cell.fill = PatternFill(start_color=cinza, end_color=cinza,
-#                                             fill_type = "solid")
-#                 cell.font = Font(name="Arial", size=12, color="000000")
-#                 cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
-#                 cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="hair") ,bottom=Side(border_style="hair") )
-                
-
-    
-
-
-#     #subtotal
-#     celulas_mergidas_subtotal = f"A{size}:I{size}"
-#     worksheet.merge_cells(celulas_mergidas_subtotal)
-#     left_celula_cell = f"A{size}"
-#     top_left_cell = worksheet[left_celula_cell]
-#     top_left_cell.value = "Sub Total"
-#     top_left_cell.fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     top_left_cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-#     top_left_cell.alignment = Alignment(horizontal="center",vertical="center")
-
-
-  
-
-#     # FORMULATOTAL
-#     formula = f"=SUM(J10:J{size-1})"
-#     celula = f'J{size}'
-#     worksheet[celula] = formula
-#     worksheet[celula].fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
-
-
-#     #restituições creditadas
-#     restituicoes = size + 1
-#     celula_restituicoes=f'A{restituicoes}'
-#     worksheet[celula_restituicoes].value = "RESTITUIÇÕES CREDITADAS"
-#     worksheet[celula_restituicoes].font = Font(name="Arial", size=12, color="000000",bold=True)
-#     worksheet.row_dimensions[restituicoes].height = 30
-
-
-#     #colunas azul
-#     row_style = NamedStyle(name='row_style')
-#     row_style.font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
-#     row_style.fill = openpyxl.styles.PatternFill(start_color=azul, end_color=azul, fill_type='solid')
-#     row_style.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
-#     row_style.height = 30
-
-#     row_number = size + 2
-   
-#     for column in range(1, 11):  
-#         cell = worksheet.cell(row=row_number, column=column)
-#         cell.style = row_style
-
-
-#     values = ["Item","Restituidor","CNPJ/CPF",'Descrição',"Cheque equivalente","Data do Cheque",'Nº do Depósito','Data da Devolução','Valor']
-#     coluna = 1
-#     for a,b in enumerate(values):
-#         worksheet.cell(row=row_number, column=coluna, value=b)
-#         if coluna == 4:
-#             coluna = coluna + 1
-#         coluna = coluna + 1
-        
-
-#     merge_formula = f'D{row_number}:E{row_number}'
-#     worksheet.merge_cells(merge_formula)
-
-#     #subtotal2
-#     sub_total2_row = size + 4
-#     subtotal_merge_cells= f'A{sub_total2_row}:I{sub_total2_row}'
-#     worksheet.merge_cells(subtotal_merge_cells)
-#     top_left_subtotal2_cell_formula = f'A{sub_total2_row}'
-#     top_left_subtotal2_cell = worksheet[top_left_subtotal2_cell_formula]
-#     top_left_subtotal2_cell.value = "Sub Total 2"
-#     top_left_subtotal2_cell.fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     top_left_subtotal2_cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-#     top_left_subtotal2_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     sub_formula_row_celula = f'J{sub_total2_row}'
-#     worksheet[sub_formula_row_celula].fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     worksheet[sub_formula_row_celula].font = Font(name="Arial", size=12, color="000000",bold=True)
-
-#      #subtotal12_Formula
-#     # sub_formula_row = size + 4
-#     # sub_formula = f'=SOMA(J{sub_formula_row}:J{sub_formula_row})'
-#     # sub_formula_row_celula = f'J{sub_formula_row}'
-#     # worksheet[sub_formula_row_celula].fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     # worksheet[sub_formula_row_celula] = sub_formula
-
-
-#     #total1-2
-#     total12_row = size + 5
-#     total12_merge_cells = f'A{total12_row}:I{total12_row}'
-#     worksheet.merge_cells(total12_merge_cells)
-#     top_left_total12_cell_formula = f'A{total12_row}'
-#     top_left_total12_cell = worksheet[top_left_total12_cell_formula]
-#     top_left_total12_cell.value = "Total(1 -2)"
-#     top_left_total12_cell.fill = PatternFill(start_color=azul, end_color=azul,fill_type = "solid")
-#     top_left_total12_cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-#     top_left_total12_cell.alignment = Alignment(horizontal="center",vertical="center")
-
-#     #total_formula
-#     total_formula_row = size + 5
-#     total_formulaa = f'=J{size}'
-#     total_formula_row_celula = f'J{total_formula_row}'
-#     worksheet[total_formula_row_celula].fill = PatternFill(start_color=azul, end_color=azul,fill_type = "solid")
-#     worksheet[total_formula_row_celula].font = Font(name="Arial", size=12, color="000000",bold=True)
-#     worksheet[total_formula_row_celula].number_format = 'R$ #,##0.00'
-#     worksheet.row_dimensions[total_formula_row].height = 30
-#     worksheet[total_formula_row_celula] = total_formulaa
-
-#     #brasilia
-#     brasilia_row = size + 7
-#     brasilia_formula = f"='Receita x Despesa'!A42:J42"
-#     brasilia_merge_cells = f'A{brasilia_row}:I{brasilia_row}'
-#     worksheet.merge_cells(brasilia_merge_cells)
-#     top_left_brasilia_cell_formula = f'A{brasilia_row}'
-#     top_left_brasilia_cell = worksheet[top_left_brasilia_cell_formula]
-#     top_left_brasilia_cell.value = brasilia_formula
-#     top_left_brasilia_cell.alignment = Alignment(horizontal="center",vertical="center")
-
-#     #DiretorFinanceiro
-#     diretor_row = size + 8
-#     diretor_cargo_row = size + 9
-#     diretor_cpf_row = size + 10
-#     diretor_nome_formula = f"='Receita x Despesa'!A45"
-#     diretor_cargo_formula = f"='Receita x Despesa'!A46"
-#     diretor_cpf_formula = f"='Receita x Despesa'!A47"
-#     diretor_merge_cells = f'A{diretor_row}:D{diretor_row}'
-#     diretor_cargo_merge_cells = f'A{diretor_cargo_row}:D{diretor_cargo_row}'
-#     diretor_cpf_merge_cells = f'A{diretor_cpf_row}:D{diretor_cpf_row}'
-#     worksheet.merge_cells(diretor_merge_cells)
-#     worksheet.merge_cells(diretor_cargo_merge_cells)
-#     worksheet.merge_cells(diretor_cpf_merge_cells)
-#     top_left_diretor_cell_formula = f'A{diretor_row}'
-#     top_left_diretor_cell_cargo_formula = f'A{diretor_cargo_row}'
-#     top_left_diretor_cell_cpf_formula = f'A{diretor_cpf_row}'
-#     top_left_diretor_cell = worksheet[top_left_diretor_cell_formula]
-#     top_left_diretor_cell_cargo_formula = worksheet[top_left_diretor_cell_cargo_formula]
-#     top_left_diretor_cell_cpf_formula = worksheet[top_left_diretor_cell_cpf_formula]
-#     top_left_diretor_cell.value = diretor_nome_formula
-#     top_left_diretor_cell_cargo_formula.value = diretor_cargo_formula
-#     top_left_diretor_cell_cpf_formula.value = diretor_cpf_formula
-#     top_left_diretor_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_diretor_cell.font = Font(bold=True)
-#     top_left_diretor_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_diretor_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
-#     #Coordenadora
-#     coordenadora_row = size + 8
-#     coordenadora_cargo_row = size + 9
-#     coordenadora_cpf_row = size + 10
-#     coordenadora_nome_formula = f"='Receita x Despesa'!H45"
-#     coordenadora_cargo_formula = f"='Receita x Despesa'!H46"
-#     coordenadora_cpf_formula = f"='Receita x Despesa'!H47"
-#     coordenadora_merge_cells = f'F{coordenadora_row}:J{coordenadora_row}'
-#     coordenadora_cargo_merge_cells = f'F{coordenadora_cargo_row}:J{coordenadora_cargo_row}'
-#     coordenadora_cpf_merge_cells = f'F{coordenadora_cpf_row}:J{coordenadora_cpf_row}'
-#     worksheet.merge_cells(coordenadora_merge_cells)
-#     worksheet.merge_cells(coordenadora_cargo_merge_cells)
-#     worksheet.merge_cells(coordenadora_cpf_merge_cells)
-#     top_left_coordenadora_cell_formula = f'F{coordenadora_row}'
-#     top_left_coordenadora_cell_cargo_formula = f'F{coordenadora_cargo_row}'
-#     top_left_coordenadora_cell_cpf_formula = f'F{coordenadora_cpf_row}'
-#     top_left_coordenadora_cell = worksheet[top_left_coordenadora_cell_formula]
-#     top_left_coordenadora_cell_cargo_formula = worksheet[top_left_coordenadora_cell_cargo_formula]
-#     top_left_coordenadora_cell_cpf_formula = worksheet[top_left_coordenadora_cell_cpf_formula]
-#     top_left_coordenadora_cell.value = coordenadora_nome_formula
-#     top_left_coordenadora_cell_cargo_formula.value = coordenadora_cargo_formula
-#     top_left_coordenadora_cell_cpf_formula.value = coordenadora_cpf_formula
-#     top_left_coordenadora_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_coordenadora_cell.font= Font(bold = True)
-#     top_left_coordenadora_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_coordenadora_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
-
-#     #nome dos indices
-
-#     azul_claro = '1c89b8'
-#     row_style_cabecario = NamedStyle(name='row_style_cabecario')
-#     row_style_cabecario.font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
-#     row_style_cabecario.fill = openpyxl.styles.PatternFill(start_color=azul_claro, end_color=azul_claro, fill_type='solid')
-#     row_style_cabecario.alignment = Alignment(horizontal="center",vertical="center",wrap_text = True)
-#     worksheet.row_dimensions[9].height = 50
-#     worksheet.column_dimensions['b'].width = 35
-#     worksheet.column_dimensions['c'].width = 20
-#     worksheet.column_dimensions['d'].width = 35
-#     worksheet.column_dimensions['e'].width = 60
-#     worksheet.column_dimensions['f'].width = 35
-#     worksheet.column_dimensions['g'].width = 30
-#     worksheet.column_dimensions['h'].width = 30
-#     worksheet.column_dimensions['i'].width = 30
-#     worksheet.column_dimensions['j'].width = 30
-#     worksheet.column_dimensions['e'].height = 20
-  
-  
-#     linha_number = 9
-#     # Apply the style to each cell in the row
-#     for cell in worksheet[linha_number]:
-#         cell.style = row_style_cabecario
-
-#     valores = ["ITEM","NOME","CNPJ/CPF",'ESPECIFICAÇÃO DA DESPESA','DESCRIÇÃO',"Nº DO RECIBO OU EQUIVALENTE","DATA DE EMISSÃO",'CHEQUE / ORDEM BANCÁRIA','DATA DE PGTO','Valor']
-#     col = 1
-#     for a,b in enumerate(valores):
-#         worksheet.cell(row=linha_number, column=col, value=b)
-#         col = col + 1
-
-
-#     #cabecario relação de pagamentos - outro servicoes de terceiros
-#     worksheet.merge_cells('A1:J2')
-#     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - O U T R O S  S E R V I Ç O S D E T E R C E I R O S - C E L E T I S T A S'
-#     worksheet['A1'].font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
-#     worksheet['A1'].alignment = Alignment(horizontal="center",vertical="center")
-#     worksheet['A1'].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
-#     worksheet.merge_cells('A3:I3')
-#     worksheet['A3'] = "='Receita x Despesa'!A3:J3"
-#     worksheet['A3'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A3'].alignment = Alignment(horizontal="left",vertical="center")
-
-#     worksheet.merge_cells('A4:I4')
-#     worksheet['A4'] = "='Receita x Despesa'!A4:J4"
-#     worksheet['A4'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A4'].alignment = Alignment(horizontal="left",vertical="center")
-    
-#     worksheet.merge_cells('A5:I5')
-#     worksheet['A5'] = "='Receita x Despesa'!A5:J5"
-#     worksheet['A5'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A5'].alignment = Alignment(horizontal="left",vertical="center")
-    
-#     worksheet.merge_cells('A6:I6')
-#     worksheet['A6'] = "='Receita x Despesa'!A6:J6"
-#     worksheet['A6'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A6'].alignment = Alignment(horizontal="left",vertical="center")
-    
-#     worksheet.merge_cells('A7:I7')
-#     worksheet['A7'] = "='Receita x Despesa'!A7:J7"
-#     worksheet['A7'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A7'].alignment = Alignment(horizontal="left",vertical="center")
-   
-#     altura = 45
-#     linha_inicio = 9
-#     for row_number in range(linha_inicio, linha_inicio + tamanho+1):
-#         worksheet.row_dimensions[row_number].height = altura
-    
-
-#     # Save the workbook to a file
-#     workbook.save(tabela)
-#     workbook.close()
-
-# def estilo_Iss(tabela,tamanho):
-    
-#     caminho = pegar_caminho(tabela)
-#     workbook = openpyxl.load_workbook(caminho)
-#     worksheet = workbook['ISS']
-
-   
-#     size = tamanho + 10
-#     #worksheet.row_dimensions[27].height = 50
-
-#     cinza = "979CA8"
-#     azul = "336394"
-    
-                
-                
-#     for row in worksheet.iter_rows(min_row=10, max_row=size, min_col=1, max_col=10):
-#         worksheet.row_dimensions[row[0].row].height = 35
-
-#     custom_number_format_iss = []
-#     # MASCARA R$
-#     if custom_number_format_iss!= False: 
-#         custom_number_format_iss = NamedStyle(name='custom_number_format_iss')
-#         custom_number_format_iss.number_format = 'R$ #,##0.00'
-#         custom_number_format_iss.font = Font(name="Arial", size=12, color="000000")
-#         custom_number_format_iss.alignment = Alignment(horizontal="general",vertical="bottom",wrap_text=True)
-    
-#     #stylecinza
-    
-
-#     value_to_stop = size  
-#     start_row = 10
-# #
-#     for row in range(start_row,size+1):
-#         cell = worksheet[f'J{row}']
-#         cell.style = custom_number_format_iss
-        
-#     for rows in worksheet.iter_rows(min_row=10, max_row=size, min_col=1, max_col=10):
-#             for cell in rows:
-#                 if cell.row % 2:
-#                     cell.fill = PatternFill(start_color=cinza, end_color=cinza,
-#                                             fill_type = "solid")
-#                 cell.font = Font(name="Arial", size=12, color="000000")
-#                 cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
-#                 cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="hair") ,bottom=Side(border_style="hair") )
-                
-
-    
-
-
-#     #subtotal
-#     celulas_mergidas_subtotal = f"A{size}:I{size}"
-#     worksheet.merge_cells(celulas_mergidas_subtotal)
-#     left_celula_cell = f"A{size}"
-#     top_left_cell = worksheet[left_celula_cell]
-#     top_left_cell.value = "Sub Total"
-#     top_left_cell.fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     top_left_cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-#     top_left_cell.alignment = Alignment(horizontal="center",vertical="center")
-
-
-  
-
-#     # FORMULATOTAL
-#     formula = f"=SUM(J10:J{size-1})"
-#     celula = f'J{size}'
-#     worksheet[celula] = formula
-#     worksheet[celula].fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
-
-
-#     #restituições creditadas
-#     restituicoes = size + 1
-#     celula_restituicoes=f'A{restituicoes}'
-#     worksheet[celula_restituicoes].value = "RESTITUIÇÕES CREDITADAS"
-#     worksheet[celula_restituicoes].font = Font(name="Arial", size=12, color="000000",bold=True)
-#     worksheet.row_dimensions[restituicoes].height = 30
-
-
-#     #colunas azul
-#     row_style_iss = NamedStyle(name='row_style_iss')
-#     row_style_iss.font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
-#     row_style_iss.fill = openpyxl.styles.PatternFill(start_color=azul, end_color=azul, fill_type='solid')
-#     row_style_iss.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
-#     row_style_iss.height = 30
-
-#     row_number = size + 2
-   
-#     for column in range(1, 11):  
-#         cell = worksheet.cell(row=row_number, column=column)
-#         cell.style = row_style_iss
-
-
-#     values = ["Item","Restituidor","CNPJ/CPF",'Descrição',"Cheque equivalente","Data do Cheque",'Nº do Depósito','Data da Devolução','Valor']
-#     coluna = 1
-#     for a,b in enumerate(values):
-#         worksheet.cell(row=row_number, column=coluna, value=b)
-#         if coluna == 4:
-#             coluna = coluna + 1
-#         coluna = coluna + 1
-        
-
-#     merge_formula = f'D{row_number}:E{row_number}'
-#     worksheet.merge_cells(merge_formula)
-
-#     #subtotal2
-#     sub_total2_row = size + 4
-#     subtotal_merge_cells= f'A{sub_total2_row}:I{sub_total2_row}'
-#     worksheet.merge_cells(subtotal_merge_cells)
-#     top_left_subtotal2_cell_formula = f'A{sub_total2_row}'
-#     top_left_subtotal2_cell = worksheet[top_left_subtotal2_cell_formula]
-#     top_left_subtotal2_cell.value = "Sub Total 2"
-#     top_left_subtotal2_cell.fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     top_left_subtotal2_cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-#     top_left_subtotal2_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     sub_formula_row_celula = f'J{sub_total2_row}'
-#     worksheet[sub_formula_row_celula].fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     worksheet[sub_formula_row_celula].font = Font(name="Arial", size=12, color="000000",bold=True)
-
-#      #subtotal12_Formula
-#     # sub_formula_row = size + 4
-#     # sub_formula = f'=SOMA(J{sub_formula_row}:J{sub_formula_row})'
-#     # sub_formula_row_celula = f'J{sub_formula_row}'
-#     # worksheet[sub_formula_row_celula].fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     # worksheet[sub_formula_row_celula] = sub_formula
-
-
-#     #total1-2
-#     total12_row = size + 5
-#     total12_merge_cells = f'A{total12_row}:I{total12_row}'
-#     worksheet.merge_cells(total12_merge_cells)
-#     top_left_total12_cell_formula = f'A{total12_row}'
-#     top_left_total12_cell = worksheet[top_left_total12_cell_formula]
-#     top_left_total12_cell.value = "Total(1 -2)"
-#     top_left_total12_cell.fill = PatternFill(start_color=azul, end_color=azul,fill_type = "solid")
-#     top_left_total12_cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-#     top_left_total12_cell.alignment = Alignment(horizontal="center",vertical="center")
-
-#     #total_formula
-#     total_formula_row = size + 5
-#     total_formulaa = f'=J{size}'
-#     total_formula_row_celula = f'J{total_formula_row}'
-#     worksheet[total_formula_row_celula].fill = PatternFill(start_color=azul, end_color=azul,fill_type = "solid")
-#     worksheet[total_formula_row_celula].font = Font(name="Arial", size=12, color="000000",bold=True)
-#     worksheet[total_formula_row_celula].number_format = 'R$ #,##0.00'
-#     worksheet.row_dimensions[total_formula_row].height = 30
-#     worksheet[total_formula_row_celula] = total_formulaa
-
-#     #brasilia
-#     brasilia_row = size + 7
-#     brasilia_formula = f"='Receita x Despesa'!A42:J42"
-#     brasilia_merge_cells = f'A{brasilia_row}:I{brasilia_row}'
-#     worksheet.merge_cells(brasilia_merge_cells)
-#     top_left_brasilia_cell_formula = f'A{brasilia_row}'
-#     top_left_brasilia_cell = worksheet[top_left_brasilia_cell_formula]
-#     top_left_brasilia_cell.value = brasilia_formula
-#     top_left_brasilia_cell.alignment = Alignment(horizontal="center",vertical="center")
-
-#     #DiretorFinanceiro
-#     diretor_row = size + 8
-#     diretor_cargo_row = size + 9
-#     diretor_cpf_row = size + 10
-#     diretor_nome_formula = f"='Receita x Despesa'!A45"
-#     diretor_cargo_formula = f"='Receita x Despesa'!A46"
-#     diretor_cpf_formula = f"='Receita x Despesa'!A47"
-#     diretor_merge_cells = f'A{diretor_row}:D{diretor_row}'
-#     diretor_cargo_merge_cells = f'A{diretor_cargo_row}:D{diretor_cargo_row}'
-#     diretor_cpf_merge_cells = f'A{diretor_cpf_row}:D{diretor_cpf_row}'
-#     worksheet.merge_cells(diretor_merge_cells)
-#     worksheet.merge_cells(diretor_cargo_merge_cells)
-#     worksheet.merge_cells(diretor_cpf_merge_cells)
-#     top_left_diretor_cell_formula = f'A{diretor_row}'
-#     top_left_diretor_cell_cargo_formula = f'A{diretor_cargo_row}'
-#     top_left_diretor_cell_cpf_formula = f'A{diretor_cpf_row}'
-#     top_left_diretor_cell = worksheet[top_left_diretor_cell_formula]
-#     top_left_diretor_cell_cargo_formula = worksheet[top_left_diretor_cell_cargo_formula]
-#     top_left_diretor_cell_cpf_formula = worksheet[top_left_diretor_cell_cpf_formula]
-#     top_left_diretor_cell.value = diretor_nome_formula
-#     top_left_diretor_cell_cargo_formula.value = diretor_cargo_formula
-#     top_left_diretor_cell_cpf_formula.value = diretor_cpf_formula
-#     top_left_diretor_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_diretor_cell.font = Font(bold=True)
-#     top_left_diretor_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_diretor_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
-#     #Coordenadora
-#     coordenadora_row = size + 8
-#     coordenadora_cargo_row = size + 9
-#     coordenadora_cpf_row = size + 10
-#     coordenadora_nome_formula = f"='Receita x Despesa'!H45"
-#     coordenadora_cargo_formula = f"='Receita x Despesa'!H46"
-#     coordenadora_cpf_formula = f"='Receita x Despesa'!H47"
-#     coordenadora_merge_cells = f'F{coordenadora_row}:J{coordenadora_row}'
-#     coordenadora_cargo_merge_cells = f'F{coordenadora_cargo_row}:J{coordenadora_cargo_row}'
-#     coordenadora_cpf_merge_cells = f'F{coordenadora_cpf_row}:J{coordenadora_cpf_row}'
-#     worksheet.merge_cells(coordenadora_merge_cells)
-#     worksheet.merge_cells(coordenadora_cargo_merge_cells)
-#     worksheet.merge_cells(coordenadora_cpf_merge_cells)
-#     top_left_coordenadora_cell_formula = f'F{coordenadora_row}'
-#     top_left_coordenadora_cell_cargo_formula = f'F{coordenadora_cargo_row}'
-#     top_left_coordenadora_cell_cpf_formula = f'F{coordenadora_cpf_row}'
-#     top_left_coordenadora_cell = worksheet[top_left_coordenadora_cell_formula]
-#     top_left_coordenadora_cell_cargo_formula = worksheet[top_left_coordenadora_cell_cargo_formula]
-#     top_left_coordenadora_cell_cpf_formula = worksheet[top_left_coordenadora_cell_cpf_formula]
-#     top_left_coordenadora_cell.value = coordenadora_nome_formula
-#     top_left_coordenadora_cell_cargo_formula.value = coordenadora_cargo_formula
-#     top_left_coordenadora_cell_cpf_formula.value = coordenadora_cpf_formula
-#     top_left_coordenadora_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_coordenadora_cell.font= Font(bold = True)
-#     top_left_coordenadora_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_coordenadora_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
-
-#     #nome dos indices
-
-#     azul_claro = '1c89b8'
-#     row_style_cabecario_iss = NamedStyle(name='row_style_cabecario_iss')
-#     row_style_cabecario_iss.font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
-#     row_style_cabecario_iss.fill = openpyxl.styles.PatternFill(start_color=azul_claro, end_color=azul_claro, fill_type='solid')
-#     row_style_cabecario_iss.alignment = Alignment(horizontal="center",vertical="center",wrap_text = True)
-#     worksheet.row_dimensions[9].height = 50
-#     worksheet.column_dimensions['b'].width = 35
-#     worksheet.column_dimensions['c'].width = 20
-#     worksheet.column_dimensions['d'].width = 35
-#     worksheet.column_dimensions['e'].width = 60
-#     worksheet.column_dimensions['f'].width = 35
-#     worksheet.column_dimensions['g'].width = 30
-#     worksheet.column_dimensions['h'].width = 30
-#     worksheet.column_dimensions['i'].width = 30
-#     worksheet.column_dimensions['j'].width = 30
-#     worksheet.column_dimensions['e'].height = 20
-  
-  
-#     linha_number = 9
-#     # Apply the style to each cell in the row
-#     for cell in worksheet[linha_number]:
-#         cell.style = row_style_cabecario_iss
-
-#     valores = ["ITEM","NOME","CNPJ/CPF",'ESPECIFICAÇÃO DA DESPESA','DESCRIÇÃO',"Nº DO RECIBO OU EQUIVALENTE","DATA DE EMISSÃO",'CHEQUE / ORDEM BANCÁRIA','DATA DE PGTO','Valor']
-#     col = 1
-#     for a,b in enumerate(valores):
-#         worksheet.cell(row=linha_number, column=col, value=b)
-#         col = col + 1
-
-
-#     #cabecario relação de pagamentos - outro servicoes de terceiros
-#     worksheet.merge_cells('A1:J2')
-#     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - A U X Í L I O   F I N A N C E I R O  A  E S T U D A N T E '
-#     worksheet['A1'].font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
-#     worksheet['A1'].alignment = Alignment(horizontal="center",vertical="center")
-#     worksheet['A1'].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
-#     worksheet.merge_cells('A3:I3')
-#     worksheet['A3'] = "='Receita x Despesa'!A3:J3"
-#     worksheet['A3'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A3'].alignment = Alignment(horizontal="left",vertical="center")
-
-#     worksheet.merge_cells('A4:I4')
-#     worksheet['A4'] = "='Receita x Despesa'!A4:J4"
-#     worksheet['A4'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A4'].alignment = Alignment(horizontal="left",vertical="center")
-    
-#     worksheet.merge_cells('A5:I5')
-#     worksheet['A5'] = "='Receita x Despesa'!A5:J5"
-#     worksheet['A5'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A5'].alignment = Alignment(horizontal="left",vertical="center")
-    
-#     worksheet.merge_cells('A6:I6')
-#     worksheet['A6'] = "='Receita x Despesa'!A6:J6"
-#     worksheet['A6'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A6'].alignment = Alignment(horizontal="left",vertical="center")
-    
-#     worksheet.merge_cells('A7:I7')
-#     worksheet['A7'] = "='Receita x Despesa'!A7:J7"
-#     worksheet['A7'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A7'].alignment = Alignment(horizontal="left",vertical="center")
-   
-#     altura = 45
-#     linha_inicio = 9
-#     for row_number in range(linha_inicio, linha_inicio + tamanho+1):
-#         worksheet.row_dimensions[row_number].height = altura
-    
-
-#     # Save the workbook to a file
-#     workbook.save(tabela)
-#     workbook.close()
-
-# def estilo_passagens(tabela,tamanho):
-    
-#     caminho = pegar_caminho(tabela)
-#     workbook = openpyxl.load_workbook(caminho)
-#     worksheet = workbook['Passagens e Desp. Locomoção']
-#     size = tamanho + 10
-#     cinza = "d9d9d9"
-#     cinza_escuro = "bfbfbf"
-#     azul = "336394"
-#     azul_claro = '1c8cbc'
-
-#     borda = Border(right=Side(border_style="medium"))
-#     worksheet.sheet_view.showGridLines = False
-#     # 
-#     for row in worksheet.iter_rows(min_row=1, max_row=size+11,min_col=10,max_col=10):
-#         for cell in row:
-#             cell.border = borda
-            
-
-#     worksheet.column_dimensions['a'].width = 25
-#     worksheet.column_dimensions['b'].width = 25
-#     worksheet.column_dimensions['c'].width = 35
-#     worksheet.column_dimensions['d'].width = 40#descrição
-#     worksheet.column_dimensions['e'].width = 20 #n do recibo ou qeuivalente
-#     worksheet.column_dimensions['f'].width = 25 #data de emissão
-#     worksheet.column_dimensions['g'].width = 25 #data de emissão
-#     worksheet.column_dimensions['h'].width = 25 #data de emissão
-#     worksheet.column_dimensions['i'].width = 25 #data de emissão
-#     worksheet.column_dimensions['j'].width = 25 #data de emissão
-
-
-#     #cabecario relação de pagamentos - outro servicoes de terceiros
-#     worksheet.merge_cells('A1:J2')
-#     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - PASSAGENS E DESPESAS COM LOCOMOÇÃO'
-#     worksheet['A1'].font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
-#     worksheet['A1'].alignment = Alignment(horizontal="center",vertical="center")
-#     worksheet['A1'].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
-    
-#     worksheet.merge_cells('A3:F3')
-#     worksheet['A3'] = "='Receita x Despesa'!A3:J3"
-#     worksheet['A3'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A3'].alignment = Alignment(horizontal="left",vertical="center")
-
-#     worksheet.merge_cells('A4:F4')
-#     worksheet['A4'] = "='Receita x Despesa'!A4:J4"
-#     worksheet['A4'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A4'].alignment = Alignment(horizontal="left",vertical="center")
-    
-#     worksheet.merge_cells('A5:F5')
-#     worksheet['A5'] = "='Receita x Despesa'!A5:J5"
-#     worksheet['A5'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A5'].alignment = Alignment(horizontal="left",vertical="center")
-    
-#     worksheet.merge_cells('A6:F6')
-#     worksheet['A6'] = "='Receita x Despesa'!A6:J6"
-#     worksheet['A6'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A6'].alignment = Alignment(horizontal="left",vertical="center")
-    
-#     worksheet.merge_cells('A7:F7')
-#     worksheet['A7'] = "='Receita x Despesa'!A7:J7"
-#     worksheet['A7'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A7'].alignment = Alignment(horizontal="left",vertical="center")
-
-#     #colunas azul cabecario
-#     row_style_passagens = NamedStyle(name='row_style_passagens')
-#     row_style_passagens.font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
-#     row_style_passagens.fill = openpyxl.styles.PatternFill(start_color=azul_claro, end_color=azul_claro, fill_type='solid')
-#     row_style_passagens.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
-#     row_style_passagens.border = Border(top=Side(border_style="medium")  ,bottom=Side(border_style="thin") )
-#     row_style_passagens.height = 20
-#     linha_number = 9
-#     for row in worksheet.iter_rows(min_row=linha_number, max_row=linha_number, min_col=1, max_col=10):
-#         for cell in row:
-#             cell.style = row_style_passagens
-#             if cell.column == 10:
-#                 cell.border = Border(top=Side(border_style="medium")  ,bottom=Side(border_style="thin"), right=Side(border_style="medium") )
-
-#     valores = ["ITEM","NOME","CNPJ/CPF",'ESPECIFICAÇÃO DA DESPESA','DESCRIÇÃO',"Nº DO RECIBO OU EQUIVALENTE","DATA DE EMISSÃO",'CHEQUE / ORDEM BANCÁRIA','DATA DE PGTO','Valor']
-#     col = 1
-#     for a,b in enumerate(valores):
-#         worksheet.cell(row=linha_number, column=col, value=b)
-#         col = col + 1
-
-
-#     #Aumentar  a altura das celulas 
-#     for row in worksheet.iter_rows(min_row=10, max_row=size, min_col=1, max_col=10):
-#         worksheet.row_dimensions[row[0].row].height = 35
-
-#     custom_number_format_passagens = []
-#     # MASCARA R$
-#     if custom_number_format_passagens!= False: 
-#         custom_number_format_passagens = NamedStyle(name='custom_number_format_passagens')
-#         custom_number_format_passagens.number_format = 'R$ #,##0.00'
-#         custom_number_format_passagens.font = Font(name="Arial", size=12, color="000000")
-#         custom_number_format_passagens.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
-    
-#     #estilocinzasimcinzanao
-#     value_to_stop = size  
-#     start_row = 10
-# #
-#     for row in range(start_row,size+1):
-#         cell = worksheet[f'J{row}']
-#         cell.style = custom_number_format_passagens
-        
-#     for rows in worksheet.iter_rows(min_row=10, max_row=size, min_col=1, max_col=10):
-#             for cell in rows:
-#                 if cell.row % 2:
-#                     cell.fill = PatternFill(start_color=cinza, end_color=cinza,
-#                                             fill_type = "solid")
-#                 if cell.column == 10:
-#                     cell.font = Font(name="Arial", size=12, color="000000")
-#                     cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
-#                     cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="medium") ,bottom=Side(border_style="hair") )
-#                 else:
-#                     cell.font = Font(name="Arial", size=12, color="000000")
-#                     cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
-#                     cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="hair") ,bottom=Side(border_style="hair") )
-                
-                
-#     #subtotal
-#     stringAfinarCelula =size+2
-#     worksheet.row_dimensions[size+2].height = 6
-#     celulas_mergidas_subtotal = f"A{size+2}:I{size+2}"
-#     worksheet.merge_cells(celulas_mergidas_subtotal)
-#     left_celula_cell = f"A{size+2}"
-#     top_left_cell = worksheet[left_celula_cell]
-#     top_left_cell.value = "Sub Total1"
-#     top_left_cell.fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     top_left_cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-#     top_left_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_cell.border = Border(top=Side(border_style="thin") ,left = Side(border_style="medium") ,right =Side(border_style="thin") ,bottom=Side(border_style="medium") )
-
-#     worksheet.row_dimensions[size+2].height = 56.25
-
-#      # FORMULATOTAL
-#     formula = f"=SUM(J10:J{size})"
-#     celula = f'J{size+2}'
-#     worksheet[celula] = formula
-#     worksheet[celula].fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
-#     worksheet[celula].border = Border(top=Side(border_style="thin") ,left = Side(border_style="thin") ,right =Side(border_style="medium") ,bottom=Side(border_style="medium") )
-#     worksheet[celula].number_format = 'R$ #,##0.00'
-#     #restituições creditadas
-#     restituicoes = size + 3
-#     celula_restituicoes=f'A{restituicoes}'
-#     worksheet[celula_restituicoes].value = "RESTITUIÇÕES CREDITADAS"
-#     worksheet[celula_restituicoes].font = Font(name="Arial", size=12, color="000000",bold=True)
-#     worksheet.row_dimensions[restituicoes].height = 30
-
-#     #estilo colunas restitucoes creditadas
-#     row_style_passagens_append = NamedStyle(name='row_style_passagens_append')
-#     row_style_passagens_append.font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
-#     row_style_passagens_append.fill = openpyxl.styles.PatternFill(start_color=azul_claro, end_color=azul_claro, fill_type='solid')
-#     row_style_passagens_append.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
-#     row_style_passagens_append.height = 30
-#     row_style_passagens_append.border = Border(top=Side(border_style="medium") ,bottom=Side(border_style="medium") )
-
-
-#     row_number = size + 4
-   
-#     for column in range(1, 11):  
-#         cell = worksheet.cell(row=row_number, column=column)
-#         cell.style = row_style_passagens_append
-#         if cell.column == 10:
-#           cell.border = Border(top=Side(border_style="medium") ,right =Side(border_style="medium") ,bottom=Side(border_style="medium") )
-
-
-
-#     values = ["Item","Restituidor","CNPJ/CPF",'Descrição',"Cheque equivalente","Data do Cheque",'Nº do Depósito','Data da Devolução','Valor']
-#     coluna = 1
-#     for a,b in enumerate(values):
-#         worksheet.cell(row=row_number, column=coluna, value=b)
-#         if coluna == 4:
-#             coluna = coluna + 1
-#         coluna = coluna + 1
-        
-
-#     merge_formula = f'D{row_number}:E{row_number}'
-#     worksheet.merge_cells(merge_formula)
-
-    
-#     #subtotal2
-#     sub_total2_row = size + 5
-#     subtotal_merge_cells= f'A{sub_total2_row}:I{sub_total2_row}'
-#     worksheet.merge_cells(subtotal_merge_cells)
-#     top_left_subtotal2_cell_formula = f'A{sub_total2_row}'
-#     top_left_subtotal2_cell = worksheet[top_left_subtotal2_cell_formula]
-#     top_left_subtotal2_cell.value = "Sub Total 2"
-#     top_left_subtotal2_cell.fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
-#     top_left_subtotal2_cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-#     top_left_subtotal2_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_subtotal2_cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="medium") ,right =Side(border_style="hair") ,bottom=Side(border_style="medium") )
-
-#     sub_formula_row_celula = f'J{sub_total2_row}'
-#     worksheet[sub_formula_row_celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
-#     worksheet[sub_formula_row_celula].font = Font(name="Arial", size=12, color="000000",bold=True)
-#     worksheet[sub_formula_row_celula].number_format = 'R$ #,##0.00'
-#     worksheet[sub_formula_row_celula].border = Border(top=Side(border_style="thin") ,left = Side(border_style="thin") ,right =Side(border_style="medium") ,bottom=Side(border_style="medium") )
-
-#       #total1-2
-#     total12_row = size + 6
-#     total12_merge_cells = f'A{total12_row}:I{total12_row}'
-#     worksheet.merge_cells(total12_merge_cells)
-#     top_left_total12_cell_formula = f'A{total12_row}'
-#     top_left_total12_cell = worksheet[top_left_total12_cell_formula]
-#     top_left_total12_cell.value = "Total(1-2)"
-#     top_left_total12_cell.fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
-#     top_left_total12_cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-#     top_left_total12_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_total12_cell.border = Border(top=Side(border_style="medium") ,left = Side(border_style="medium") ,bottom=Side(border_style="medium") )
-
-
-#     #total_formula
-#     total_formula_row = size + 6
-#     total_formulaa = f'=J{size+2}'
-#     total_formula_row_celula = f'J{total_formula_row}'
-#     worksheet[total_formula_row_celula].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
-#     worksheet[total_formula_row_celula].font = Font(name="Arial", size=12, color="000000",bold=True)
-#     worksheet[total_formula_row_celula].number_format = 'R$ #,##0.00'
-#     worksheet[total_formula_row_celula].border = Border(top=Side(border_style="medium") ,bottom=Side(border_style="medium"),right=Side(border_style="medium") )
-
-#     worksheet.row_dimensions[total_formula_row].height = 30
-#     worksheet[total_formula_row_celula] = total_formulaa
-
-
-#     #brasilia
-#     brasilia_row = size + 7
-#     brasilia_formula = f"='Receita x Despesa'!A42:J42"
-#     brasilia_merge_cells = f'A{brasilia_row}:I{brasilia_row}'
-#     worksheet.merge_cells(brasilia_merge_cells)
-#     top_left_brasilia_cell_formula = f'A{brasilia_row}'
-#     top_left_brasilia_cell = worksheet[top_left_brasilia_cell_formula]
-#     top_left_brasilia_cell.value = brasilia_formula
-#     top_left_brasilia_cell.alignment = Alignment(horizontal="center",vertical="center")
-
-#     #DiretorFinanceiro
-#     diretor_row = size + 8
-#     diretor_cargo_row = size + 9
-#     diretor_cpf_row = size + 10
-#     diretor_nome_formula = f"='Receita x Despesa'!A45"
-#     diretor_cargo_formula = f"='Receita x Despesa'!A46"
-#     diretor_cpf_formula = f"='Receita x Despesa'!A47"
-#     diretor_merge_cells = f'A{diretor_row}:D{diretor_row}'
-#     diretor_cargo_merge_cells = f'A{diretor_cargo_row}:D{diretor_cargo_row}'
-#     diretor_cpf_merge_cells = f'A{diretor_cpf_row}:D{diretor_cpf_row}'
-#     worksheet.merge_cells(diretor_merge_cells)
-#     worksheet.merge_cells(diretor_cargo_merge_cells)
-#     worksheet.merge_cells(diretor_cpf_merge_cells)
-#     top_left_diretor_cell_formula = f'A{diretor_row}'
-#     top_left_diretor_cell_cargo_formula = f'A{diretor_cargo_row}'
-#     top_left_diretor_cell_cpf_formula = f'A{diretor_cpf_row}'
-#     top_left_diretor_cell = worksheet[top_left_diretor_cell_formula]
-#     top_left_diretor_cell_cargo_formula = worksheet[top_left_diretor_cell_cargo_formula]
-#     top_left_diretor_cell_cpf_formula = worksheet[top_left_diretor_cell_cpf_formula]
-#     top_left_diretor_cell.value = diretor_nome_formula
-#     top_left_diretor_cell_cargo_formula.value = diretor_cargo_formula
-#     top_left_diretor_cell_cpf_formula.value = diretor_cpf_formula
-#     top_left_diretor_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_diretor_cell.font = Font(bold=True)
-#     top_left_diretor_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_diretor_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
-#     #Coordenadora
-#     coordenadora_row = size + 8
-#     coordenadora_cargo_row = size + 9
-#     coordenadora_cpf_row = size + 10
-#     coordenadora_nome_formula = f"='Receita x Despesa'!H45"
-#     coordenadora_cargo_formula = f"='Receita x Despesa'!H46"
-#     coordenadora_cpf_formula = f"='Receita x Despesa'!H47"
-#     coordenadora_merge_cells = f'F{coordenadora_row}:J{coordenadora_row}'
-#     coordenadora_cargo_merge_cells = f'F{coordenadora_cargo_row}:J{coordenadora_cargo_row}'
-#     coordenadora_cpf_merge_cells = f'F{coordenadora_cpf_row}:J{coordenadora_cpf_row}'
-#     worksheet.merge_cells(coordenadora_merge_cells)
-#     worksheet.merge_cells(coordenadora_cargo_merge_cells)
-#     worksheet.merge_cells(coordenadora_cpf_merge_cells)
-#     top_left_coordenadora_cell_formula = f'F{coordenadora_row}'
-#     top_left_coordenadora_cell_cargo_formula = f'F{coordenadora_cargo_row}'
-#     top_left_coordenadora_cell_cpf_formula = f'F{coordenadora_cpf_row}'
-#     top_left_coordenadora_cell = worksheet[top_left_coordenadora_cell_formula]
-#     top_left_coordenadora_cell_cargo_formula = worksheet[top_left_coordenadora_cell_cargo_formula]
-#     top_left_coordenadora_cell_cpf_formula = worksheet[top_left_coordenadora_cell_cpf_formula]
-#     top_left_coordenadora_cell.value = coordenadora_nome_formula
-#     top_left_coordenadora_cell_cargo_formula.value = coordenadora_cargo_formula
-#     top_left_coordenadora_cell_cpf_formula.value = coordenadora_cpf_formula
-#     top_left_coordenadora_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_coordenadora_cell.font= Font(bold = True)
-#     top_left_coordenadora_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_coordenadora_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
-
-    
-#     # borda = Border(right=Side(border_style="medium"))
-#     # worksheet.sheet_view.showGridLines = False
-#     # # 
-#     # for row in worksheet.iter_rows(min_row=1, max_row=coordenadora_cpf_row+1,min_col=10,max_col=10):
-#     #     for cell in row:
-#     #         cell.border = borda
-            
-    
-
-#     for row in worksheet.iter_rows(min_row=coordenadora_cpf_row+1, max_row=coordenadora_cpf_row+1,min_col=1,max_col=10):
-#         for cell in row:
-#             if cell.column == 10:
-#                 cell.border = Border(top=Side(border_style="none") ,left = Side(border_style="none") ,right =Side(border_style="medium") ,bottom=Side(border_style="medium") )
-#             else:
-#                 cell.border = Border(top=Side(border_style="none") ,left = Side(border_style="none") ,right =Side(border_style="none") ,bottom=Side(border_style="medium") )
-
-#     workbook.save(tabela)
-#     workbook.close()
-
-# def estilo_obrigacoes_tributarias(tabela,tamanho):
-#     caminho = pegar_caminho(tabela)
-#     workbook = openpyxl.load_workbook(caminho)
-#     worksheet = workbook['Obrigações Trib. - Encargos 20%']
-
-   
-#     size = tamanho + 10
-#     #worksheet.row_dimensions[27].height = 50
-
-#     cinza = "979CA8"
-#     azul = "336394"
-
-                
-                
-#     for row in worksheet.iter_rows(min_row=10, max_row=size, min_col=1, max_col=10):
-#         worksheet.row_dimensions[row[0].row].height = 35
-
-#     custom_number_format_obrig = []
-#     # MASCARA R$
-#     if custom_number_format_obrig!= False: 
-#         custom_number_format_obrig = NamedStyle(name='custom_number_format_obrig')
-#         custom_number_format_obrig.number_format = 'R$ #,##0.00'
-#         custom_number_format_obrig.font = Font(name="Arial", size=12, color="000000")
-#         custom_number_format_obrig.alignment = Alignment(horizontal="general",vertical="bottom",wrap_text=True)
-    
-#     #stylecinza
-    
-
-#     value_to_stop = size  
-#     start_row = 10
-# #
-#     for row in range(start_row,size+1):
-#         cell = worksheet[f'J{row}']
-#         cell.style = custom_number_format_obrig
-        
-#     for rows in worksheet.iter_rows(min_row=10, max_row=size, min_col=1, max_col=10):
-#             for cell in rows:
-#                 if cell.row % 2:
-#                     cell.fill = PatternFill(start_color=cinza, end_color=cinza,
-#                                             fill_type = "solid")
-#                 cell.font = Font(name="Arial", size=12, color="000000")
-#                 cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
-#                 cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="hair") ,bottom=Side(border_style="hair") )
-                
-
-    
-
-
-#     #subtotal
-#     celulas_mergidas_subtotal = f"A{size}:I{size}"
-#     worksheet.merge_cells(celulas_mergidas_subtotal)
-#     left_celula_cell = f"A{size}"
-#     top_left_cell = worksheet[left_celula_cell]
-#     top_left_cell.value = "Sub Total"
-#     top_left_cell.fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     top_left_cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-#     top_left_cell.alignment = Alignment(horizontal="center",vertical="center")
-
-
-  
-
-#     # FORMULATOTAL
-#     formula = f"=SUM(J10:J{size-1})"
-#     celula = f'J{size}'
-#     worksheet[celula] = formula
-#     worksheet[celula].fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
-
-
-#     #restituições creditadas
-#     restituicoes = size + 1
-#     celula_restituicoes=f'A{restituicoes}'
-#     worksheet[celula_restituicoes].value = "RESTITUIÇÕES CREDITADAS"
-#     worksheet[celula_restituicoes].font = Font(name="Arial", size=12, color="000000",bold=True)
-#     worksheet.row_dimensions[restituicoes].height = 30
-
-
-#     #colunas azul
-#     row_style_obrig = NamedStyle(name='row_style_obrig')
-#     row_style_obrig.font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
-#     row_style_obrig.fill = openpyxl.styles.PatternFill(start_color=azul, end_color=azul, fill_type='solid')
-#     row_style_obrig.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
-#     row_style_obrig.height = 30
-
-#     row_number = size + 2
-   
-#     for column in range(1, 11):  
-#         cell = worksheet.cell(row=row_number, column=column)
-#         cell.style = row_style_obrig
-
-
-#     values = ["Item","Restituidor","CNPJ/CPF",'Descrição',"Cheque equivalente","Data do Cheque",'Nº do Depósito','Data da Devolução','Valor']
-#     coluna = 1
-#     for a,b in enumerate(values):
-#         worksheet.cell(row=row_number, column=coluna, value=b)
-#         if coluna == 4:
-#             coluna = coluna + 1
-#         coluna = coluna + 1
-        
-
-#     merge_formula = f'D{row_number}:E{row_number}'
-#     worksheet.merge_cells(merge_formula)
-
-#     #subtotal2
-#     sub_total2_row = size + 4
-#     subtotal_merge_cells= f'A{sub_total2_row}:I{sub_total2_row}'
-#     worksheet.merge_cells(subtotal_merge_cells)
-#     top_left_subtotal2_cell_formula = f'A{sub_total2_row}'
-#     top_left_subtotal2_cell = worksheet[top_left_subtotal2_cell_formula]
-#     top_left_subtotal2_cell.value = "Sub Total 2"
-#     top_left_subtotal2_cell.fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     top_left_subtotal2_cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-#     top_left_subtotal2_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     sub_formula_row_celula = f'J{sub_total2_row}'
-#     worksheet[sub_formula_row_celula].fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     worksheet[sub_formula_row_celula].font = Font(name="Arial", size=12, color="000000",bold=True)
-
-#      #subtotal12_Formula
-#     # sub_formula_row = size + 4
-#     # sub_formula = f'=SOMA(J{sub_formula_row}:J{sub_formula_row})'
-#     # sub_formula_row_celula = f'J{sub_formula_row}'
-#     # worksheet[sub_formula_row_celula].fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     # worksheet[sub_formula_row_celula] = sub_formula
-
-
-#     #total1-2
-#     total12_row = size + 5
-#     total12_merge_cells = f'A{total12_row}:I{total12_row}'
-#     worksheet.merge_cells(total12_merge_cells)
-#     top_left_total12_cell_formula = f'A{total12_row}'
-#     top_left_total12_cell = worksheet[top_left_total12_cell_formula]
-#     top_left_total12_cell.value = "Total(1 -2)"
-#     top_left_total12_cell.fill = PatternFill(start_color=azul, end_color=azul,fill_type = "solid")
-#     top_left_total12_cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-#     top_left_total12_cell.alignment = Alignment(horizontal="center",vertical="center")
-
-#     #total_formula
-#     total_formula_row = size + 5
-#     total_formulaa = f'=J{size}'
-#     total_formula_row_celula = f'J{total_formula_row}'
-#     worksheet[total_formula_row_celula].fill = PatternFill(start_color=azul, end_color=azul,fill_type = "solid")
-#     worksheet[total_formula_row_celula].font = Font(name="Arial", size=12, color="000000",bold=True)
-#     worksheet[total_formula_row_celula].number_format = 'R$ #,##0.00'
-#     worksheet.row_dimensions[total_formula_row].height = 30
-#     worksheet[total_formula_row_celula] = total_formulaa
-
-#     #brasilia
-#     brasilia_row = size + 7
-#     brasilia_formula = f"='Receita x Despesa'!A42:J42"
-#     brasilia_merge_cells = f'A{brasilia_row}:I{brasilia_row}'
-#     worksheet.merge_cells(brasilia_merge_cells)
-#     top_left_brasilia_cell_formula = f'A{brasilia_row}'
-#     top_left_brasilia_cell = worksheet[top_left_brasilia_cell_formula]
-#     top_left_brasilia_cell.value = brasilia_formula
-#     top_left_brasilia_cell.alignment = Alignment(horizontal="center",vertical="center")
-
-#     #DiretorFinanceiro
-#     diretor_row = size + 8
-#     diretor_cargo_row = size + 9
-#     diretor_cpf_row = size + 10
-#     diretor_nome_formula = f"='Receita x Despesa'!A45"
-#     diretor_cargo_formula = f"='Receita x Despesa'!A46"
-#     diretor_cpf_formula = f"='Receita x Despesa'!A47"
-#     diretor_merge_cells = f'A{diretor_row}:D{diretor_row}'
-#     diretor_cargo_merge_cells = f'A{diretor_cargo_row}:D{diretor_cargo_row}'
-#     diretor_cpf_merge_cells = f'A{diretor_cpf_row}:D{diretor_cpf_row}'
-#     worksheet.merge_cells(diretor_merge_cells)
-#     worksheet.merge_cells(diretor_cargo_merge_cells)
-#     worksheet.merge_cells(diretor_cpf_merge_cells)
-#     top_left_diretor_cell_formula = f'A{diretor_row}'
-#     top_left_diretor_cell_cargo_formula = f'A{diretor_cargo_row}'
-#     top_left_diretor_cell_cpf_formula = f'A{diretor_cpf_row}'
-#     top_left_diretor_cell = worksheet[top_left_diretor_cell_formula]
-#     top_left_diretor_cell_cargo_formula = worksheet[top_left_diretor_cell_cargo_formula]
-#     top_left_diretor_cell_cpf_formula = worksheet[top_left_diretor_cell_cpf_formula]
-#     top_left_diretor_cell.value = diretor_nome_formula
-#     top_left_diretor_cell_cargo_formula.value = diretor_cargo_formula
-#     top_left_diretor_cell_cpf_formula.value = diretor_cpf_formula
-#     top_left_diretor_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_diretor_cell.font = Font(bold=True)
-#     top_left_diretor_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_diretor_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
-#     #Coordenadora
-#     coordenadora_row = size + 8
-#     coordenadora_cargo_row = size + 9
-#     coordenadora_cpf_row = size + 10
-#     coordenadora_nome_formula = f"='Receita x Despesa'!H45"
-#     coordenadora_cargo_formula = f"='Receita x Despesa'!H46"
-#     coordenadora_cpf_formula = f"='Receita x Despesa'!H47"
-#     coordenadora_merge_cells = f'F{coordenadora_row}:J{coordenadora_row}'
-#     coordenadora_cargo_merge_cells = f'F{coordenadora_cargo_row}:J{coordenadora_cargo_row}'
-#     coordenadora_cpf_merge_cells = f'F{coordenadora_cpf_row}:J{coordenadora_cpf_row}'
-#     worksheet.merge_cells(coordenadora_merge_cells)
-#     worksheet.merge_cells(coordenadora_cargo_merge_cells)
-#     worksheet.merge_cells(coordenadora_cpf_merge_cells)
-#     top_left_coordenadora_cell_formula = f'F{coordenadora_row}'
-#     top_left_coordenadora_cell_cargo_formula = f'F{coordenadora_cargo_row}'
-#     top_left_coordenadora_cell_cpf_formula = f'F{coordenadora_cpf_row}'
-#     top_left_coordenadora_cell = worksheet[top_left_coordenadora_cell_formula]
-#     top_left_coordenadora_cell_cargo_formula = worksheet[top_left_coordenadora_cell_cargo_formula]
-#     top_left_coordenadora_cell_cpf_formula = worksheet[top_left_coordenadora_cell_cpf_formula]
-#     top_left_coordenadora_cell.value = coordenadora_nome_formula
-#     top_left_coordenadora_cell_cargo_formula.value = coordenadora_cargo_formula
-#     top_left_coordenadora_cell_cpf_formula.value = coordenadora_cpf_formula
-#     top_left_coordenadora_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_coordenadora_cell.font= Font(bold = True)
-#     top_left_coordenadora_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_coordenadora_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
-
-#     #nome dos indices
-
-#     azul_claro = '1c89b8'
-#     row_style_cabecario_obrig = NamedStyle(name='row_style_cabecario_obrig')
-#     row_style_cabecario_obrig.font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
-#     row_style_cabecario_obrig.fill = openpyxl.styles.PatternFill(start_color=azul_claro, end_color=azul_claro, fill_type='solid')
-#     row_style_cabecario_obrig.alignment = Alignment(horizontal="center",vertical="center",wrap_text = True)
-#     worksheet.row_dimensions[9].height = 50
-#     worksheet.column_dimensions['b'].width = 35
-#     worksheet.column_dimensions['c'].width = 20
-#     worksheet.column_dimensions['d'].width = 35
-#     worksheet.column_dimensions['e'].width = 60
-#     worksheet.column_dimensions['f'].width = 35
-#     worksheet.column_dimensions['g'].width = 30
-#     worksheet.column_dimensions['h'].width = 30
-#     worksheet.column_dimensions['i'].width = 30
-#     worksheet.column_dimensions['j'].width = 30
-#     worksheet.column_dimensions['e'].height = 20
-  
-  
-#     linha_number = 9
-#     # Apply the style to each cell in the row
-#     for cell in worksheet[linha_number]:
-#         cell.style = row_style_cabecario_obrig
-
-#     valores = ["ITEM","NOME","CNPJ/CPF",'ESPECIFICAÇÃO DA DESPESA','DESCRIÇÃO',"Nº DO RECIBO OU EQUIVALENTE","DATA DE EMISSÃO",'CHEQUE / ORDEM BANCÁRIA','DATA DE PGTO','Valor']
-#     col = 1
-#     for a,b in enumerate(valores):
-#         worksheet.cell(row=linha_number, column=col, value=b)
-#         col = col + 1
-
-
-#     #cabecario relação de pagamentos - outro servicoes de terceiros
-#     worksheet.merge_cells('A1:J2')
-#     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - P A S S A G E N S  E  D E S P E S A S   C O M  L O C O M O Ç Ã O'
-#     worksheet['A1'].font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
-#     worksheet['A1'].alignment = Alignment(horizontal="center",vertical="center")
-#     worksheet['A1'].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
-#     worksheet.merge_cells('A3:I3')
-#     worksheet['A3'] = "='Receita x Despesa'!A3:J3"
-#     worksheet['A3'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A3'].alignment = Alignment(horizontal="left",vertical="center")
-
-#     worksheet.merge_cells('A4:I4')
-#     worksheet['A4'] = "='Receita x Despesa'!A4:J4"
-#     worksheet['A4'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A4'].alignment = Alignment(horizontal="left",vertical="center")
-    
-#     worksheet.merge_cells('A5:I5')
-#     worksheet['A5'] = "='Receita x Despesa'!A5:J5"
-#     worksheet['A5'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A5'].alignment = Alignment(horizontal="left",vertical="center")
-    
-#     worksheet.merge_cells('A6:I6')
-#     worksheet['A6'] = "='Receita x Despesa'!A6:J6"
-#     worksheet['A6'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A6'].alignment = Alignment(horizontal="left",vertical="center")
-    
-#     worksheet.merge_cells('A7:I7')
-#     worksheet['A7'] = "='Receita x Despesa'!A7:J7"
-#     worksheet['A7'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A7'].alignment = Alignment(horizontal="left",vertical="center")
-   
-#     altura = 45
-#     linha_inicio = 9
-#     for row_number in range(linha_inicio, linha_inicio + tamanho+1):
-#         worksheet.row_dimensions[row_number].height = altura
-    
-
-#     # Save the workbook to a file
-#     workbook.save(tabela)
-#     workbook.close()
-
-# def estilo_diarias(tabela,tamanho):
-#     caminho = pegar_caminho(tabela)
-#     workbook = openpyxl.load_workbook(caminho)
-#     worksheet = workbook['Diárias']
-#     size = tamanho + 10
-#     cinza = "d9d9d9"
-#     cinza_escuro = "bfbfbf"
-#     azul = "336394"
-#     azul_claro = '1c8cbc'
-
-#     borda = Border(right=Side(border_style="medium"))
-#     worksheet.sheet_view.showGridLines = False
-#     # 
-#     for row in worksheet.iter_rows(min_row=1, max_row=size+11,min_col=10,max_col=10):
-#         for cell in row:
-#             cell.border = borda
-            
-
-#     worksheet.column_dimensions['a'].width = 25
-#     worksheet.column_dimensions['b'].width = 25
-#     worksheet.column_dimensions['c'].width = 35
-#     worksheet.column_dimensions['d'].width = 40#descrição
-#     worksheet.column_dimensions['e'].width = 20 #n do recibo ou qeuivalente
-#     worksheet.column_dimensions['f'].width = 25 #data de emissão
-#     worksheet.column_dimensions['g'].width = 25 #data de emissão
-#     worksheet.column_dimensions['h'].width = 25 #data de emissão
-#     worksheet.column_dimensions['i'].width = 25 #data de emissão
-#     worksheet.column_dimensions['j'].width = 25 #data de emissão
-
-
-#     #cabecario relação de pagamentos - outro servicoes de terceiros
-#     worksheet.merge_cells('A1:J2')
-#     worksheet['A1'] = f'R E L A Ç Ã O   D E   P A G A M E N T O S - DIÁRIAS'
-#     worksheet['A1'].font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
-#     worksheet['A1'].alignment = Alignment(horizontal="center",vertical="center")
-#     worksheet['A1'].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
-    
-#     worksheet.merge_cells('A3:F3')
-#     worksheet['A3'] = "='Receita x Despesa'!A3:J3"
-#     worksheet['A3'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A3'].alignment = Alignment(horizontal="left",vertical="center")
-
-#     worksheet.merge_cells('A4:F4')
-#     worksheet['A4'] = "='Receita x Despesa'!A4:J4"
-#     worksheet['A4'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A4'].alignment = Alignment(horizontal="left",vertical="center")
-    
-#     worksheet.merge_cells('A5:F5')
-#     worksheet['A5'] = "='Receita x Despesa'!A5:J5"
-#     worksheet['A5'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A5'].alignment = Alignment(horizontal="left",vertical="center")
-    
-#     worksheet.merge_cells('A6:F6')
-#     worksheet['A6'] = "='Receita x Despesa'!A6:J6"
-#     worksheet['A6'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A6'].alignment = Alignment(horizontal="left",vertical="center")
-    
-#     worksheet.merge_cells('A7:F7')
-#     worksheet['A7'] = "='Receita x Despesa'!A7:J7"
-#     worksheet['A7'].font = Font(name="Arial", size=12, color="000000")
-#     worksheet['A7'].alignment = Alignment(horizontal="left",vertical="center")
-
-#     #colunas azul cabecario
-#     row_style_diaria = NamedStyle(name='row_style_diaria')
-#     row_style_diaria.font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
-#     row_style_diaria.fill = openpyxl.styles.PatternFill(start_color=azul_claro, end_color=azul_claro, fill_type='solid')
-#     row_style_diaria.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
-#     row_style_diaria.border = Border(top=Side(border_style="medium")  ,bottom=Side(border_style="thin") )
-#     row_style_diaria.height = 20
-#     linha_number = 9
-#     for row in worksheet.iter_rows(min_row=linha_number, max_row=linha_number, min_col=1, max_col=10):
-#         for cell in row:
-#             cell.style = row_style_diaria
-#             if cell.column == 10:
-#                 cell.border = Border(top=Side(border_style="medium")  ,bottom=Side(border_style="thin"), right=Side(border_style="medium") )
-
-#     valores = ["ITEM","NOME","CNPJ/CPF",'ESPECIFICAÇÃO DA DESPESA','DESCRIÇÃO',"Nº DO RECIBO OU EQUIVALENTE","DATA DE EMISSÃO",'CHEQUE / ORDEM BANCÁRIA','DATA DE PGTO','Valor']
-#     col = 1
-#     for a,b in enumerate(valores):
-#         worksheet.cell(row=linha_number, column=col, value=b)
-#         col = col + 1
-
-
-#     #Aumentar  a altura das celulas 
-#     for row in worksheet.iter_rows(min_row=10, max_row=size, min_col=1, max_col=10):
-#         worksheet.row_dimensions[row[0].row].height = 35
-
-#     custom_number_format_diaria = []
-#     # MASCARA R$
-#     if custom_number_format_diaria!= False: 
-#         custom_number_format_diaria = NamedStyle(name='custom_number_format_diaria')
-#         custom_number_format_diaria.number_format = 'R$ #,##0.00'
-#         custom_number_format_diaria.font = Font(name="Arial", size=12, color="000000")
-#         custom_number_format_diaria.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
-    
-#     #estilocinzasimcinzanao
-#     value_to_stop = size  
-#     start_row = 10
-# #
-#     for row in range(start_row,size+1):
-#         cell = worksheet[f'J{row}']
-#         cell.style = custom_number_format_diaria
-        
-#     for rows in worksheet.iter_rows(min_row=10, max_row=size, min_col=1, max_col=10):
-#             for cell in rows:
-#                 if cell.row % 2:
-#                     cell.fill = PatternFill(start_color=cinza, end_color=cinza,
-#                                             fill_type = "solid")
-#                 if cell.column == 10:
-#                     cell.font = Font(name="Arial", size=12, color="000000")
-#                     cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
-#                     cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="medium") ,bottom=Side(border_style="hair") )
-#                 else:
-#                     cell.font = Font(name="Arial", size=12, color="000000")
-#                     cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
-#                     cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="hair") ,bottom=Side(border_style="hair") )
-                
-                
-#     #subtotal
-#     stringAfinarCelula =size+2
-#     worksheet.row_dimensions[size+2].height = 6
-#     celulas_mergidas_subtotal = f"A{size+2}:I{size+2}"
-#     worksheet.merge_cells(celulas_mergidas_subtotal)
-#     left_celula_cell = f"A{size+2}"
-#     top_left_cell = worksheet[left_celula_cell]
-#     top_left_cell.value = "Sub Total1"
-#     top_left_cell.fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     top_left_cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-#     top_left_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_cell.border = Border(top=Side(border_style="thin") ,left = Side(border_style="medium") ,right =Side(border_style="thin") ,bottom=Side(border_style="medium") )
-
-#     worksheet.row_dimensions[size+2].height = 56.25
-
-#      # FORMULATOTAL
-#     formula = f"=SUM(J10:J{size})"
-#     celula = f'J{size+2}'
-#     worksheet[celula] = formula
-#     worksheet[celula].fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
-#     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
-#     worksheet[celula].border = Border(top=Side(border_style="thin") ,left = Side(border_style="thin") ,right =Side(border_style="medium") ,bottom=Side(border_style="medium") )
-#     worksheet[celula].number_format = 'R$ #,##0.00'
-#     #restituições creditadas
-#     restituicoes = size + 3
-#     celula_restituicoes=f'A{restituicoes}'
-#     worksheet[celula_restituicoes].value = "RESTITUIÇÕES CREDITADAS"
-#     worksheet[celula_restituicoes].font = Font(name="Arial", size=12, color="000000",bold=True)
-#     worksheet.row_dimensions[restituicoes].height = 30
-
-#     #estilo colunas restitucoes creditadas
-#     row_style_diaria_append = NamedStyle(name='row_style_diaria_append')
-#     row_style_diaria_append.font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
-#     row_style_diaria_append.fill = openpyxl.styles.PatternFill(start_color=azul_claro, end_color=azul_claro, fill_type='solid')
-#     row_style_diaria_append.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
-#     row_style_diaria_append.height = 30
-#     row_style_diaria_append.border = Border(top=Side(border_style="medium") ,bottom=Side(border_style="medium") )
-
-
-#     row_number = size + 4
-   
-#     for column in range(1, 11):  
-#         cell = worksheet.cell(row=row_number, column=column)
-#         cell.style = row_style_diaria_append
-#         if cell.column == 10:
-#             cell.border = Border(top=Side(border_style="medium") ,right =Side(border_style="medium") ,bottom=Side(border_style="medium") )
-
-
-
-#     values = ["Item","Restituidor","CNPJ/CPF",'Descrição',"Cheque equivalente","Data do Cheque",'Nº do Depósito','Data da Devolução','Valor']
-#     coluna = 1
-#     for a,b in enumerate(values):
-#         worksheet.cell(row=row_number, column=coluna, value=b)
-#         if coluna == 4:
-#             coluna = coluna + 1
-#         coluna = coluna + 1
-        
-
-#     merge_formula = f'D{row_number}:E{row_number}'
-#     worksheet.merge_cells(merge_formula)
-
-    
-#     #subtotal2
-#     sub_total2_row = size + 5
-#     subtotal_merge_cells= f'A{sub_total2_row}:I{sub_total2_row}'
-#     worksheet.merge_cells(subtotal_merge_cells)
-#     top_left_subtotal2_cell_formula = f'A{sub_total2_row}'
-#     top_left_subtotal2_cell = worksheet[top_left_subtotal2_cell_formula]
-#     top_left_subtotal2_cell.value = "Sub Total 2"
-#     top_left_subtotal2_cell.fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
-#     top_left_subtotal2_cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-#     top_left_subtotal2_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_subtotal2_cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="medium") ,right =Side(border_style="hair") ,bottom=Side(border_style="medium") )
-
-#     sub_formula_row_celula = f'J{sub_total2_row}'
-#     worksheet[sub_formula_row_celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
-#     worksheet[sub_formula_row_celula].font = Font(name="Arial", size=12, color="000000",bold=True)
-#     worksheet[sub_formula_row_celula].number_format = 'R$ #,##0.00'
-#     worksheet[sub_formula_row_celula].border = Border(top=Side(border_style="thin") ,left = Side(border_style="thin") ,right =Side(border_style="medium") ,bottom=Side(border_style="medium") )
-
-#       #total1-2
-#     total12_row = size + 6
-#     total12_merge_cells = f'A{total12_row}:I{total12_row}'
-#     worksheet.merge_cells(total12_merge_cells)
-#     top_left_total12_cell_formula = f'A{total12_row}'
-#     top_left_total12_cell = worksheet[top_left_total12_cell_formula]
-#     top_left_total12_cell.value = "Total(1-2)"
-#     top_left_total12_cell.fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
-#     top_left_total12_cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-#     top_left_total12_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_total12_cell.border = Border(top=Side(border_style="medium") ,left = Side(border_style="medium") ,bottom=Side(border_style="medium") )
-
-
-#     #total_formula
-#     total_formula_row = size + 6
-#     total_formulaa = f'=J{size}'
-#     total_formula_row_celula = f'J{total_formula_row}'
-#     worksheet[total_formula_row_celula].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
-#     worksheet[total_formula_row_celula].font = Font(name="Arial", size=12, color="000000",bold=True)
-#     worksheet[total_formula_row_celula].number_format = 'R$ #,##0.00'
-#     worksheet[total_formula_row_celula].border = Border(top=Side(border_style="medium") ,bottom=Side(border_style="medium"),right=Side(border_style="medium") )
-
-#     worksheet.row_dimensions[total_formula_row].height = 30
-#     worksheet[total_formula_row_celula] = total_formulaa
-
-
-#     #brasilia
-#     brasilia_row = size + 7
-#     brasilia_formula = f"='Receita x Despesa'!A42:J42"
-#     brasilia_merge_cells = f'A{brasilia_row}:I{brasilia_row}'
-#     worksheet.merge_cells(brasilia_merge_cells)
-#     top_left_brasilia_cell_formula = f'A{brasilia_row}'
-#     top_left_brasilia_cell = worksheet[top_left_brasilia_cell_formula]
-#     top_left_brasilia_cell.value = brasilia_formula
-#     top_left_brasilia_cell.alignment = Alignment(horizontal="center",vertical="center")
-
-#     #DiretorFinanceiro
-#     diretor_row = size + 8
-#     diretor_cargo_row = size + 9
-#     diretor_cpf_row = size + 10
-#     diretor_nome_formula = f"='Receita x Despesa'!A45"
-#     diretor_cargo_formula = f"='Receita x Despesa'!A46"
-#     diretor_cpf_formula = f"='Receita x Despesa'!A47"
-#     diretor_merge_cells = f'A{diretor_row}:D{diretor_row}'
-#     diretor_cargo_merge_cells = f'A{diretor_cargo_row}:D{diretor_cargo_row}'
-#     diretor_cpf_merge_cells = f'A{diretor_cpf_row}:D{diretor_cpf_row}'
-#     worksheet.merge_cells(diretor_merge_cells)
-#     worksheet.merge_cells(diretor_cargo_merge_cells)
-#     worksheet.merge_cells(diretor_cpf_merge_cells)
-#     top_left_diretor_cell_formula = f'A{diretor_row}'
-#     top_left_diretor_cell_cargo_formula = f'A{diretor_cargo_row}'
-#     top_left_diretor_cell_cpf_formula = f'A{diretor_cpf_row}'
-#     top_left_diretor_cell = worksheet[top_left_diretor_cell_formula]
-#     top_left_diretor_cell_cargo_formula = worksheet[top_left_diretor_cell_cargo_formula]
-#     top_left_diretor_cell_cpf_formula = worksheet[top_left_diretor_cell_cpf_formula]
-#     top_left_diretor_cell.value = diretor_nome_formula
-#     top_left_diretor_cell_cargo_formula.value = diretor_cargo_formula
-#     top_left_diretor_cell_cpf_formula.value = diretor_cpf_formula
-#     top_left_diretor_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_diretor_cell.font = Font(bold=True)
-#     top_left_diretor_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_diretor_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
-#     #Coordenadora
-#     coordenadora_row = size + 8
-#     coordenadora_cargo_row = size + 9
-#     coordenadora_cpf_row = size + 10
-#     coordenadora_nome_formula = f"='Receita x Despesa'!H45"
-#     coordenadora_cargo_formula = f"='Receita x Despesa'!H46"
-#     coordenadora_cpf_formula = f"='Receita x Despesa'!H47"
-#     coordenadora_merge_cells = f'F{coordenadora_row}:J{coordenadora_row}'
-#     coordenadora_cargo_merge_cells = f'F{coordenadora_cargo_row}:J{coordenadora_cargo_row}'
-#     coordenadora_cpf_merge_cells = f'F{coordenadora_cpf_row}:J{coordenadora_cpf_row}'
-#     worksheet.merge_cells(coordenadora_merge_cells)
-#     worksheet.merge_cells(coordenadora_cargo_merge_cells)
-#     worksheet.merge_cells(coordenadora_cpf_merge_cells)
-#     top_left_coordenadora_cell_formula = f'F{coordenadora_row}'
-#     top_left_coordenadora_cell_cargo_formula = f'F{coordenadora_cargo_row}'
-#     top_left_coordenadora_cell_cpf_formula = f'F{coordenadora_cpf_row}'
-#     top_left_coordenadora_cell = worksheet[top_left_coordenadora_cell_formula]
-#     top_left_coordenadora_cell_cargo_formula = worksheet[top_left_coordenadora_cell_cargo_formula]
-#     top_left_coordenadora_cell_cpf_formula = worksheet[top_left_coordenadora_cell_cpf_formula]
-#     top_left_coordenadora_cell.value = coordenadora_nome_formula
-#     top_left_coordenadora_cell_cargo_formula.value = coordenadora_cargo_formula
-#     top_left_coordenadora_cell_cpf_formula.value = coordenadora_cpf_formula
-#     top_left_coordenadora_cell.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_coordenadora_cell.font= Font(bold = True)
-#     top_left_coordenadora_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
-#     top_left_coordenadora_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
-
-    
-#     # borda = Border(right=Side(border_style="medium"))
-#     # worksheet.sheet_view.showGridLines = False
-#     # # 
-#     # for row in worksheet.iter_rows(min_row=1, max_row=coordenadora_cpf_row+1,min_col=10,max_col=10):
-#     #     for cell in row:
-#     #         cell.border = borda
-            
-    
-
-#     for row in worksheet.iter_rows(min_row=coordenadora_cpf_row+1, max_row=coordenadora_cpf_row+1,min_col=1,max_col=10):
-#         for cell in row:
-#             if cell.column == 10:
-#                 cell.border = Border(top=Side(border_style="none") ,left = Side(border_style="none") ,right =Side(border_style="medium") ,bottom=Side(border_style="medium") )
-#             else:
-#                 cell.border = Border(top=Side(border_style="none") ,left = Side(border_style="none") ,right =Side(border_style="none") ,bottom=Side(border_style="medium") )
-
-#     workbook.save(tabela)
-#     workbook.close()
-
-

@@ -1,4 +1,4 @@
-import oracledb
+import pyodbc
 from datetime import datetime,date
 import openpyxl
 import os
@@ -33,36 +33,78 @@ def convert_datetime_to_string(value):
 #connection string in the format
 #<username>/<password>@<dBhostAddress>:<dbPort>/<dbServiceNam
 # def getCollumNames(IDPROJETO):
-def getCollumNames(IDPROJETO, DATA1, DATA2):
-    file_path = "/home/ubuntu/Desktop/devfront/devfull/pass.txt"
+def pegar_pass(chave):
+    arq_atual = os.path.abspath(__file__)
+    app = os.path.dirname(arq_atual)
+    project = os.path.dirname(app)
+    pipeline = os.path.dirname(project)
+    desktop = os.path.dirname(pipeline)
+    caminho_pipeline = os.path.join(desktop, chave)
+    
+    return caminho_pipeline
+
+
+def consultaID(IDPROJETO):
+
+   #file_path = "/home/ubuntu/Desktop/devfront/devfull/pass.txt"
+    file_path = pegar_pass("passs.txt")
     conStr = ''
     with open(file_path, 'r') as file:
             conStr = file.readline().strip()
 
     conn = None
-    conn = oracledb.connect(conStr)
-    cur = conn.cursor()
+    
+    conn = pyodbc.connect(conStr)
+    cursor = conn.cursor()
+    
+   
+    consulta = {}
+   
 
-    # sql = """SELECT DISTINCT * FROM IDEA.FAT_LANCAMENTO_CONVENIAR 
-    #          WHERE ID_PROJETO = :IDPROJETO 
-    #          AND ID_STATUS = 27  
-    #          ORDER BY NUM_DOC_FIN"""
-    sql = """SELECT DISTINCT * FROM IDEA.FAT_LANCAMENTO_CONVENIAR 
-             WHERE ID_PROJETO = :IDPROJETO 
-             AND ID_STATUS = 27 
-             AND DATA_PAGAMENTO BETWEEN TO_DATE(:DATA1, 'YYYY-MM-DD') 
-             AND TO_DATE(:DATA2, 'YYYY-MM-DD') 
-             ORDER BY NUM_DOC_FIN"""
+    # SQL querys
+    
+    sql = f"SELECT [LisConvenio].* , [LisPessoa].[CPFCNPJ] as 'CPFCoordenador' FROM [Conveniar].[dbo].[LisConvenio] INNER JOIN  [Conveniar].[dbo].[LisUsuario] ON [LisConvenio].[CodUsuarioResponsavel] = [LisUsuario].[CodUsuario] INNER JOIN  [Conveniar].[dbo].[LisPessoa] ON [LisUsuario].[CodPessoa] = [LisPessoa].[CodPessoa] WHERE CodConvenio = ? "
 
-    # cur.execute(sql, {
-    #     'IDPROJETO': IDPROJETO
-    # })
-    cur.execute(sql, {
-        'IDPROJETO': IDPROJETO,
-        'DATA1': DATA1,
-        'DATA2': DATA2
-    })
-    return cur
+    # Execute the query
+    cursor.execute(sql, IDPROJETO)
+
+
+    records = cursor.fetchall()
+    
+    collums = cursor.description
+
+
+    for i in range(len(collums)):
+        consulta[collums[i][0]] = records[0][i]
+
+           
+    cursor.close()
+    conn.close()
+    print("The connection is closed")
+    
+    # return records
+    return consulta
+
+def getCollumNames(IDPROJETO, DATA1, DATA2):
+    
+    file_path = pegar_pass("passs.txt")
+    conStr = ''
+    with open(file_path, 'r') as file:
+            conStr = file.readline().strip()
+
+    conn = None
+    
+    conn = pyodbc.connect(conStr)
+    cursor = conn.cursor()
+    
+
+  
+    sql = f"SELECT * FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? ORDER BY NumDocFinConvenio"
+
+
+    cursor.execute(sql, IDPROJETO, DATA1, DATA2)
+
+    return cursor
 #retorna todos os valores dos dicionarios
 def get_values_from_dict(codigo,data1,data2):
   
@@ -113,6 +155,7 @@ def preenche_fundep(codigo,data1,data2,keys,planilha):
     
     string_periodo = f"{output_date_str} a {output_date_str2}"
     
+    
 
     #dados_gerais = retornavalores(dados_db,keys)
     tamanho = []
@@ -128,6 +171,12 @@ def preenche_fundep(codigo,data1,data2,keys,planilha):
     
     workb = openpyxl.load_workbook(tabela)
     worksheet5 = workb['Relação de despesas']
+    consultaCabecario = consultaID(codigo)
+    
+    worksheet5['C3'] = consultaCabecario['NomePessoaFinanciador'] #gestora
+    worksheet5['C4'] = consultaCabecario['NomeConvenio'] #titulo do projeto
+    worksheet5['C5'] = consultaCabecario['NomePessoaResponsavel'] #coordenador
+    worksheet5['I3'] = consultaCabecario['SubProcesso']
     worksheet5['I5'] = string_periodo
     worksheet5['I5'].font= Font(name="Calibri", size=10, color="000000")
     worksheet5['I5'].alignment = Alignment(horizontal="left",vertical="bottom",wrap_text=True)
@@ -146,10 +195,11 @@ def preenche_fundep(codigo,data1,data2,keys,planilha):
         valores_preenchimento = retornavalores(dados_db,li) 
         for rowkek, cell_data in enumerate(valores_preenchimento, start=7):
             worksheet5.cell(row=rowkek, column=coluna, value=cell_data)
-        if coluna == 5 or coluna == 7 :
-                coluna = coluna + 1  
-          
+
+
         coluna = coluna + 1
+        print(coluna)
+    
 
 
     workb.save(tabela)
