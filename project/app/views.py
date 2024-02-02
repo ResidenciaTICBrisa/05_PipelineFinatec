@@ -99,7 +99,7 @@ def login(request):
             error_message = 'Usuário ou senha inválido.'
             
             log_message = f"Tentativa de acesso"
-            log_user_activity(request.user, "Sistema", log_message)
+            log_user_activity(usuario, "Sistema", log_message)
             
             return render(request, 'login.html', {'error_message': error_message})
 
@@ -284,6 +284,17 @@ def is_admin(user):
 @user_passes_test(is_admin)
 def user_activity_logs(request):
     logs_list = UserActivity.objects.all()
+
+    # Filter by user_id
+    user_id_filter = request.GET.get('user_id')
+    if user_id_filter:
+        logs_list = logs_list.filter(user_id=user_id_filter)
+
+    # Filter by date
+    date_filter = request.GET.get('date')
+    if date_filter:
+        logs_list = logs_list.filter(timestamp__date=date_filter)
+
     paginator = Paginator(logs_list, 50)  # Show 50 logs per page
 
     page = request.GET.get('page')

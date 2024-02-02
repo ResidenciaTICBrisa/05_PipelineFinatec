@@ -8,7 +8,49 @@
 </head>
 <body>
     <div class="container">
-        <h1>Activity Logs</h1>
+
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+              <a class="navbar-brand" href="#">Activity Logs</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-link" href="/">Home</a>
+                  <a class="nav-link" href="/admin/">Admin</a>
+                  <a class="nav-link" href="/login/">Login</a>
+                </div>
+              </div>
+            </div>
+          </nav>
+
+        <hr>
+
+        <form method="get" action="{% url 'user_activity_logs' %}" class="mb-4">
+            <div>
+                <div class="row">
+                    <div class="col-8">
+                        <h5>User</h5>
+                        <input type="text" name="user_id" class="form-control" placeholder="Filter by User" value="{{ request.GET.user_id }}">
+                    </div>
+                    <div class="col-4">
+                        <h5>Date</h5>
+                        <div class="row">
+                            <div class="col-8">
+                                <input type="date" name="date" class="form-control" placeholder="Filter by Date" value="{{ request.GET.date }}">
+                            </div>
+                            <div class="col">
+                                <button type="submit" class="btn btn-primary">Filter</button>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+
         <table class="table">
             <thead>
                 <tr>
@@ -23,12 +65,12 @@
                 {% for log in logs %}
                     <tr 
                         {% if log.tag == "Sistema" %}
-                            class="table-light"
+                            class="table-primary"
                         {% elif log.tag == "Consulta" %}
                             class="table-warning"
                         {% endif %}
                     >
-                        <th scope="row"> {{ forloop.counter }} </th>
+                        <td> {{ forloop.counter }} </td>
                         <td> {{ log.timestamp }} </td>
                         <td> {{ log.user_id }} </td>
                         <td> {{ log.tag }} </td>
