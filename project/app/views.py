@@ -2,6 +2,7 @@ import os
 import datetime
 import re
 from django.shortcuts import render
+from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as login_a
@@ -20,6 +21,7 @@ from .preencheFub import consultaID,preencheFub
 from .capa import inserir_round_retangulo
 from django.contrib.admin.models import LogEntry
 from .models import UserActivity
+from django.core.paginator import Paginator
 
 def log_user_activity(user_id, tag, activity):
     UserActivity.objects.create(user_id=user_id, tag=tag, activity=activity)
@@ -276,6 +278,15 @@ def custom_logout(request):
 
 from .models import UserActivity
 
+def is_admin(user):
+    return user.is_authenticated and user.is_staff
+
+@user_passes_test(is_admin)
 def user_activity_logs(request):
-    logs = UserActivity.objects.all()
+    logs_list = UserActivity.objects.all()
+    paginator = Paginator(logs_list, 50)  # Show 50 logs per page
+
+    page = request.GET.get('page')
+    logs = paginator.get_page(page)
+    
     return render(request, 'user_activity_logs.html', {'logs': logs})

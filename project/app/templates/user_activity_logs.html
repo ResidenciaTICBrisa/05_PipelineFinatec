@@ -1,31 +1,60 @@
 <!-- templates/user_activity_logs.html -->
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>Activity Logs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 </head>
 <body>
-    <h1>Activity Logs</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Timestamp</th>
-                <th>User</th>
-                <th>Tag</th>
-                <th>Activity</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for log in logs %}
+    <div class="container">
+        <h1>Activity Logs</h1>
+        <table class="table">
+            <thead>
                 <tr>
-                    <td style="padding-inline: 10px;"> {{ log.timestamp }} </td>
-                    <td style="padding-inline: 10px;"> {{ log.user_id }} </td>
-                    <td style="padding-inline: 10px;"> {{ log.tag }} </td>
-                    <td style="padding-inline: 10px;"> {{ log.activity }} </td>
+                    <th scope="col">#</th>
+                    <th scope="col">Timestamp</th>
+                    <th scope="col">User</th>
+                    <th scope="col">Tag</th>
+                    <th scope="col">Activity</th>
                 </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                {% for log in logs %}
+                    <tr 
+                        {% if log.tag == "Sistema" %}
+                            class="table-light"
+                        {% elif log.tag == "Consulta" %}
+                            class="table-warning"
+                        {% endif %}
+                    >
+                        <th scope="row"> {{ forloop.counter }} </th>
+                        <td> {{ log.timestamp }} </td>
+                        <td> {{ log.user_id }} </td>
+                        <td> {{ log.tag }} </td>
+                        <td> {{ log.activity }} </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                {% if logs.has_previous %}
+                    <li class="page-item"><a class="page-link" href="?page=1">&laquo; first</a></li>
+                    <li class="page-item"><a class="page-link" href="?page={{ logs.previous_page_number }}">previous</a></li>
+                {% endif %}
+
+                <li class="page-item disabled">
+                    <span class="page-link">Page {{ logs.number }} of {{ logs.paginator.num_pages }}.</span>
+                </li>
+
+                {% if logs.has_next %}
+                    <li class="page-item"><a class="page-link" href="?page={{ logs.next_page_number }}">next</a></li>
+                    <li class="page-item"><a class="page-link" href="?page={{ logs.paginator.num_pages }}">last &raquo;</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
 </body>
 </html>
