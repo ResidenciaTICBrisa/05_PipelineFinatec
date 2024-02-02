@@ -96,3 +96,12 @@ class Export(models.Model):
     nome_template               = models.CharField(max_length=200)
     nome_usuario                = models.CharField(max_length=200)
     id_projeto                  = models.CharField(max_length=50)
+
+class UserActivity(models.Model):
+    user_id = models.CharField(max_length=255)
+    tag = models.CharField(max_length=50)
+    activity = models.TextField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user_id} - {self.activity}"

@@ -1,3 +1,6 @@
+import os
+import datetime
+import re
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
@@ -14,11 +17,12 @@ from .new_dev import preenche_planilha,extrair,pegar_caminho
 #from .preenche_fub import preencher_fub_teste,consultaID
 from .preenche_fundep import preenche_fundep
 from .preencheFub import consultaID,preencheFub
-import os
-import datetime
-import re
 from .capa import inserir_round_retangulo
 from django.contrib.admin.models import LogEntry
+from .models import UserActivity
+
+def log_user_activity(user_id, tag, activity):
+    UserActivity.objects.create(user_id=user_id, tag=tag, activity=activity)
 
 def convert_datetime_to_string(value):
     if isinstance(value, datetime.datetime):
@@ -85,9 +89,16 @@ def login(request):
 
         if user:
             login_a(request, user)
+            log_message = f"Acessou o sistema"
+            log_user_activity(request.user, "Sistema", log_message)
+            
             return HttpResponseRedirect ('/projeto/')
         else:
             error_message = 'Usuário ou senha inválido.'
+            
+            log_message = f"Tentativa de acesso"
+            log_user_activity(request.user, "Sistema", log_message)
+            
             return render(request, 'login.html', {'error_message': error_message})
 
 @login_required(login_url="/login/")
@@ -200,9 +211,11 @@ def projeto(request):
             response['Content-Disposition'] = f'attachment; filename="{os.path.basename(file_path)}"'
             
             # adicionando log de consulta
-            consultaLog = f"{codigo} | {nome.nome_template} | {consultaInicio} | {consultaFim}"
-            LogEntry.objects.log_action(user_id=request.user.id,content_type_id=1, object_id=1, object_repr=consultaLog, action_flag=1, change_message="Consulta de prestação de contas")
+            consulta_log = f"Projeto: {codigo} | Modelo: {nome.nome_template} | Inicio da Prest.: {consultaInicio} | Fim da Prest.: {consultaFim}"
+            # LogEntry.objects.log_action(user_id=request.user.id, content_type_id=1, object_repr=consulta_log, action_flag=1, change_message="Consulta de prestação de contas")
             
+            log_user_activity(request.user, "Consulta",consulta_log)
+
             return response
     else:
         print("Invalid aaaaaaaaaaa request")
@@ -258,4 +271,11 @@ def custom_logout(request):
 #     # if request.user.is_authenticated:
 #     #     return HttpResponse('Projetos')
 #     # else:
-#     return render(request, 'projeto_teste.html')
+#     return render(request, 'projeto_teste.html').
+
+
+from .models import UserActivity
+
+def user_activity_logs(request):
+    logs = UserActivity.objects.all()
+    return render(request, 'user_activity_logs.html', {'logs': logs})

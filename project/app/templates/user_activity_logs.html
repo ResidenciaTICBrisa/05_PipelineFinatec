@@ -1,0 +1,31 @@
+<!-- templates/user_activity_logs.html -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Activity Logs</title>
+</head>
+<body>
+    <h1>Activity Logs</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>User</th>
+                <th>Tag</th>
+                <th>Activity</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in logs %}
+                <tr>
+                    <td style="padding-inline: 10px;"> {{ log.timestamp }} </td>
+                    <td style="padding-inline: 10px;"> {{ log.user_id }} </td>
+                    <td style="padding-inline: 10px;"> {{ log.tag }} </td>
+                    <td style="padding-inline: 10px;"> {{ log.activity }} </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
