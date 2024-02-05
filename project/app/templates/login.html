@@ -34,20 +34,20 @@
             return false;
     }
 
-    $(document).ready(function() {
-        $('#cpf').mask('000.000.000-00', {reverse: true});
+    // $(document).ready(function() {
+    //     $('#cpf').mask('000.000.000-00', {reverse: true});
 
-        $('#cpf').on('blur', function() {
-            var cpfValue = $(this).val().replace(/\D/g, '');
-            if (cpfValue && cpfValue.length === 11) {
-                if (!valida_cpf(cpfValue)) {
-                    alert('O CPF digitado é inválido.');
-                    $(this).val('');
-                    $(this).focus();
-                }
-            }
-        });
-    });
+    //     $('#cpf').on('blur', function() {
+    //         var cpfValue = $(this).val().replace(/\D/g, '');
+    //         if (cpfValue && cpfValue.length === 11) {
+    //             if (!valida_cpf(cpfValue)) {
+    //                 alert('O CPF digitado é inválido.');
+    //                 $(this).val('');
+    //                 $(this).focus();
+    //             }
+    //         }
+    //     });
+    // });
 </script>
 <style>
     .content {
@@ -57,7 +57,7 @@
     }
 </style>
 <header>
-    <img src="{% static 'imagem/finateclogo.svg' %}" alt="finatec" class="finatecLogo">
+    <a href="/"><img src="{% static 'imagem/finateclogo.svg' %}" alt="finatec" class="finatecLogo"></a>
     <div class="navButton">
         <p class="otherLogin"><a href="/" class="link"><h1>Home</h1></a></p>
         <!-- <p class="otherLogin"><a href="/cadastro/" class="link"><h1>Cadastro</h1></a></p> -->
@@ -73,12 +73,13 @@
             {% csrf_token %}
             <div class="inputGroup">
                 <div class="input">
-                    <label class="name">CPF</label>
-                    <input type="text" id="cpf" name="usuario" class="placeholder" placeholder="000.000.000-00" maxlength="14" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" title="Digite um CPF válido no formato 000.000.000-00." required>
+                    <label class="name">Usuário</label>
+                    <!-- <input type="text" id="cpf" name="usuario" class="placeholder" placeholder="000.000.000-00" maxlength="14" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" title="Digite um CPF válido no formato 000.000.000-00." required> -->
+                    <input type="text" id="cpf" name="usuario" class="placeholder" placeholder="nome.sobrenome" maxlength="50" title="Digite um CPF válido no formato 000.000.000-00." required>
                 </div>
                 <div class="input">
                     <label class="name">Senha</label>
-                    <input type="password" name="senha" class="placeholder" placeholder="••••••">
+                    <input type="password" name="senha" class="placeholder" placeholder="•••••••••••" required>
                 </div>
             </div>
             <div class="cardSubmit">
@@ -88,7 +89,9 @@
         {% if error_message %}
         <p class="error">{{ error_message }}</p>
         {% endif %}
-        <p class="otherLogin">Não possui uma conta? <a href="/cadastro/" class="linkS">criar</a></p>
+        <p class="otherLogin">
+            <a href="/reset_password/" class="linkS">Esqueci minha senha</a>
+        </p>
     </div>
 </content>
 

@@ -1,4 +1,8 @@
+import os
+import datetime
+import re
 from django.shortcuts import render
+from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 from django.contrib.auth import login as login_a
@@ -14,15 +18,19 @@ from .new_dev import preenche_planilha,extrair,pegar_caminho
 #from .preenche_fub import preencher_fub_teste,consultaID
 from .preenche_fundep import preenche_fundep
 from .preencheFub import consultaID,preencheFub
-import os
-import datetime
-import re
 from .capa import inserir_round_retangulo
+from django.contrib.admin.models import LogEntry
+from .models import UserActivity
+from django.core.paginator import Paginator
+
+def log_user_activity(user_id, tag, activity):
+    UserActivity.objects.create(user_id=user_id, tag=tag, activity=activity)
 
 def convert_datetime_to_string(value):
     if isinstance(value, datetime.datetime):
         return value.strftime('%d/%m/%Y')
     return value
+
 def extract_strings(input_string):
     # Use regular expressions to find the text before and after '@@'
     matches = re.findall(r'(.*?)@@(.*?)@@', input_string)
@@ -83,276 +91,139 @@ def login(request):
 
         if user:
             login_a(request, user)
+            log_message = f"Acessou o sistema"
+            log_user_activity(request.user, "Sistema", log_message)
+            
             return HttpResponseRedirect ('/projeto/')
         else:
             error_message = 'Usuário ou senha inválido.'
+            
+            log_message = f"Tentativa de acesso"
+            log_user_activity(usuario, "Sistema", log_message)
+            
             return render(request, 'login.html', {'error_message': error_message})
 
 @login_required(login_url="/login/")
-def projeto(request):
-    # if request.user.is_authenticated:
-    #     return HttpResponse('Projetos')
-    # else:
-        
-       
-        lista_append_db_sql = []
-        result = {}
-        current_key = None
-        mapeamento = None
-        coduaigo = request.POST.get('usuario')
-        template_id = request.POST.get('template')
-        download = request.POST.get('Baixar')
-        data1 = request.POST.get('inicio')
-        data2 = request.POST.get('fim')
-        print(type(data1))
-        print(data2)
-        try:
-            db_fin = consultaID(coduaigo)
-        except:
-             return render(request,'projeto.html',{
-        "templates":Template.objects.all(),
-    })  
-       
-      
-       
-        # nome = Template.objects.get(pk=template_id)
-        # nome = Template.objects.get(pk=template_id)
-        try:
-            nome = Template.objects.get(pk=template_id)
-        except:
-             return render(request,'projeto.html',{
-        "templates":Template.objects.all(),
-    })
-    #     mapeamento = nome.mapeamento
-    #     #print(nome.mapeamento)
-    #     attribute_names = [
-    #             #"id_mapeamento",
-    #             "codigo",
-    #             "nome",
-    #             "saldo",
-    #             "data_assinatura",
-    #             "data_vigencia",
-    #             "data_encerramento",
-    #             "tipo_contrato",
-    #             "instituicao_executora",
-    #             "processo",
-    #             "subprocesso",
-    #             "cod_proposta",
-    #             "proposta",
-    #             "objetivos",
-    #             "valor_aprovado",
-    #             "nome_tp_controle_saldo",
-    #             "grupo_gestores",
-    #             "gestor_resp",
-    #             "coordenador",
-    #             "procedimento_compra",
-    #             "tab_frete",
-    #             "tab_diarias",
-    #             "custo_op",
-    #             "nome_financiador",
-    #             "departamento",
-    #             "situacao",
-    #             "banco",
-    #             "agencia_bancaria",
-    #             "conta_bancaria",
-    #             "centro_custo",
-    #             "conta_caixa",
-    #             "categoria_projeto",
-    #             "cod_convenio_conta",
-    #             "cod_status",
-    #             "ind_sub_projeto",
-    #             "tipo_custo_op",
-    #             "projeto_mae",
-    #             "id_coordenador",
-    #             "id_financiador",
-    #             "id_instituicao",
-    #             "id_departamento",
-    #             "nome_instituicao",
-    #             "id_instituicao_executora",
-    #             "id_tipo"
-    #         ]
-       
-    #         # Check for non-empty attributes and print their names
-    #     for attribute_name in attribute_names:
-    #             attribute_value = getattr(mapeamento, attribute_name)
-    #             if attribute_value:
-    #                 lista_append_db_sql.append(f"{attribute_value}@@{attribute_name}@@")
-                    
-    #     print(lista_append_db_sql)
-    #     print('\n')
-    #     print(mapeamento.id_mapeamento)
-    #     print('\n')
-    #     print(mapeamento.data_vigencia)
-    #     output = []
-    #     result = {}
-    #     current_key = None
-    #     current_subkey = None
+def projeto(request):  
+    lista_append_db_sql = []
+    result = {}
+    current_key = None
+    mapeamento = None
 
-    #     for line in lista_append_db_sql:
-    #         parts = line.strip().split(";")
-    #         i = 0
-        
-    #         while i < len(parts):
-    #             if i + 2 < len(parts):
-    #                 key = parts[i]
-    #                 subkey = parts[i + 1]
-    #                 subsubkey = parts[i + 2]
-    #                 value = extrair(parts)
-    #                 #print(value)
-                    
-    #                 if key == current_key:
-                        
-    #                     result[key].append((subkey,f"{subsubkey}@@{value[0].upper()}@@"))
-                        
-                    
-    #                 else:
-    #                     # If the key is different, create a new list
-    #                     current_key = key
-    #                     if key in result:
-    #                         result[key].append((subkey,f"{subsubkey}@@{value[0].upper()}@@"))
-    #                     else:
-    #                         result[key]= [(subkey, f"{subsubkey}@@{value[0].upper()}@@")]
-    #             i += 3
-                
-    #         output_dict = {key: value for key, value in result.items()}
+    codigo = request.POST.get('usuario') # alterar o nome
+    template_id = request.POST.get('template')
+    # download = request.POST.get('Baixar') # quando puxo na consulta vem vazio
+    consultaInicio = request.POST.get('inicio')
+    consultaFim = request.POST.get('fim')
 
+    print(f"----------------------\n{codigo}\n{template_id}\n{consultaInicio}\n{consultaFim}\n{request.POST}\n-----------------------")
 
-    #     #print(output_dict)
+    print(type(consultaInicio))
+    print(consultaFim)
+    emptyText = ""
 
-    #     # for key, value_list in output_dict.items():
-    #     #     for i, (position, template) in enumerate(value_list):
-    #     #         placeholder = None
-    #     #         if "'" in template:
-    #     #             placeholder = template.split("'")[1]
-    #     #         if placeholder in db_fin:
-    #     #             value_to_insert = db_fin[placeholder]
-    #     #             # Convert datetime objects to strings if necessary
-    #     #             if isinstance(value_to_insert, datetime.datetime):
-    #     #                 value_to_insert = value_to_insert.strftime('%Y-%m-%d')  
-    #     #             if value_to_insert is not None:
-    #     #             # Replace the template with the actual value
-    #     #                 value_list[i] = (position, template.replace(f"'{placeholder}'", value_to_insert))
-
-    #     # Crie um novo dicionário para armazenar os resultados
-    #     novo_dicionario = {}
-
-    # # Itere sobre o primeiro dicionário
-    #     for chave, lista_de_tuplas in output_dict.items():
-    #         nova_lista_de_tuplas = []
-    #         for tupla in lista_de_tuplas:
-    #             chave_do_segundo_dicionario = tupla[1]
-    #             #print(chave_do_segundo_dicionario)
-    #             #print(type(chave_do_segundo_dicionario))
-    #             string_before, string_between = extract_strings(chave_do_segundo_dicionario)
-    #             valor_do_segundo_dicionário = db_fin.get(string_between, '')
-    #             #print(valor_do_segundo_dicionário)
-    #             valor_formatado = convert_datetime_to_string(valor_do_segundo_dicionário)
-    #             #print(valor_formatado)
-    #             #nova_tupla = (tupla[0],f"{strings[0]} {valor_formatado}")
-    #             nova_tupla = (tupla[0],f"{string_before}{valor_formatado}")
-    #             nova_lista_de_tuplas.append(nova_tupla)
-    #         novo_dicionario[chave] = nova_lista_de_tuplas
-
-    #     #print(novo_dicionario)
-
-
-    #     dict_final = {}
-    #     for key, values in novo_dicionario.items():
-    #         combined_values = {}
-    #         for item in values:
-    #             if item[0] in combined_values:
-    #                 combined_values[item[0]] += ' ' + item[1]  # Add a space before appending
-    #             else:
-    #                 combined_values[item[0]] = item[1]
-    
-    #         dict_final[key] = [(k, v) for k, v in combined_values.items()]
-
-    #     #print(dict_final)
-        
-
-        dict_final = {}
-
-        # caminho_pasta_planilhas = pegar_caminho("planilhas")   
-        # #caminhoPastaPlanilhasPreenchidas = "../../planilhas_preenchidas/"
-        # caminhoPastaPlanilhasPreenchidas = pegar_caminho("planilhas_preenchidas") 
-        caminho_pasta_planilhas = "../../planilhas/"    
-        caminhoPastaPlanilhasPreenchidas = "../../planilhas_preenchidas/"
-
-        # Obtém o diretório atual do script
-        diretorio_atual = os.path.dirname(os.path.abspath(__file__))
-
-        # Combina o diretório atual com o caminho para a pasta "planilhas_preenchidas" e o nome do arquivo
-       
-
-        # print(teste_caminho)
-
-        if nome.nome_template == "fundep":
-            testeCaminhoFundep = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"ModeloFUNDEP.xlsx")
-            preenche_planilha(testeCaminhoFundep,dict_final)
-        if nome.nome_template == "fub":
-            testeCaminhoFub = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"Modelo_Fub.xlsx")
-            print(testeCaminhoFub)
-            preenche_planilha(testeCaminhoFub,dict_final)
-        if nome.nome_template == "opas":
-            opas = os.path.join(caminho_pasta_planilhas, "ModeloOPAS.xlsx")
-            preenche_planilha(opas,dict_final)
-        if nome.nome_template == "fap":
-            fap = os.path.join(caminho_pasta_planilhas, "ModeloFAP.xlsx")
-            preenche_planilha(fap,dict_final)
-        if nome.nome_template == "finep":
-            finep = os.path.join(caminho_pasta_planilhas, "ModeloFINEP.xlsx")
-            preenche_planilha(finep,dict_final)
-        
-       
-        
-
-
-    
-        file_path = None
-        print(f"download{template_id}")
-        if template_id == '1':
-            keys = ['NomeFavorecido','FavorecidoCPFCNPJ','NomeTipoLancamento','HisLancamento','NumDocPago','DataEmissao','NumChequeDeposito','DataPagamento', 'ValorPago']            
-            file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"planilhaPreenchidaModelo_Fub.xlsx")
-            #file_path = pegar_caminho('/home/ubuntu/Desktop/05_PipelineFinatec/planilhas_preenchidas/planilhaPreenchidaModelo_Fub.xlsx')
-            # data_obj = datetime.strptime(data1, "%Y-%m-%d")
-            # data1 = data_obj.strftime("%d/%m/%Y")
-            # data_obj2 = datetime.strptime(data2, "%Y-%m-%d")
-            # data2 = data_obj2.strftime("%d/%m/%Y")
-            preencheFub(coduaigo,convert_datetime_to_string(data1),convert_datetime_to_string(data2),file_path)
-            inserir_round_retangulo(file_path,data1,data2,db_fin)
-        elif template_id == '2':
-            keys = ['NomeFavorecido','FavorecidoCPFCNPJ','NomeRubrica','NumDocPago','DataEmissao','NumChequeDeposito','DataPagamento', 'ValorPago']            
-            file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"planilhaPreenchidaModeloFUNDEP.xlsx")
-            #file_path = pegar_caminho('/home/ubuntu/Desktop/05_PipelineFinatec/planilhas_preenchidas/planilhaPreenchidaModeloFUNDEP.xlsx')
-            preenche_fundep(coduaigo,convert_datetime_to_string(data1),convert_datetime_to_string(data2),keys,file_path)
-        elif template_id == '3':
-            p_opas = os.path.join(caminhoPastaPlanilhasPreenchidas, "ModeloOPAS.xlsx")
-            file_path = p_opas
-        elif template_id == '4':
-            p_fap = os.path.join(caminhoPastaPlanilhasPreenchidas, "ModeloFAP.xlsx")
-            file_path = pegar_caminho(p_fap)
-        elif template_id == '5':
-            p_finep = os.path.join(caminhoPastaPlanilhasPreenchidas, "ModeloFINEP.xlsx")
-            file_path = pegar_caminho(p_finep)
-        else:
-            # Handle cases where 'download' doesn't match any expected values
-            return HttpResponse("Invalid download request", status=400)
-        #print(file_path)
-        # Check if the file exists
-     
-        #print(os.path.exists(file_path))
-        if os.path.exists(file_path):
-            with open(file_path, 'rb') as f:
-                response = HttpResponse(f.read(), content_type='application/octet-stream')
-                #print(f'aaaa{os.path.basename(file_path)}')
-                response['Content-Disposition'] = f'attachment; filename="{os.path.basename(file_path)}"'
-                return response
-        else:
-            print("Invalid aaaaaaaaaaa request")
-
+    try:
+        db_fin = consultaID(codigo)
+    except:
         return render(request,'projeto.html',{
             "templates":Template.objects.all(),
+        })  
+       
+    # nome = Template.objects.get(pk=template_id)
+    # nome = Template.objects.get(pk=template_id)
+    try:
+        nome = Template.objects.get(pk=template_id)
+    except:
+        return render(request,'projeto.html',{
+            "templates":Template.objects.all(),
+        })        
 
+    dict_final = {}
+
+    # caminho_pasta_planilhas = pegar_caminho("planilhas")   
+    # # caminhoPastaPlanilhasPreenchidas = "../../planilhas_preenchidas/"
+    # caminhoPastaPlanilhasPreenchidas = pegar_caminho("planilhas_preenchidas") 
+    caminho_pasta_planilhas = "../../planilhas/"    
+    caminhoPastaPlanilhasPreenchidas = "../../planilhas_preenchidas/"
+
+    # Obtém o diretório atual do script
+    diretorio_atual = os.path.dirname(os.path.abspath(__file__))
+
+    # Combina o diretório atual com o caminho para a pasta "planilhas_preenchidas" e o nome do arquivo
+       
+    if nome.nome_template == "fundep":
+        testeCaminhoFundep = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"ModeloFUNDEP.xlsx")
+        preenche_planilha(testeCaminhoFundep,dict_final)
+    if nome.nome_template == "fub":
+        testeCaminhoFub = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"Modelo_Fub.xlsx")
+        print(testeCaminhoFub)
+        preenche_planilha(testeCaminhoFub,dict_final)
+    if nome.nome_template == "opas":
+        opas = os.path.join(caminho_pasta_planilhas, "ModeloOPAS.xlsx")
+        preenche_planilha(opas,dict_final)
+    if nome.nome_template == "fap":
+        fap = os.path.join(caminho_pasta_planilhas, "ModeloFAP.xlsx")
+        preenche_planilha(fap,dict_final)
+    if nome.nome_template == "finep":
+        finep = os.path.join(caminho_pasta_planilhas, "ModeloFINEP.xlsx")
+        preenche_planilha(finep,dict_final)
+        
+
+    file_path = None
+    print(f"download{template_id}")
+    if template_id == '1':
+        keys = ['NomeFavorecido','FavorecidoCPFCNPJ','NomeTipoLancamento',
+                'HisLancamento','NumDocPago','DataEmissao','NumChequeDeposito',
+                'DataPagamento', 'ValorPago']            
+        file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"planilhaPreenchidaModelo_Fub.xlsx")
+            
+        # file_path = pegar_caminho('/home/ubuntu/Desktop/05_PipelineFinatec/planilhas_preenchidas/planilhaPreenchidaModelo_Fub.xlsx')
+        # data_obj = datetime.strptime(consultaInicio, "%Y-%m-%d")
+        # consultaInicio = data_obj.strftime("%d/%m/%Y")
+        # data_obj2 = datetime.strptime(consultaFim, "%Y-%m-%d")
+        # consultaFim = data_obj2.strftime("%d/%m/%Y")
+            
+        preencheFub(codigo,convert_datetime_to_string(consultaInicio),convert_datetime_to_string(consultaFim),file_path)
+        inserir_round_retangulo(file_path,consultaInicio,consultaFim,db_fin)
+    elif template_id == '2':
+        keys = ['NomeFavorecido','FavorecidoCPFCNPJ','NomeRubrica','NumDocPago',
+                'DataEmissao','NumChequeDeposito','DataPagamento', 'ValorPago']            
+        file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"planilhaPreenchidaModeloFUNDEP.xlsx")
+            
+        #file_path = pegar_caminho('/home/ubuntu/Desktop/05_PipelineFinatec/planilhas_preenchidas/planilhaPreenchidaModeloFUNDEP.xlsx')
+        preenche_fundep(codigo,convert_datetime_to_string(consultaInicio),convert_datetime_to_string(consultaFim),keys,file_path)
+    elif template_id == '3':
+        p_opas = os.path.join(caminhoPastaPlanilhasPreenchidas, "ModeloOPAS.xlsx")
+        file_path = p_opas
+    elif template_id == '4':
+        p_fap = os.path.join(caminhoPastaPlanilhasPreenchidas, "ModeloFAP.xlsx")
+        file_path = pegar_caminho(p_fap)
+    elif template_id == '5':
+        p_finep = os.path.join(caminhoPastaPlanilhasPreenchidas, "ModeloFINEP.xlsx")
+        file_path = pegar_caminho(p_finep)
+    else:
+        # Handle cases where 'download' doesn't match any expected values
+        return HttpResponse("Invalid download request", status=400)
+     
+    # Check if the file exists
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as f:
+            response = HttpResponse(f.read(), content_type='application/octet-stream')
+            #print(f'aaaa{os.path.basename(file_path)}')
+            response['Content-Disposition'] = f'attachment; filename="{os.path.basename(file_path)}"'
+            
+            # adicionando log de consulta
+            consulta_log = f"Projeto: {codigo} | Modelo: {nome.nome_template} | Inicio da Prest.: {consultaInicio} | Fim da Prest.: {consultaFim}"
+            # LogEntry.objects.log_action(user_id=request.user.id, content_type_id=1, object_repr=consulta_log, action_flag=1, change_message="Consulta de prestação de contas")
+            
+            log_user_activity(request.user, "Consulta",consulta_log)
+
+            return response
+    else:
+        print("Invalid aaaaaaaaaaa request")
+
+    return render(request,'projeto.html',{
+        "templates":Template.objects.all(),
     })
 
 def custom_logout(request):
@@ -402,4 +273,31 @@ def custom_logout(request):
 #     # if request.user.is_authenticated:
 #     #     return HttpResponse('Projetos')
 #     # else:
-#     return render(request, 'projeto_teste.html')
+#     return render(request, 'projeto_teste.html').
+
+
+from .models import UserActivity
+
+def is_admin(user):
+    return user.is_authenticated and user.is_staff
+
+@user_passes_test(is_admin)
+def user_activity_logs(request):
+    logs_list = UserActivity.objects.all()
+
+    # Filter by user_id
+    user_id_filter = request.GET.get('user_id')
+    if user_id_filter:
+        logs_list = logs_list.filter(user_id=user_id_filter)
+
+    # Filter by date
+    date_filter = request.GET.get('date')
+    if date_filter:
+        logs_list = logs_list.filter(timestamp__date=date_filter)
+
+    paginator = Paginator(logs_list, 50)  # Show 50 logs per page
+
+    page = request.GET.get('page')
+    logs = paginator.get_page(page)
+    
+    return render(request, 'user_activity_logs.html', {'logs': logs})

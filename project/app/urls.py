@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from django.contrib.auth import views as auth_views
+from .views import user_activity_logs
 
 from .views import HomeView
 
@@ -13,4 +14,5 @@ urlpatterns = [
     # path('login_teste/', views.login_teste, name='login_teste'),
     # path('cadastro_teste/', views.cadastro_teste, name='cadastro_teste'),
     # path('projeto_teste/', views.projeto_teste, name='projeto_teste'),
+    path('user-activity-logs/', user_activity_logs, name='user_activity_logs'),
 ]
