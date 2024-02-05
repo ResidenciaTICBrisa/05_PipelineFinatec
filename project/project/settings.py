@@ -189,11 +189,3 @@ EMAIL_PORT = 465
 EMAIL_USE_SSL = True
 EMAIL_HOST_USER = "sistemas.finatec@finatec.org.br"
 EMAIL_HOST_PASSWORD = password_email
-
-# configurando email de recuperacao
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 465
-EMAIL_USE_SSL = True
-EMAIL_HOST_USER = "sistemas.finatec@finatec.org.br"
-EMAIL_HOST_PASSWORD = password_email
