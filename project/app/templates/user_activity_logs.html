@@ -64,7 +64,7 @@
             <tbody>
                 {% for log in logs %}
                     <tr 
-                        {% if log.tag == "Sistema" %}
+                        {% if log.tag == "Acessou o sistema" %}
                             class="table-primary"
                         {% elif log.tag == "Consulta" %}
                             class="table-warning"

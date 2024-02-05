@@ -57,7 +57,7 @@
     }
 </style>
 <header>
-    <img src="{% static 'imagem/finateclogo.svg' %}" alt="finatec" class="finatecLogo">
+    <a href="/"><img src="{% static 'imagem/finateclogo.svg' %}" alt="finatec" class="finatecLogo"></a>
     <div class="navButton">
         <p class="otherLogin"><a href="/" class="link"><h1>Home</h1></a></p>
         <!-- <p class="otherLogin"><a href="/cadastro/" class="link"><h1>Cadastro</h1></a></p> -->
@@ -79,7 +79,7 @@
                 </div>
                 <div class="input">
                     <label class="name">Senha</label>
-                    <input type="password" name="senha" class="placeholder" placeholder="••••••">
+                    <input type="password" name="senha" class="placeholder" placeholder="•••••••••••" required>
                 </div>
             </div>
             <div class="cardSubmit">
@@ -89,7 +89,9 @@
         {% if error_message %}
         <p class="error">{{ error_message }}</p>
         {% endif %}
-        <p class="otherLogin">Não possui uma conta? <a href="/cadastro/" class="linkS">criar</a></p>
+        <p class="otherLogin">
+            <a href="/reset_password/" class="linkS">Esqueci minha senha</a>
+        </p>
     </div>
 </content>
 

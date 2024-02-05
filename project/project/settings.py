@@ -171,3 +171,11 @@ MEDIA_ROOT = 'home/05_PipelineFinatec/sites/public/static/imagem'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = "sistemas.finatec@finatec.org.br"
+EMAIL_HOST_PASSWORD = "fin@tec2022"
