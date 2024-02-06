@@ -18,18 +18,30 @@
         <div class="container">
             <div class="row justify-content-between">
                 <div class="col">
+                    {% if request.path != '/' %}
                     <a href="/">
                         <img src="{% static 'imagem/finateclogo.svg' %}" alt="finatec" style="height: 20px">
                     </a>
+                    {% else %}
+                    <img src="{% static 'imagem/finateclogo.svg' %}" alt="finatec" style="height: 20px">
+                    {% endif %}
                 </div>
-                <div class="col" style="text-align: right;"> <!-- Align to the right -->
+                <div class="col" style="text-align: right;">
+                    {% if request.path == '/' %}
+                    <a class="link-primary" href="/login">Login</a>
+                    <a class="link-primary" href="/admin/">Admin</a>
+                    {% elif request.path == '/login/' %}
+                    <a class="link-primary" href="/">Home</a>
+                        <a class="link-primary" href="/admin/">Admin</a>
+                    {% else %}
                     <a class="link-primary" href="/">Home</a>
                     <a class="link-primary" href="/login">Login</a>
                     <a class="link-primary" href="/admin/">Admin</a>
+                    {% endif %}
                 </div>
             </div>
         </div>
-    </nav>
+    </nav>    
     
     <div id="conteudo" class="container">
         {% block conteudo %}
