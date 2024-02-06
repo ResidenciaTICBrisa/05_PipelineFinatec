@@ -40,6 +40,9 @@ footer {
     height: 2.5rem;
 }
 
+/* tentativa de deixar a tela responsiva
+    se o content passa da margem da tela 
+    a cor de fundo nao acompanha */
 /* @media (min-height: 100vh) {
     html, body {
         height: fit-content;
