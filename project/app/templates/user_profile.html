@@ -1,8 +1,8 @@
-{% extends 'base_logged.html' %} {% block conteudo %} {% load static %}
+{% extends 'base_logged.html' %} {% block conteudo %} {% load static %} {% load static custom_filters %}
 
 <style>
     .card {
-        background-color: rgba(0, 0, 0, 0);
+        background-color: rgba(255, 255, 255, 0.062);
         border: 1px solid #bcbcbc;
         color: aliceblue;
         border-radius: 20px;
@@ -10,28 +10,40 @@
 </style>
 
 <div class="row justify-content-center">
-    <div class="col-4">
+    <div class="col-6">
         <div class="card mx-auto">
             <div class="card-body">
-                <h5 class="card-title">name.surname</h5>
+                <h5 class="card-title">{{ request.user }}</h5>
                 <h6 class="card-subtitle text-muted">usuário</h6>
 
+                <hr>                
+                
+                <h6 class="card-text">{{ request.user.email | first_letters }}</h6>
+                <h7 class="card-subtitle text-muted">email</h7>
+                
+                <br>
+                <br>
+                
+                <h6 class="card-text">
+                    {% if request.user.cpf %}
+                        {{ request.user.cpf }}
+                    {% else %}
+                        000.000.000-00
+                    {% endif %}
+                </h6>
+                <h7 class="card-subtitle text-muted">cpf</h7>
+                
                 <hr>
 
                 <form>
-                    <div class="mb-3">
-                      <input placeholder="name.surname@domain.address.com" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" disabled>
-                    </div>
-                    <div class="mb-3">
-                      <input placeholder="************" type="password" class="form-control" id="exampleInputPassword1" disabled>
-                    </div>
-
-                    <div class="row justify-content-end">
-                        <div class="col-5">
+                    <div class="row justify-content-evenly">
+                        <div class="col-4">
+                            <button type="submit" class="btn btn-danger">Apagar Conta</button>
+                        </div>
+                        <div class="col-4">
                             <button type="submit" class="btn btn-secondary">Alterar Senha</button>
                         </div>
                     </div>
-
                 </form>
             </div>
         </div>
