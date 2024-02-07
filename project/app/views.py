@@ -38,12 +38,14 @@ def extract_strings(input_string):
     if matches:
         return tuple(matches[0])
     else:
-        
         return (input_string, '')
 
 class HomeView(TemplateView):
     template_name = 'home.html'
 
+@login_required(login_url="/login/")
+def user_profile(request):
+    return render(request, "user_profile.html")
 
 # def cadastro(request):
 #     if request.method == "GET":

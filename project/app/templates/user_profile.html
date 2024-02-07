@@ -1,0 +1,41 @@
+{% extends 'base_logged.html' %} {% block conteudo %} {% load static %}
+
+<style>
+    .card {
+        background-color: rgba(0, 0, 0, 0);
+        border: 1px solid #bcbcbc;
+        color: aliceblue;
+        border-radius: 20px;
+    }
+</style>
+
+<div class="row justify-content-center">
+    <div class="col-4">
+        <div class="card mx-auto">
+            <div class="card-body">
+                <h5 class="card-title">name.surname</h5>
+                <h6 class="card-subtitle text-muted">usuário</h6>
+
+                <hr>
+
+                <form>
+                    <div class="mb-3">
+                      <input placeholder="name.surname@domain.address.com" type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" disabled>
+                    </div>
+                    <div class="mb-3">
+                      <input placeholder="************" type="password" class="form-control" id="exampleInputPassword1" disabled>
+                    </div>
+
+                    <div class="row justify-content-end">
+                        <div class="col-5">
+                            <button type="submit" class="btn btn-secondary">Alterar Senha</button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

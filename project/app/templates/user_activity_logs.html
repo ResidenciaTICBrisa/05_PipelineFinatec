@@ -68,7 +68,9 @@
                         {% if log.tag == "Acessou o sistema" %}
                             class="table-primary"
                         {% elif log.tag == "Consulta" %}
-                            class="table-warning"
+                        class="table-warning"
+                        {% elif log.activity == "Tentativa de acesso" %}
+                        class="table-danger"
                         {% endif %}
                     >
                         <td> {{ forloop.counter }} </td>
