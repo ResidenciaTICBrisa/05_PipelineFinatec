@@ -29,12 +29,12 @@
 
                 <!-- caso esteja na current page nao aparecera o link na navbar -->
                 <div class="col" style="text-align: right;">
-                    {% if request.path == '/projetos/' %}
+                    {% if request.path == '/projeto/' %}
+                    <a class="link-primary" style="text-shadow: 0px 0px 30px rgb(255, 255, 255);" href="/projeto/">Projetos</a>
                     <a class="link-primary" href="/perfil/">Perfil</a>
-                    <a class="link-primary" style="text-decoration: double;" href="/projeto/">Projetos</a>
                     {% elif request.path == '/perfil/' %}
-                    <a class="link-primary" style="text-shadow: 0px 0px 30px rgb(255, 255, 255);" href="">Perfil</a>
                     <a class="link-primary" href="/projeto/">Projetos</a>
+                    <a class="link-primary" style="text-shadow: 0px 0px 30px rgb(255, 255, 255);" href="">Perfil</a>
                     {% endif %}
                     <a class="link-primary" href="/logout/">Sair</a>
                 </div>
