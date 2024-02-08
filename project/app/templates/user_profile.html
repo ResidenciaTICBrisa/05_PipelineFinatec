@@ -1,4 +1,7 @@
-{% extends 'base_logged.html' %} {% block conteudo %} {% load static %} {% load static custom_filters %}
+{% extends 'base_logged.html' %}
+{% block conteudo %}
+{% load static %}
+{% load static custom_filters %}
 
 <style>
     .card {
@@ -31,19 +34,57 @@
                 
                 <hr>
 
-                <form>
-                    <div class="row justify-content-evenly">
-                        <div class="col-4">
-                            <button type="submit" class="btn btn-danger">Apagar Conta</button>
-                        </div>
-                        <div class="col-4">
-                            <button type="submit" class="btn btn-secondary">Alterar Senha</button>
-                        </div> 
+                <div class="row justify-content-evenly">
+                    <div class="col-4">
+                        <button type="submit" class="btn btn-danger" disabled>Apagar Conta</button>
                     </div>
-                </form>
+                    <div class="col-4">
+                        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#changePasswordModal">Alterar Senha</button>
+                    </div> 
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changePasswordModalLabel">Alterar Senha</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Your password change form goes here -->
+                <form id="change-password-form" method="POST" action="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Senha Atual</label>
+                        <input class="form-control" type="password" name="old_password" placeholder="Senha Atual" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Nova Senha</label>
+                        <input class="form-control" type="password" name="new_password1" placeholder="Nova Senha" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Confirmar Nova Senha</label>
+                        <input class="form-control" type="password" name="new_password2" placeholder="Confirmar Nova Senha" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" id="change-password-submit">Salvar Mudanças</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ensure that jQuery and Bootstrap JavaScript are included -->
+<!-- Make sure jQuery is loaded before Bootstrap JavaScript -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 {% endblock %}
