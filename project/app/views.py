@@ -12,7 +12,7 @@ from django.shortcuts import redirect
 from django.contrib.auth import logout
 from django.contrib.auth.password_validation import validate_password
 from django.views.generic import TemplateView
-from .models import Template
+from .models import Template, Employee
 from .oracle_cruds import consultaPorID
 from .new_dev import preenche_planilha,extrair,pegar_caminho
 #from .preenche_fub import preencher_fub_teste,consultaID
@@ -45,7 +45,13 @@ class HomeView(TemplateView):
 
 @login_required(login_url="/login/")
 def user_profile(request):
-    return render(request, "user_profile.html")
+    
+    cpf = Employee.objects.get(user=request.user).cpf
+    maskered_cpf = f"{cpf[0:3]}.***.***-{cpf[9:11]}"
+
+    return render(request,'user_profile.html',{
+            "cpf":maskered_cpf,
+        }) 
 
 # def cadastro(request):
 #     if request.method == "GET":
@@ -303,3 +309,5 @@ def user_activity_logs(request):
     logs = paginator.get_page(page)
     
     return render(request, 'user_activity_logs.html', {'logs': logs})
+
+

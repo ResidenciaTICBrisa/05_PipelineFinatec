@@ -25,11 +25,7 @@
                 <br>
                 
                 <h6 class="card-text">
-                    {% if request.user.cpf %}
-                        {{ request.user.cpf }}
-                    {% else %}
-                        000.000.000-00
-                    {% endif %}
+                        {{ cpf }}
                 </h6>
                 <h7 class="card-subtitle text-muted">cpf</h7>
                 

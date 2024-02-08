@@ -189,3 +189,5 @@ EMAIL_PORT = 465
 EMAIL_USE_SSL = True
 EMAIL_HOST_USER = "sistemas.finatec@finatec.org.br"
 EMAIL_HOST_PASSWORD = password_email
+
+
