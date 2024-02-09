@@ -3,7 +3,6 @@ from datetime import datetime,date
 import openpyxl
 import os
 from .estilo_fundep import estilo_fundep
-from .oracle_cruds import consultaPorID
 from openpyxl.styles import Font,Alignment
 def check_format(time_data, format='%Y-%m-%d'):
     try:

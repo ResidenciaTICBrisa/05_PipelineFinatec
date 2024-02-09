@@ -198,7 +198,7 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
     #%porcentagem Despesas de Capital
     #IFERROR (C16/B16;0)
     percentage_style = NamedStyle(name='percentage', number_format='0%')
-
+    #SALDAO
     for row in sheet.iter_rows(min_row=15, max_row=size2+7, min_col=1, max_col=9):
         for cell in row:
             if cell.column == 4:
@@ -533,8 +533,13 @@ def estiloReceitaXDespesa(tabela,stringTamanho):
     sheet.row_dimensions[3].height = 35
     sheet.row_dimensions[2].height = 25
     sheet.row_dimensions[9].height = 30
-
-
+    sheet.column_dimensions['b'].width = 40
+    sheet.column_dimensions['c'].width = 30
+    sheet.column_dimensions['d'].width = 30
+    sheet.column_dimensions['e'].width = 30
+    sheet.column_dimensions['f'].width = 30
+    sheet.column_dimensions['i'].width = 30
+    sheet.column_dimensions['j'].width = 30
     #barra cinza
 
     barrazinzaMerge = f"A{11}:J{11}"
@@ -606,14 +611,40 @@ def estiloReceitaXDespesa(tabela,stringTamanho):
 
 
     #Rendimento de aplicação financeira formula
+    formula = f"=SUM(E{size2+3}:E{size2+6})"
+    celula = f'F{size2+2}'
+    sheet[celula] = formula
     cell=sheet[f'F{size2+2}']
     cell.fill = PatternFill(start_color=cinza, end_color=cinza,
                                             fill_type = "solid")
     cell.font = Font(name="Arial", size=12, color="000000",bold = True)
     cell.number_format = 'R$ #,##0.00'
 
+    #soma despesas realizadas
+    formula = f"=SUM(I{16}:I{size+5})"
+    celula = f'J13'
+    sheet[celula] = formula
 
+    #soma saldo conciliado
+    formula = f'=SUM(I{size2+4}+I{size2+5}+I{size2+6}+I{size2+9})'
+    celula = f'J{size2+2}'
+    sheet[celula] = formula
 
+    #valores recebidos no periodo
+    formula = f"=SUM(E{14}:E{size2+1})"
+    celula = f'F13'
+    sheet[celula] = formula
+
+    #SUM total receita
+
+    formula = f'=SUM(F{size2+2}+F13)'
+    celula = f'F{size2+12}'
+    sheet[celula] = formula
+
+    #SUM total despesa
+    formula = f'=SUM(J{size2+2}+J13)'
+    celula = f'J{size2+12}'
+    sheet[celula] = formula
 
    #Despesas realizadas
     #depsesas e capital
@@ -679,7 +710,7 @@ def estiloReceitaXDespesa(tabela,stringTamanho):
     cell.number_format = 'R$ #,##0.00'
 
     #mergecelulasabaixo de Rendimento de Aplicação financeira
-    for i in range(size2+4,size2+6):
+    for i in range(size2+3,size2+6):
         sttring = f"A{i}:D{i}"
         sheet.merge_cells(sttring)
     
@@ -1529,7 +1560,7 @@ def estilo_rendimento_de_aplicacao(tabela,tamanho,stringTamanho):
     worksheet = workbook['Rendimento de Aplicação']
     
     random_number = random.randint(1, 10000)    
-    size = tamanho + 16
+    size = tamanho + 14
     worksheet.row_dimensions[10].height = 2
     worksheet.row_dimensions[9].height = 20
 
@@ -1618,6 +1649,18 @@ def estilo_rendimento_de_aplicacao(tabela,tamanho,stringTamanho):
 
     for i in range(1,9):
         worksheet.merge_cells(start_row=11,end_row=13,start_column=i,end_column=i)
+
+
+    #RENDIMENTO LIQUIDO
+    # print(size)
+    for row in worksheet.iter_rows(min_row=14, max_row=size, min_col=7, max_col=7):
+        for cell in row:
+                stringSaldo = f"=E{cell.row} - F{cell.row}"
+                cell.value = stringSaldo
+          
+
+                
+
     #BARRAS DE DADOS
     start_row = 14
     for rows in worksheet.iter_rows(min_row=start_row, max_row=size, min_col=1, max_col=8):
@@ -1631,18 +1674,35 @@ def estilo_rendimento_de_aplicacao(tabela,tamanho,stringTamanho):
     for rows in worksheet.iter_rows(min_row=start_row, max_row=size-1, min_col=6, max_col=6):
             for cell in rows:
                 cell.font = Font(name="Arial", size=12, color="f90000")
+                cell.number_format ='#,##0.00'
+   
     #MASCARANEGRITO
     for rows in worksheet.iter_rows(min_row=start_row, max_row=size-1, min_col=1, max_col=1):
             for cell in rows:
                 cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-    #MASCARA AZUL
-    for rows in worksheet.iter_rows(min_row=start_row, max_row=size-1, min_col=7, max_col=7):
-            for cell in rows:
-                cell.font = Font(name="Arial", size=12, color="141fca",bold=True)
+                
+   
+    # #MASCARA AZUL
+    # for rows in worksheet.iter_rows(min_row=start_row, max_row=size-1, min_col=6, max_col=6):
+    #     for cell in rows:
+    #         cell.font = Font(name="Arial", size=12, color="141fca")
+    #         cell.number_format ='#,##0.00'
+
+    # for rows in worksheet.iter_rows(min_row=start_row, max_row=size-1, min_col=7, max_col=7):
+    #         for cell in rows:
+    #             cell.font = Font(name="Arial", size=12, color="141fca",bold=True)
+    #             cell.number_format ='#,##0.00'
+   
 
     
     #barra de totais
     # FORMULATOTAL
+    #B
+    formula = f"=SUM(B14:B{size-1})"
+    celula = f'B{size}'
+    worksheet[celula] = formula
+    worksheet[celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
+    worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
      #C
     formula = f"=SUM(C14:C{size-1})"
     celula = f'C{size}'
@@ -1768,7 +1828,7 @@ def estiloRelacaoBens(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
     caminho = pegar_caminho(tabela)
     workbook = openpyxl.load_workbook(caminho)
     worksheet = workbook[nomeTabela]
-    size = tamanho + 1
+    size = tamanho + 13
     cinza = "d9d9d9"
     cinza_escuro = "bfbfbf"
     azul = "336394"
@@ -1783,11 +1843,11 @@ def estiloRelacaoBens(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
             
 
     worksheet.column_dimensions['a'].width = 25
-    worksheet.column_dimensions['b'].width = 25
+    worksheet.column_dimensions['b'].width = 50
     worksheet.column_dimensions['c'].width = 35
     worksheet.column_dimensions['d'].width = 35#descrição
     worksheet.column_dimensions['e'].width = 40 #n do recibo ou qeuivalente
-    worksheet.column_dimensions['f'].width = 25 #data de emissão
+    worksheet.column_dimensions['f'].width = 70 #data de emissão
     worksheet.column_dimensions['g'].width = 25 #data de emissão
     worksheet.column_dimensions['h'].width = 25 #data de emissão
     worksheet.column_dimensions['i'].width = 25 #data de emissão
@@ -1928,8 +1988,12 @@ def estiloRelacaoBens(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
     value_to_stop = size  
     start_row = 10
 #
-    for row in range(start_row,size+1):
-        cell = worksheet[f'J{row}']
+    for row in range(13,size+1):
+        cell = worksheet[f'H{row}']
+        cell.style = locals()[input3]
+    
+    for row in range(13,size+1):
+        cell = worksheet[f'I{row}']
         cell.style = locals()[input3]
         
     for rows in worksheet.iter_rows(min_row=13, max_row=size, min_col=1, max_col=10):
@@ -1963,7 +2027,7 @@ def estiloRelacaoBens(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
     worksheet.row_dimensions[size+2].height = 56.25
 
      # FORMULATOTAL
-    formula = f"=SUM(J10:J{size})"
+    formula = f"=SUM(I13:I{size})"
     celula = f'J{size+2}'
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
@@ -1983,9 +2047,9 @@ def estiloRelacaoBens(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
     top_left_brasilia_cell.alignment = Alignment(horizontal="center",vertical="center")
 
     #DiretorFinanceiro
-    diretor_row = size + 8
-    diretor_cargo_row = size + 9
-    diretor_cpf_row = size + 10
+    diretor_row = size + 81
+    diretor_cargo_row = size + 91
+    diretor_cpf_row = size + 101
     diretor_nome_formula = f"='Receita x Despesa'!A{stringTamanho+3}"
     diretor_cargo_formula = f"='Receita x Despesa'!A{stringTamanho+4}"
     diretor_cpf_formula = f"='Receita x Despesa'!A{stringTamanho+5}"
@@ -2009,9 +2073,9 @@ def estiloRelacaoBens(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
     top_left_diretor_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
     top_left_diretor_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
     #Coordenadora
-    coordenadora_row = size + 8
-    coordenadora_cargo_row = size + 9
-    coordenadora_cpf_row = size + 10
+    coordenadora_row = size + 81
+    coordenadora_cargo_row = size + 91
+    coordenadora_cpf_row = size + 101
     coordenadora_nome_formula = f"='Receita x Despesa'!H{stringTamanho+3}"
     coordenadora_cargo_formula = f"='Receita x Despesa'!H{stringTamanho+4}"
     coordenadora_cpf_formula = f"='Receita x Despesa'!H{stringTamanho+5}"
@@ -2078,7 +2142,7 @@ def estilo_demonstrativoDeReceita(tabela,tamanho,stringTamanho):
     borda = Border(right=Side(border_style="medium"))
     worksheet.sheet_view.showGridLines = False
     # 
-    for row in worksheet.iter_rows(min_row=1, max_row=size+11,min_col=4,max_col=4):
+    for row in worksheet.iter_rows(min_row=1, max_row=size+11,min_col=5,max_col=5):
         for cell in row:
             cell.border = borda
             
@@ -2087,36 +2151,37 @@ def estilo_demonstrativoDeReceita(tabela,tamanho,stringTamanho):
     worksheet.column_dimensions['b'].width = 70
     worksheet.column_dimensions['c'].width = 30
     worksheet.column_dimensions['d'].width = 50#descrição
+    worksheet.column_dimensions['e'].width = 50#descrição
    
 
     #cabecario relação de pagamentos - outro servicoes de terceiros
-    worksheet.merge_cells('A1:D2')
+    worksheet.merge_cells('A1:E2')
     worksheet['A1'] = f'D E M O N S T R A T I V O   D E   R E C E I T A  E    ISS 5% E ISS 2%'
     worksheet['A1'].font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
     worksheet['A1'].alignment = Alignment(horizontal="center",vertical="center")
     worksheet['A1'].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
     
-    worksheet.merge_cells('A3:D3')
+    worksheet.merge_cells('A3:E3')
     worksheet['A3'] = "='Receita x Despesa'!A3:J3"
     worksheet['A3'].font = Font(name="Arial", size=12, color="000000")
     worksheet['A3'].alignment = Alignment(horizontal="left",vertical="center")
 
-    worksheet.merge_cells('A4:D4')
+    worksheet.merge_cells('A4:E4')
     worksheet['A4'] = "='Receita x Despesa'!A4:J4"
     worksheet['A4'].font = Font(name="Arial", size=12, color="000000")
     worksheet['A4'].alignment = Alignment(horizontal="left",vertical="center")
     
-    worksheet.merge_cells('A5:D5')
+    worksheet.merge_cells('A5:E5')
     worksheet['A5'] = "='Receita x Despesa'!A5:J5"
     worksheet['A5'].font = Font(name="Arial", size=12, color="000000")
     worksheet['A5'].alignment = Alignment(horizontal="left",vertical="center")
     
-    worksheet.merge_cells('A6:D6')
+    worksheet.merge_cells('A6:E6')
     worksheet['A6'] = "='Receita x Despesa'!A6:J6"
     worksheet['A6'].font = Font(name="Arial", size=12, color="000000")
     worksheet['A6'].alignment = Alignment(horizontal="left",vertical="center")
     
-    worksheet.merge_cells('A7:D7')
+    worksheet.merge_cells('A7:E7')
     worksheet['A7'] = "='Receita x Despesa'!A7:J7"
     worksheet['A7'].font = Font(name="Arial", size=12, color="000000")
     worksheet['A7'].alignment = Alignment(horizontal="left",vertical="center")
@@ -2129,13 +2194,13 @@ def estilo_demonstrativoDeReceita(tabela,tamanho,stringTamanho):
     row_style_demonstrativo.border = Border(top=Side(border_style="medium")  ,bottom=Side(border_style="thin") )
     row_style_demonstrativo.height = 20
     linha_number = 9
-    for row in worksheet.iter_rows(min_row=linha_number, max_row=linha_number, min_col=1, max_col=4):
+    for row in worksheet.iter_rows(min_row=linha_number, max_row=linha_number, min_col=1, max_col=5):
         for cell in row:
             cell.style = row_style_demonstrativo
-            if cell.column == 4:
+            if cell.column == 5:
                 cell.border = Border(top=Side(border_style="medium")  ,bottom=Side(border_style="thin"), right=Side(border_style="medium") )
 
-    valores = ["Data de Entrada","Cod.BB_Histórico","Documento",'Valor']
+    valores = ["NomeFavorecido","Histórico","Documento","Data de Entrada",'Valor']
     col = 1
     for a,b in enumerate(valores):
         worksheet.cell(row=linha_number, column=col, value=b)
@@ -2159,15 +2224,15 @@ def estilo_demonstrativoDeReceita(tabela,tamanho,stringTamanho):
     start_row = 10
 #
     for row in range(start_row,size+1):
-        cell = worksheet[f'D{row}']
+        cell = worksheet[f'E{row}']
         cell.style = custom_number_format_demonstrativo
         
-    for rows in worksheet.iter_rows(min_row=10, max_row=size, min_col=1, max_col=4):
+    for rows in worksheet.iter_rows(min_row=10, max_row=size, min_col=1, max_col=5):
             for cell in rows:
                 if cell.row % 2:
                     cell.fill = PatternFill(start_color=cinza, end_color=cinza,
                                             fill_type = "solid")
-                if cell.column == 4:
+                if cell.column == 5:
                     cell.font = Font(name="Arial", size=12, color="000000")
                     cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
                     cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="medium") ,bottom=Side(border_style="hair") )
@@ -2180,7 +2245,7 @@ def estilo_demonstrativoDeReceita(tabela,tamanho,stringTamanho):
     #subtotal
     stringAfinarCelula =size+2
     worksheet.row_dimensions[size+2].height = 6
-    celulas_mergidas_subtotal = f"A{size+2}:C{size+2}"
+    celulas_mergidas_subtotal = f"A{size+2}:D{size+2}"
     worksheet.merge_cells(celulas_mergidas_subtotal)
     left_celula_cell = f"A{size+2}"
     top_left_cell = worksheet[left_celula_cell]
@@ -2193,8 +2258,8 @@ def estilo_demonstrativoDeReceita(tabela,tamanho,stringTamanho):
     worksheet.row_dimensions[size+2].height = 56.25
 
      # FORMULATOTAL
-    formula = f"=SUM(D10:D{size})"
-    celula = f'D{size+2}'
+    formula = f"=SUM(E10:E{size})"
+    celula = f'E{size+2}'
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=cinza, end_color=cinza,fill_type = "solid")
     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
@@ -2218,19 +2283,19 @@ def estilo_demonstrativoDeReceita(tabela,tamanho,stringTamanho):
 
     row_number = size + 4
    
-    for column in range(1, 5):  
+    for column in range(1, 6):  
         cell = worksheet.cell(row=row_number, column=column)
         cell.style = row_style_demonstrativo_append
-        if cell.column == 4:
+        if cell.column == 5:
             cell.border = Border(top=Side(border_style="medium") ,right =Side(border_style="medium") ,bottom=Side(border_style="medium") )
 
 
 
-    values = ["Data de Entrada","Cod.BB_Histórico","Documento",'Valor']
+    values = ["NomeFavorecido","Histórico","Documento","Data de Entrada",'Valor']
     coluna = 1
     for a,b in enumerate(values):
         worksheet.cell(row=row_number, column=coluna, value=b)
-        if coluna == 4:
+        if coluna == 5:
             coluna = coluna + 1
         coluna = coluna + 1
         
@@ -2240,7 +2305,7 @@ def estilo_demonstrativoDeReceita(tabela,tamanho,stringTamanho):
     
     #subtotal2
     sub_total2_row = size + 5
-    subtotal_merge_cells= f'A{sub_total2_row}:C{sub_total2_row}'
+    subtotal_merge_cells= f'A{sub_total2_row}:D{sub_total2_row}'
     worksheet.merge_cells(subtotal_merge_cells)
     top_left_subtotal2_cell_formula = f'A{sub_total2_row}'
     top_left_subtotal2_cell = worksheet[top_left_subtotal2_cell_formula]
@@ -2250,7 +2315,7 @@ def estilo_demonstrativoDeReceita(tabela,tamanho,stringTamanho):
     top_left_subtotal2_cell.alignment = Alignment(horizontal="center",vertical="center")
     top_left_subtotal2_cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="medium") ,right =Side(border_style="hair") ,bottom=Side(border_style="medium") )
 
-    sub_formula_row_celula = f'D{sub_total2_row}'
+    sub_formula_row_celula = f'E{sub_total2_row}'
     worksheet[sub_formula_row_celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     worksheet[sub_formula_row_celula].font = Font(name="Arial", size=12, color="000000",bold=True)
     worksheet[sub_formula_row_celula].number_format = 'R$ #,##0.00'
@@ -2258,7 +2323,7 @@ def estilo_demonstrativoDeReceita(tabela,tamanho,stringTamanho):
 
       #total1-2
     total12_row = size + 6
-    total12_merge_cells = f'A{total12_row}:C{total12_row}'
+    total12_merge_cells = f'A{total12_row}:D{total12_row}'
     worksheet.merge_cells(total12_merge_cells)
     top_left_total12_cell_formula = f'A{total12_row}'
     top_left_total12_cell = worksheet[top_left_total12_cell_formula]
@@ -2271,8 +2336,8 @@ def estilo_demonstrativoDeReceita(tabela,tamanho,stringTamanho):
 
     #total_formula
     total_formula_row = size + 6
-    total_formulaa = f'=D{size}'
-    total_formula_row_celula = f'D{total_formula_row}'
+    total_formulaa = f'=E{size}'
+    total_formula_row_celula = f'E{total_formula_row}'
     worksheet[total_formula_row_celula].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
     worksheet[total_formula_row_celula].font = Font(name="Arial", size=12, color="000000",bold=True)
     worksheet[total_formula_row_celula].number_format = 'R$ #,##0.00'
@@ -2284,7 +2349,7 @@ def estilo_demonstrativoDeReceita(tabela,tamanho,stringTamanho):
     #brasilia
     brasilia_row = size + 7
     brasilia_formula = f"='Receita x Despesa'!A{stringTamanho}:J{stringTamanho}"
-    brasilia_merge_cells = f'A{brasilia_row}:D{brasilia_row}'
+    brasilia_merge_cells = f'A{brasilia_row}:E{brasilia_row}'
     worksheet.merge_cells(brasilia_merge_cells)
     top_left_brasilia_cell_formula = f'A{brasilia_row}'
     top_left_brasilia_cell = worksheet[top_left_brasilia_cell_formula]
@@ -2324,9 +2389,9 @@ def estilo_demonstrativoDeReceita(tabela,tamanho,stringTamanho):
     coordenadora_nome_formula = f"='Receita x Despesa'!H{stringTamanho+3}"
     coordenadora_cargo_formula = f"='Receita x Despesa'!H{stringTamanho+4}"
     coordenadora_cpf_formula = f"='Receita x Despesa'!H{stringTamanho+5}"
-    coordenadora_merge_cells = f'C{coordenadora_row}:D{coordenadora_row}'
-    coordenadora_cargo_merge_cells = f'C{coordenadora_cargo_row}:D{coordenadora_cargo_row}'
-    coordenadora_cpf_merge_cells = f'C{coordenadora_cpf_row}:D{coordenadora_cpf_row}'
+    coordenadora_merge_cells = f'C{coordenadora_row}:E{coordenadora_row}'
+    coordenadora_cargo_merge_cells = f'C{coordenadora_cargo_row}:E{coordenadora_cargo_row}'
+    coordenadora_cpf_merge_cells = f'C{coordenadora_cpf_row}:E{coordenadora_cpf_row}'
     worksheet.merge_cells(coordenadora_merge_cells)
     worksheet.merge_cells(coordenadora_cargo_merge_cells)
     worksheet.merge_cells(coordenadora_cpf_merge_cells)
@@ -2354,9 +2419,9 @@ def estilo_demonstrativoDeReceita(tabela,tamanho,stringTamanho):
             
     
 
-    for row in worksheet.iter_rows(min_row=coordenadora_cpf_row+1, max_row=coordenadora_cpf_row+1,min_col=1,max_col=4):
+    for row in worksheet.iter_rows(min_row=coordenadora_cpf_row+1, max_row=coordenadora_cpf_row+1,min_col=1,max_col=5):
         for cell in row:
-            if cell.column == 4:
+            if cell.column == 5:
                 cell.border = Border(top=Side(border_style="none") ,left = Side(border_style="none") ,right =Side(border_style="medium") ,bottom=Side(border_style="medium") )
             else:
                 cell.border = Border(top=Side(border_style="none") ,left = Side(border_style="none") ,right =Side(border_style="none") ,bottom=Side(border_style="medium") )
