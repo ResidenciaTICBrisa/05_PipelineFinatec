@@ -1,0 +1,19 @@
+:root {
+    --btn-hover: #F39B00; 
+    --text-color: aliceblue; 
+}
+
+.btn {
+    padding: 15px 50px 15px 50px;
+    background-color: var(--text-color);
+    border-radius: 20px;
+}
+
+.btn:hover {
+    transition: 300ms;
+    background-color: var(--btn-hover);
+}
+
+h5 {
+    color: rgb(212, 212, 212);
+}

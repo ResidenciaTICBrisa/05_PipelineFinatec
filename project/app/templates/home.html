@@ -1,37 +1,23 @@
-{% extends 'base.html' %}
+{% extends 'base_reset.html' %}
 {% block conteudo %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/home.css' %}">
-<link rel="stylesheet" href="{% static 'css/style.css' %}">
-<link rel="stylesheet" href="{% static 'css/cadastro.css' %}">
+<link rel="stylesheet" href="{% static 'css/new_home.css' %}">
 
-<header>
-    <img src="{% static 'imagem/finateclogo.svg' %}" alt="finatec" class="finatecLogo">
-    <div class="navButton">
-        <p class="otherLogin"><a href="/" class="link"><h1>Home</h1></a></p>
-        <!-- <p class="otherLogin"><a href="/cadastro/" class="link"><h1>Cadastro</h1></a></p> -->
-        <p class="otherLogin"><a href="/login/" class="link"><h1>Login</h1></a></p>
-    </div>
-</header>
+<div class="container">
+    <div class="row justify-content-evenly align-items-center">
+        <div class="col-6 text-white">
+            <h5>Sistema de prestação de contas automático. <br> Facilidade no dia a dia da FINATEC. </h5>
 
-<content class="content2">
-    <div class="div-lado-a-lado">
-        <div class="div1">
-            <h2>Automatec</h2>
-            <h3>Sistema de prestação de contas automático. <br> Facilidade no dia a dia da FINATEC. </h3>
-            <div class="div-lado-a-lado">
-                <a href="/login/">
-                    <button class="button-submit3" id="entrarButton" type="submit">Entrar</button>
-                </a>
-                <!-- <a href="/cadastro/">
-                    <button class="button-submit4" type="submit">Cadastrar</button>
-                </a> -->
-            </div>
+            <br>
+
+            <a href="/login/">
+                <button class="btn" id="entrarButton" type="submit"> <strong>Entrar</strong></button>
+            </a>
         </div>
-        <div class="div2">
-            <img src="{% static 'imagem/logo.svg' %}" alt="logo" class="logo2">
+        <div class="col-4">
+            <img class="img-fluid" src="{% static 'imagem/logo.svg' %}" alt="logo" class="logo2">
         </div>
     </div>
-</content>
+</div>
 
 {% endblock %}

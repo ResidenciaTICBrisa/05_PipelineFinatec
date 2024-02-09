@@ -30,7 +30,7 @@ INSTALLED_APPS = [
     'django_admin_logs',
     'app',
     'backend',
-    
+    'bootstrap_modal_forms',    
 ]
 
 PGHISTORY_CONFIG = {
@@ -62,7 +62,13 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+                
+            'libraries':{
+                'first_letters': 'app.templatetags.custom_filters',
+                
+                }
         },
+        
     },
 ]
 
@@ -74,6 +80,10 @@ WSGI_APPLICATION = 'project.wsgi.application'
 file_path = "/home/ubuntu/Desktop/devfront/devfull/postgre.txt"
 with open(file_path, 'r') as file:
         password_database = file.readline().strip()
+
+file_path = "/home/ubuntu/Desktop/devfront/devfull/passemail.txt"
+with open(file_path, 'r') as file:
+        password_email = file.readline().strip()
 
 DATABASES = {
     'default': {
@@ -172,10 +182,12 @@ MEDIA_ROOT = 'home/05_PipelineFinatec/sites/public/static/imagem'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
+# configurando email de recuperacao
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 465
 EMAIL_USE_SSL = True
 EMAIL_HOST_USER = "sistemas.finatec@finatec.org.br"
-EMAIL_HOST_PASSWORD = "fin@tec2022"
+EMAIL_HOST_PASSWORD = password_email
+
+

@@ -1,4 +1,5 @@
 <!-- templates/user_activity_logs.html -->
+{% extends 'base.html' %} {% block conteudo %} {% load static %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -11,7 +12,7 @@
 
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <div class="container-fluid">
-              <a class="navbar-brand" href="#">Activity Logs</a>
+              <a class="navbar-brand" href="">Activity Logs</a>
               <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
               </button>
@@ -67,7 +68,9 @@
                         {% if log.tag == "Acessou o sistema" %}
                             class="table-primary"
                         {% elif log.tag == "Consulta" %}
-                            class="table-warning"
+                        class="table-warning"
+                        {% elif log.activity == "Tentativa de acesso" %}
+                        class="table-danger"
                         {% endif %}
                     >
                         <td> {{ forloop.counter }} </td>
@@ -100,3 +103,6 @@
     </div>
 </body>
 </html>
+
+
+{% endblock %}

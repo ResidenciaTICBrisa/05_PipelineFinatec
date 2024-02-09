@@ -1,0 +1,100 @@
+{% extends 'base_logged.html' %}
+{% block conteudo %}
+{% load static %}
+{% load static custom_filters %}
+
+<style>
+    .card {
+        background-color: rgba(255, 255, 255, 0.062);
+        border: 1px solid #bcbcbc;
+        color: aliceblue;
+        border-radius: 20px;
+    }
+</style>
+
+<div class="row justify-content-center">
+    <div class="col-6">
+        <div class="card mx-auto">
+            <div class="card-body">
+                <h5 class="card-title">{{ request.user }}</h5>
+                <h6 class="card-subtitle text-muted">usuário</h6>
+
+                <hr>                
+                
+                <h6 class="card-text">{{ request.user.email }}</h6>
+                <h7 class="card-subtitle text-muted">email</h7>
+                
+                <br>
+                <br>
+                
+                <h6 class="card-text">
+                        {{ cpf }}
+                </h6>
+                <h7 class="card-subtitle text-muted">cpf</h7>
+                
+                <hr>
+
+                <div class="row justify-content-evenly">
+                    <div class="col-4">
+                        <button type="submit" class="btn btn-danger" disabled>Apagar Conta</button>
+                    </div>
+                    <div class="col-4">
+                        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#changePasswordModal">Alterar Senha</button>
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="changePasswordModal" tabindex="-1" role="dialog" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="changePasswordModalLabel">Alterar Senha</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Your password change form goes here -->
+                <form id="change-password-form" method="POST" action="POST">
+                    {% csrf_token %}
+                    <!-- <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Senha Atual</label>
+                        <input class="form-control" type="password" name="old_password" placeholder="Senha Atual" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Nova Senha</label>
+                        <input class="form-control" type="password" name="new_password1" placeholder="Nova Senha" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Confirmar Nova Senha</label>
+                        <input class="form-control" type="password" name="new_password2" placeholder="Confirmar Nova Senha" required>
+                    </div>
+                </div> 
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="submit" class="btn btn-primary" id="change-password-submit">Salvar Mudanças</button>
+                </div> -->
+
+                <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Enviaremos um email para a configuração da nova senha</label>
+                    </div>
+                </div> 
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="change-password-submit" disabled>Quero uma Nova Senha</button>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Ensure that jQuery and Bootstrap JavaScript are included -->
+<!-- Make sure jQuery is loaded before Bootstrap JavaScript -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+{% endblock %}

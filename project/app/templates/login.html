@@ -1,7 +1,7 @@
-{% extends 'base.html' %}
+{% extends 'base_reset.html' %}
 {% block conteudo %}
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<!-- <link rel="stylesheet" href="{% static 'css/style.css' %}"> -->
 <script>
     function valida_cpf(cpf) {
         var numeros, digitos, soma, i, resultado, digitos_iguais;
@@ -49,50 +49,92 @@
     //     });
     // });
 </script>
-<style>
-    .content {
-        background-image: url('{% static "imagem/fundoLogo.svg" %}');
-        background-size: 100%;
-        background-repeat: no-repeat;
-    }
-</style>
-<header>
-    <a href="/"><img src="{% static 'imagem/finateclogo.svg' %}" alt="finatec" class="finatecLogo"></a>
-    <div class="navButton">
-        <p class="otherLogin"><a href="/" class="link"><h1>Home</h1></a></p>
-        <!-- <p class="otherLogin"><a href="/cadastro/" class="link"><h1>Cadastro</h1></a></p> -->
-        <p class="otherLogin"><a href="/login/" class="link"><h1>Login</h1></a></p>
-    </div>
-</header>
 
-<content class="content">
-    <div class="container">
-        <h3>Login</h3>
-        <img src="{% static 'imagem/perfilC.svg' %}" alt="logo" class="logo">
-        <form action="{% url 'login' %}" method="POST" class="form">
-            {% csrf_token %}
-            <div class="inputGroup">
-                <div class="input">
-                    <label class="name">Usuário</label>
-                    <!-- <input type="text" id="cpf" name="usuario" class="placeholder" placeholder="000.000.000-00" maxlength="14" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" title="Digite um CPF válido no formato 000.000.000-00." required> -->
-                    <input type="text" id="cpf" name="usuario" class="placeholder" placeholder="nome.sobrenome" maxlength="50" title="Digite um CPF válido no formato 000.000.000-00." required>
-                </div>
-                <div class="input">
-                    <label class="name">Senha</label>
-                    <input type="password" name="senha" class="placeholder" placeholder="•••••••••••" required>
+<style>
+    #main {
+        background-image: url('{% static "imagem/logo50%.svg" %}');
+        background-size: cover;
+        background-repeat: no-repeat;
+        height: 75vh;
+    }
+
+    .card-body, .card {
+        border-radius: 20px;
+    }
+
+    .btn {
+        background-color: #021842;
+    }
+
+    .btn:hover {
+        transition: 300ms;
+        background-color: #F39B00;
+    }
+
+
+</style>
+
+<div id="main" class="row justify-content-center">
+    <div class="col-5 my-auto">
+
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="container">
+                    <div class="row" style="text-align: center;">
+                        <h3>Login</h3>
+                        <hr>
+                        <img src="{% static 'imagem/perfilC.svg' %}" alt="logo" class="img-fluid" style="height: 100px;">
+                    </div>
+
+                    <div class="row">
+                        <form action="{% url 'login' %}" method="POST">
+                            <br>
+
+                            <div class="row" id="form-section">
+                                <div class="col-12">
+                                    {% csrf_token %}
+                                    <label class="name">Usuário</label>
+                                    <!-- <input type="text" id="cpf" name="usuario" class="placeholder" placeholder="000.000.000-00" maxlength="14" pattern="\d{3}\.\d{3}\.\d{3}-\d{2}" title="Digite um CPF válido no formato 000.000.000-00." required> -->
+                                    <input type="text" id="cpf" name="usuario" class="form-control rounded" placeholder="nome.sobrenome" maxlength="50" title="Digite um CPF válido no formato 000.000.000-00." required>
+                                </div>
+                            </div>
+
+                            <br>
+                            
+                            <div class="row">
+                                <div class="col-12">
+                                    <label>Senha</label>
+                                    <input type="password" name="senha" class="form-control" placeholder="•••••••••••" required>
+                                </div>
+                            </div>
+
+                            <br>
+                            
+                            <div class="row justify-content-end">
+                                <div class="col-3">
+                                    <input class="btn text-white" type="submit" value="Entrar" class="button-submit">
+                                    
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <br>
+
+                    {% if error_message %}
+                    <hr>
+                    <p class="error">{{ error_message }}</p>
+                    <hr>
+                    {% endif %}
+
+                    <div class="row justify-content-center" style="text-align: center;">
+                        <a href="/reset_password/">Esqueci minha senha</a>
+                    </div>
+
                 </div>
             </div>
-            <div class="cardSubmit">
-                <input type="submit" value="Entrar" class="button-submit">
-            </div>
-        </form>
-        {% if error_message %}
-        <p class="error">{{ error_message }}</p>
-        {% endif %}
-        <p class="otherLogin">
-            <a href="/reset_password/" class="linkS">Esqueci minha senha</a>
-        </p>
+        </div>
     </div>
-</content>
+</div>
 
 {% endblock %}

@@ -1,0 +1,56 @@
+* {
+    font-family: 'Montserrat', sans-serif;
+}
+
+html, body {
+    background-image: linear-gradient(#021842 50%, #253e6c);
+    background-size: contain; /* Added */
+    background-repeat: no-repeat; /* Added */
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+nav {
+    background-color: #021842;
+    padding-block: 25px;
+    box-shadow: 10px 5px 5px #021233;
+}
+
+.link-primary {
+    text-decoration: none;
+    color: aliceblue;
+    padding-inline: 10px;
+}
+
+.link-primary:hover {
+    color: rgb(185, 200, 212);
+}
+
+body {
+    justify-content: space-between;
+    flex-direction: column;
+    display: flex;
+    margin: 0;
+}
+
+footer {
+    color: aliceblue;
+    bottom: 0;
+    height: 2.5rem;
+}
+
+/* tentativa de deixar a tela responsiva
+    se o content passa da margem da tela 
+    a cor de fundo nao acompanha */
+/* @media (min-height: 100vh) {
+    html, body {
+        height: fit-content;
+    }
+}
+
+@media (max-height: 100vh) {
+    html, body {
+        height: 100vh;
+    }
+} */
