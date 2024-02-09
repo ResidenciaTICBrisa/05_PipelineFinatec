@@ -13,9 +13,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.password_validation import validate_password
 from django.views.generic import TemplateView
 from .models import Template
-from .oracle_cruds import consultaPorID
 from .new_dev import preenche_planilha,extrair,pegar_caminho
-#from .preenche_fub import preencher_fub_teste,consultaID
 from .preenche_fundep import preenche_fundep
 from .preencheFub import consultaID,preencheFub
 from .capa import inserir_round_retangulo
