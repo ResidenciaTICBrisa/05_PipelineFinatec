@@ -34,7 +34,7 @@ def convert_datetime_to_string(value):
 def extract_strings(input_string):
     # Use regular expressions to find the text before and after '@@'
     matches = re.findall(r'(.*?)@@(.*?)@@', input_string)
-    
+
     if matches:
         return tuple(matches[0])
     else:
@@ -46,12 +46,12 @@ class HomeView(TemplateView):
 @login_required(login_url="/login/")
 def user_profile(request):
     cpf = Employee.objects.get(user=request.user).cpf
-    maskered_cpf = f"{cpf[0:3]}.***.***-{cpf[9:11]}"
+    maskered_cpf = f"{cpf[0:3]}.{cpf[3:6]}.{cpf[6:9]}-{cpf[9:11]}"
 
     return render(request,'user_profile.html',{
             "cpf":maskered_cpf,
         })
-    
+
 def login(request):
     if request.method =="GET":
         return render(request, 'login.html')
@@ -65,26 +65,33 @@ def login(request):
             login_a(request, user)
             log_message = f"Acessou o sistema"
             log_user_activity(request.user, "Sistema", log_message)
-            
+
             return HttpResponseRedirect ('/projeto/')
         else:
             error_message = 'Usuário ou senha inválido.'
-            
+
             log_message = f"Tentativa de acesso"
             log_user_activity(usuario, "Sistema", log_message)
-            
+
             return render(request, 'login.html', {'error_message': error_message})
 
 @login_required(login_url="/login/")
-def projeto(request):  
+def projeto(request):
+    if request.method == 'POST':
+        return projeto_legacy(request)
+    else:
+        return render(request,'projeto.html',{
+                "templates":Template.objects.all(),
+            })
+
+def projeto_legacy(request):
     lista_append_db_sql = []
     result = {}
     current_key = None
     mapeamento = None
 
-    codigo = request.POST.get('usuario') # alterar o nome
+    codigo = request.POST.get('codigo') # alterar o nome
     template_id = request.POST.get('template')
-    # download = request.POST.get('Baixar') # quando puxo na consulta vem vazio
     consultaInicio = request.POST.get('inicio')
     consultaFim = request.POST.get('fim')
 
@@ -97,32 +104,31 @@ def projeto(request):
     try:
         db_fin = consultaID(codigo)
     except:
-        return render(request,'projeto.html',{
-            "templates":Template.objects.all(),
-        })  
-       
+        print("Erro na consulta codigo inexistente ou invalido")
+        # return render(request,'projeto.html',{
+        #     "templates":Template.objects.all(),
+        # })
+
     # nome = Template.objects.get(pk=template_id)
     # nome = Template.objects.get(pk=template_id)
     try:
         nome = Template.objects.get(pk=template_id)
     except:
-        return render(request,'projeto.html',{
-            "templates":Template.objects.all(),
-        })        
+        print("deu ruim")
+        # return render(request,'projeto.html',{
+        #     "templates":Template.objects.all(),
+        # })
 
     dict_final = {}
 
-    # caminho_pasta_planilhas = pegar_caminho("planilhas")   
-    # # caminhoPastaPlanilhasPreenchidas = "../../planilhas_preenchidas/"
-    # caminhoPastaPlanilhasPreenchidas = pegar_caminho("planilhas_preenchidas") 
-    caminho_pasta_planilhas = "../../planilhas/"    
+    caminho_pasta_planilhas = "../../planilhas/"
     caminhoPastaPlanilhasPreenchidas = "../../planilhas_preenchidas/"
 
     # Obtém o diretório atual do script
     diretorio_atual = os.path.dirname(os.path.abspath(__file__))
 
     # Combina o diretório atual com o caminho para a pasta "planilhas_preenchidas" e o nome do arquivo
-       
+
     if nome.nome_template == "fundep":
         testeCaminhoFundep = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"ModeloFUNDEP.xlsx")
         preenche_planilha(testeCaminhoFundep,dict_final)
@@ -139,29 +145,23 @@ def projeto(request):
     if nome.nome_template == "finep":
         finep = os.path.join(caminho_pasta_planilhas, "ModeloFINEP.xlsx")
         preenche_planilha(finep,dict_final)
-        
+
 
     file_path = None
     print(f"download{template_id}")
     if template_id == '1':
         keys = ['NomeFavorecido','FavorecidoCPFCNPJ','NomeTipoLancamento',
                 'HisLancamento','NumDocPago','DataEmissao','NumChequeDeposito',
-                'DataPagamento', 'ValorPago']            
+                'DataPagamento', 'ValorPago']
         file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"planilhaPreenchidaModelo_Fub.xlsx")
-            
-        # file_path = pegar_caminho('/home/ubuntu/Desktop/05_PipelineFinatec/planilhas_preenchidas/planilhaPreenchidaModelo_Fub.xlsx')
-        # data_obj = datetime.strptime(consultaInicio, "%Y-%m-%d")
-        # consultaInicio = data_obj.strftime("%d/%m/%Y")
-        # data_obj2 = datetime.strptime(consultaFim, "%Y-%m-%d")
-        # consultaFim = data_obj2.strftime("%d/%m/%Y")
-            
+
         preencheFub(codigo,convert_datetime_to_string(consultaInicio),convert_datetime_to_string(consultaFim),file_path)
         inserir_round_retangulo(file_path,consultaInicio,consultaFim,db_fin)
     elif template_id == '2':
         keys = ['NomeFavorecido','FavorecidoCPFCNPJ','NomeRubrica','NumDocPago',
-                'DataEmissao','NumChequeDeposito','DataPagamento', 'ValorPago']            
+                'DataEmissao','NumChequeDeposito','DataPagamento', 'ValorPago']
         file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"planilhaPreenchidaModeloFUNDEP.xlsx")
-            
+
         #file_path = pegar_caminho('/home/ubuntu/Desktop/05_PipelineFinatec/planilhas_preenchidas/planilhaPreenchidaModeloFUNDEP.xlsx')
         preenche_fundep(codigo,convert_datetime_to_string(consultaInicio),convert_datetime_to_string(consultaFim),keys,file_path)
     elif template_id == '3':
@@ -176,27 +176,27 @@ def projeto(request):
     else:
         # Handle cases where 'download' doesn't match any expected values
         return HttpResponse("Invalid download request", status=400)
-     
+
     # Check if the file exists
     if os.path.exists(file_path):
         with open(file_path, 'rb') as f:
             response = HttpResponse(f.read(), content_type='application/octet-stream')
             #print(f'aaaa{os.path.basename(file_path)}')
             response['Content-Disposition'] = f'attachment; filename="{os.path.basename(file_path)}"'
-            
+
             # adicionando log de consulta
             consulta_log = f"Projeto: {codigo} | Modelo: {nome.nome_template} | Inicio da Prest.: {consultaInicio} | Fim da Prest.: {consultaFim}"
             # LogEntry.objects.log_action(user_id=request.user.id, content_type_id=1, object_repr=consulta_log, action_flag=1, change_message="Consulta de prestação de contas")
-            
+
             log_user_activity(request.user, "Consulta",consulta_log)
 
             return response
     else:
         print("Invalid aaaaaaaaaaa request")
 
-    return render(request,'projeto.html',{
-        "templates":Template.objects.all(),
-    })
+    # return render(request,'projeto.html',{
+    #     "templates":Template.objects.all(),
+    # })
 
 def custom_logout(request):
     logout(request)
@@ -229,7 +229,7 @@ def user_activity_logs(request):
     logs = paginator.get_page(page)
 
     print(type(logs))
-    
+
     return render(request, 'user_activity_logs.html', {'logs': logs})
 
 
