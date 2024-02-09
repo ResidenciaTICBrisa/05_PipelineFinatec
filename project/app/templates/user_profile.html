@@ -58,9 +58,9 @@
             </div>
             <div class="modal-body">
                 <!-- Your password change form goes here -->
-                <form id="change-password-form" method="POST" action="post">
+                <form id="change-password-form" method="POST" action="POST">
                     {% csrf_token %}
-                    <div class="mb-3">
+                    <!-- <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Senha Atual</label>
                         <input class="form-control" type="password" name="old_password" placeholder="Senha Atual" required>
                     </div>
@@ -72,12 +72,22 @@
                         <label for="exampleInputEmail1" class="form-label">Confirmar Nova Senha</label>
                         <input class="form-control" type="password" name="new_password2" placeholder="Confirmar Nova Senha" required>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
-                <button type="button" class="btn btn-primary" id="change-password-submit">Salvar Mudanças</button>
-            </div>
+                </div> 
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="submit" class="btn btn-primary" id="change-password-submit">Salvar Mudanças</button>
+                </div> -->
+
+                <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Enviaremos um email para a configuração da nova senha</label>
+                    </div>
+                </div> 
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" id="change-password-submit" disabled>Quero uma Nova Senha</button>
+                </div>
+                
+            </form>
         </div>
     </div>
 </div>

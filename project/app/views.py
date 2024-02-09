@@ -45,12 +45,15 @@ class HomeView(TemplateView):
 
 @login_required(login_url="/login/")
 def user_profile(request):
-    cpf = Employee.objects.get(user=request.user).cpf
-    maskered_cpf = f"{cpf[0:3]}.{cpf[3:6]}.{cpf[6:9]}-{cpf[9:11]}"
+    if request.method == 'POST':
+        print("trocar senha")
+    else:
+        cpf = Employee.objects.get(user=request.user).cpf
+        maskered_cpf = f"{cpf[0:3]}.{cpf[3:6]}.{cpf[6:9]}-{cpf[9:11]}"
 
-    return render(request,'user_profile.html',{
-            "cpf":maskered_cpf,
-        })
+        return render(request,'user_profile.html',{
+                "cpf":maskered_cpf,
+            })
 
 def login(request):
     if request.method =="GET":
