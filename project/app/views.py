@@ -52,8 +52,11 @@ def user_profile(request):
         if request.POST.get('new_password1') == request.POST.get('new_password2') and authenticate(username=request.user, password=request.POST.get('old_password')):
             user.set_password(request.POST.get('new_password1'))
             user.save()
+            user_authenticated = authenticate(username=request.user, password=request.POST.get('old_password'))
             log_message = f"Alterou a senha"
             log_user_activity(request.user, "Sistema", log_message)
+            messages.success(request, "Senha alterada com sucesso!")
+            login_a(request, user_authenticated)
         else:
             messages.error(request, "A senha atual inserida, não corresponde com a senha atual. Tente novamente, ou procure o suporte.")
 
