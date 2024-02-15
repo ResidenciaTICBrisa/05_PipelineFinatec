@@ -34,9 +34,19 @@
                 
                 <hr>
 
+                {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+
+                <hr>
+                {% endif %}
+
                 <div class="row justify-content-evenly">
                     <div class="col-4">
-                        <button type="submit" class="btn btn-danger" disabled>Apagar Conta</button>
+                        <button type="submit" class="btn btn-danger" disabled>Inativar Conta</button>
                     </div>
                     <div class="col-4">
                         <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#changePasswordModal">Alterar Senha</button>
@@ -58,39 +68,43 @@
             </div>
             <div class="modal-body">
                 <!-- Your password change form goes here -->
-                <form id="change-password-form" method="POST" action="POST">
+                <form id="change-password-form" method="post" onsubmit="return validatePasswords()">
                     {% csrf_token %}
-                    <!-- <div class="mb-3">
+                    <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Senha Atual</label>
                         <input class="form-control" type="password" name="old_password" placeholder="Senha Atual" required>
                     </div>
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Nova Senha</label>
-                        <input class="form-control" type="password" name="new_password1" placeholder="Nova Senha" required>
+                        <input class="form-control" type="password" name="new_password1" id="new_password1" placeholder="Nova Senha" required>
                     </div>
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Confirmar Nova Senha</label>
-                        <input class="form-control" type="password" name="new_password2" placeholder="Confirmar Nova Senha" required>
+                        <input class="form-control" type="password" name="new_password2" id="new_password2" placeholder="Confirmar Nova Senha" required>
                     </div>
                 </div> 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                     <button type="submit" class="btn btn-primary" id="change-password-submit">Salvar Mudanças</button>
-                </div> -->
-
-                <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Enviaremos um email para a configuração da nova senha</label>
-                    </div>
-                </div> 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary" id="change-password-submit" disabled>Quero uma Nova Senha</button>
                 </div>
-                
             </form>
         </div>
     </div>
 </div>
+
+<script>
+    function validatePasswords() {
+        var newPassword1 = document.getElementById('new_password1').value;
+        var newPassword2 = document.getElementById('new_password2').value;
+        
+        if (newPassword1 !== newPassword2) {
+            alert('As senhas não correspondem. Por favor, digite novamente.');
+            return false; // Impede o envio do formulário se as senhas não coincidirem
+        }
+        
+        return true; // Permite o envio do formulário se as senhas coincidirem
+    }
+</script>
 
 <!-- Ensure that jQuery and Bootstrap JavaScript are included -->
 <!-- Make sure jQuery is loaded before Bootstrap JavaScript -->
