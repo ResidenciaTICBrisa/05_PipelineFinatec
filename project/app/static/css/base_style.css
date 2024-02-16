@@ -6,6 +6,7 @@ html, body {
     background-image: linear-gradient(#021842 50%, #253e6c);
     background-size: contain; /* Added */
     background-repeat: no-repeat; /* Added */
+    background-color: #253e6c;
     height: 100vh;
     margin: 0;
     padding: 0;

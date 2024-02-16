@@ -21,6 +21,8 @@ from .capa import inserir_round_retangulo
 from django.contrib.admin.models import LogEntry
 from .models import UserActivity
 from django.core.paginator import Paginator
+from django.contrib import messages
+from backend.consultas_oracledb import getlimitedRows,getallRows
 
 def log_user_activity(user_id, tag, activity):
     UserActivity.objects.create(user_id=user_id, tag=tag, activity=activity)
@@ -45,14 +47,25 @@ class HomeView(TemplateView):
 @login_required(login_url="/login/")
 def user_profile(request):
     if request.method == 'POST':
-        print("trocar senha")
-    else:
-        cpf = Employee.objects.get(user=request.user).cpf
-        maskered_cpf = f"{cpf[0:3]}.{cpf[3:6]}.{cpf[6:9]}-{cpf[9:11]}"
+        user = User.objects.get(username__exact=request.user)
+        
+        if request.POST.get('new_password1') == request.POST.get('new_password2') and authenticate(username=request.user, password=request.POST.get('old_password')):
+            user.set_password(request.POST.get('new_password1'))
+            user.save()
+            user_authenticated = authenticate(username=request.user, password=request.POST.get('old_password'))
+            log_message = f"Alterou a senha"
+            log_user_activity(request.user, "Sistema", log_message)
+            messages.success(request, "Senha alterada com sucesso!")
+            login_a(request, user_authenticated)
+        else:
+            messages.error(request, "A senha atual inserida, não corresponde com a senha atual. Tente novamente, ou procure o suporte.")
 
-        return render(request,'user_profile.html',{
-                "cpf":maskered_cpf,
-            })
+    cpf = Employee.objects.get(user=request.user).cpf
+    maskered_cpf = f"{cpf[0:3]}.{cpf[3:6]}.{cpf[6:9]}-{cpf[9:11]}"
+
+    return render(request,'user_profile.html',{
+            "cpf":maskered_cpf,
+        })
 
 def login(request):
     if request.method =="GET":
@@ -79,12 +92,25 @@ def login(request):
 
 @login_required(login_url="/login/")
 def projeto(request):
+    length = getallRows()
+    data = getlimitedRows(length)
+
+    relevant_data = []
+    for key, inner_dict in data.items():
+        relevant_info = {
+            'CODIGO': inner_dict.get('CODIGO', ''),
+        }
+        relevant_data.append(relevant_info)
+
+
     if request.method == 'POST':
         return projeto_legacy(request)
     else:
-        return render(request,'projeto.html',{
-                "templates":Template.objects.all(),
-            })
+        projects = [projeto['CODIGO'] for projeto in relevant_data]  # Obtendo apenas os códigos dos projetos
+        return render(request, 'projeto.html', {
+            "templates": Template.objects.all(),
+            "projects": projects
+        })
 
 def projeto_legacy(request):
     lista_append_db_sql = []
