@@ -23,6 +23,7 @@ from django.contrib.admin.models import LogEntry
 from .models import UserActivity
 from django.core.paginator import Paginator
 from django.contrib import messages
+from backend.consultas_oracledb import getlimitedRows,getallRows
 
 def log_user_activity(user_id, tag, activity):
     UserActivity.objects.create(user_id=user_id, tag=tag, activity=activity)
@@ -92,12 +93,25 @@ def login(request):
 
 @login_required(login_url="/login/")
 def projeto(request):
+    length = getallRows()
+    data = getlimitedRows(length)
+
+    relevant_data = []
+    for key, inner_dict in data.items():
+        relevant_info = {
+            'CODIGO': inner_dict.get('CODIGO', ''),
+        }
+        relevant_data.append(relevant_info)
+
+
     if request.method == 'POST':
         return projeto_legacy(request)
     else:
-        return render(request,'projeto.html',{
-                "templates":Template.objects.all(),
-            })
+        projects = [projeto['CODIGO'] for projeto in relevant_data]  # Obtendo apenas os códigos dos projetos
+        return render(request, 'projeto.html', {
+            "templates": Template.objects.all(),
+            "projects": projects
+        })
 
 def projeto_legacy(request):
     lista_append_db_sql = []
