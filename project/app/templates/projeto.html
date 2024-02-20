@@ -71,7 +71,7 @@
                             placeholder="Digite ou selecione um código" title="Selecione ou digite um código válido."
                             list="project-codes" required />
                         <datalist id="project-codes">
-                            {% for codigo in projects %}
+                            {% for codigo in codigos %}
                             <option value="{{ codigo }}">{{ codigo }}</option>
                             {% endfor %}
                         </datalist>
