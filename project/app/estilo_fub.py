@@ -34,16 +34,18 @@ def pegar_caminho(subdiretorio):
     
     return caminho_pipeline
 
-def create_variable(name1, name2):
-    # Create a dictionary to store values with keys based on inputs
-    variables = {}
-    variable_name = f"{name1}_{name2}"  # Create a variable name based on
-    variables[variable_name] = []
-    
-       # Assign the value to the dynamically created variable name
-    return variables
-
 def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
+    '''Estilo da Pagina do Relatorio Execução da Receita e Despesa
+      
+        Argumentos:
+            tabela : recebe o arquivo correspondente a tabela Fub extensão xlsx. Esse arquivo ja foi iniciado e passou pela preencher fub mas ainda esta sem o estilo que sera aplicado nessa função.
+            tamanho : é o tamanho total de linhas que irão ser geradas dinâmicamente. O valor varia dentre o tamanho da quantidade de rubricas diferente que o projeto possui, excluindo Obras e Instalações
+            Aplicações Financeira e Equipamento e Material Permanente sendo nacional ou importado.
+            stringTamanho : refere-se aonde esta localizado a string brasília na pagina Receita e despesa para a referencias das formulas.
+           
+
+    '''
+    
     caminho = pegar_caminho(tabela)
     workbook = openpyxl.load_workbook(caminho)
     sheet = workbook['Exec. Receita e Despesa']
@@ -475,6 +477,15 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
     return 0
 
 def estiloReceitaXDespesa(tabela,stringTamanho):
+    '''Estilo da Pagina do Relatorio Receita e Despesa.
+      
+        Argumentos:
+            tabela : recebe o arquivo correspondente a tabela Fub extensão xlsx. Esse arquivo ja foi iniciado e passou pela preencher fub mas ainda esta sem o estilo que sera aplicado nessa função.
+            
+            stringTamanho : refere-se aonde esta localizado a string Brasilia nessa pagina, ela pega o  valor  entre o tamanho quantidade de rubricas que o projeto possui salvo algumas exeções
+            e a entrada de receitas/iss, oque for maior esse ditará tamanho.
+    '''
+       
     caminho = pegar_caminho(tabela)
     #Plan = planilha
     # carrega a planilha de acordo com o caminho
@@ -918,7 +929,20 @@ def estiloReceitaXDespesa(tabela,stringTamanho):
     return size2 + 16,size+3
 
 def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
-    
+    '''Esse estilo e considerado geral por que todas as tabelas que compõe utilizam das mesma colunas.
+      
+        Argumentos:
+            tabela: recebe o arquivo correspondente a tabela Fub extensão xlsx. Esse arquivo ja foi iniciado e passou pela preencher fub mas ainda esta sem o estilo que sera aplicado nessa função.
+            tamanho: e o tamanho total de linhas que irao ser geradas dinamicamente correspondente as entradas do respectivo projeto. o valor varia dentre o tamanho das rubricas 
+            
+            nomeVariavel: variável utilizada para criar o nomes das variaveis dinamicamente para não haver sobreposição de estilos com o mesmo nome. Esses estilos ocorrem nesses codigos:
+                                        locals()[input2] = NamedStyle(name=f'{input2}')
+                                        locals()[input2].font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
+                                        locals()[input2].fill = openpyxl.styles.PatternFill(start_color=azul_claro, end_color=azul_claro, fill_type='solid"'....
+            nomeTabela: variável utilizada para a criação do nome da tabela.Ela deriva das rubricas que são colocadas no input quando essa função e chamada.
+            stringTamanho: refere-se aonde esta localizado a string brasilia na pagina Receita e despesa para a referencias das formulas.
+            
+    '''
     
     nomeSheet=nomeVariavel
     random_number = random.randint(1, 10000)
@@ -1268,20 +1292,29 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
     workbook.close()
 
 def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2,stringTamanho):
+    """Estilo um pouco diferente pois necessita de dois aspectos dinâmicos que é primeiramente a quantidade de entradas de pagamento de tarifas bancárias e por fim a quantidade de estorno. Sabendo
+    esses valores é possivel criar a tabela.
     
+        Argumentos:
+        tabela: recebe o arquivo correspondente a tabela Fub extensão xlsx. Esse arquivo foi iniciado e passou pela preencher fub mas ainda está sem o estilo que será aplicado nessa função.
+        tamanho:Corresponde ao tamanho das quantidade de transfêrencia bancárias realizada.
+        tamanho2:Corresponde ao tamanho dos estornos.
+        stringTamanho: refere-se aonde esta localizado a string brasilia na pagina Receita e despesa para a referências das formulas.
+    """
     
+    #pegar o arquivo e carregar ele um worksheet da pagaina Conciliação Bancária
     caminho = pegar_caminho(tabela)
     workbook = openpyxl.load_workbook(caminho)
     worksheet = workbook['Conciliação Bancária']
     
-   
+    #size e o tamanho da quantidade de arquivos recebido no argumento tamanho mais o tamanho do cabecario que no caso da fub e de 16
     size = tamanho + 16
-    #worksheet.row_dimensions[27].height = 50
     cinza = "d9d9d9"
     cinza_escuro = "bfbfbf"
     azul = "336394"
     azul_claro = '1c8cbc'
 
+    #Borda apenas do lado direito da cedula, uma borda mas larga
     borda = Border(right=Side(border_style="medium"))
     worksheet.sheet_view.showGridLines = False
     # 
@@ -1555,6 +1588,13 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2,stringTamanho):
     workbook.close()
 
 def estilo_rendimento_de_aplicacao(tabela,tamanho,stringTamanho):
+    """Estilo da rendimento de aplicação, tabela com as colunas periodo, saldo anterior,valor aplicado no período,valor resgatado no período,rendimento bruto,imposto,rendimento luiquido,saldo.
+    
+        Argumentos:
+        tabela: recebe o arquivo correspondente a tabela Fub extensão xlsx. Esse arquivo foi iniciado e passou pela preencher fub mas ainda está sem o estilo que será aplicado nessa função.
+        tamanho:Corresponde ao tamanho das quantidade da tabela de rencimentos.
+        stringTamanho: refere-se aonde esta localizado a string brasilia na pagina Receita e despesa para a referências das formulas.
+    """
     caminho = pegar_caminho(tabela)
     workbook = openpyxl.load_workbook(caminho)
     worksheet = workbook['Rendimento de Aplicação']
@@ -1822,6 +1862,13 @@ def estilo_rendimento_de_aplicacao(tabela,tamanho,stringTamanho):
     workbook.close()
 
 def estiloRelacaoBens(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
+    """Estilo da tabela de bens, consulta no banco sap
+    
+        Argumentos:
+        tabela: recebe o arquivo correspondente a tabela Fub extensão xlsx. Esse arquivo foi iniciado e passou pela preencher fub mas ainda está sem o estilo que será aplicado nessa função.
+        tamanho:Corresponde ao tamanho das quantidade de bens.
+        stringTamanho: refere-se aonde esta localizado a string brasilia na pagina Receita e despesa para a referências das formulas.
+    """
     random_number = random.randint(1, 10000)
     
     nomeVariavel = f'material{random_number}'
@@ -2129,6 +2176,13 @@ def estiloRelacaoBens(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
     workbook.close()
 
 def estilo_demonstrativoDeReceita(tabela,tamanho,stringTamanho):
+    """Estilo da demonstrativo de receita que inclui entradas de receita ISS 2%, ISS 5%.
+    
+        Argumentos:
+        tabela: recebe o arquivo correspondente a tabela Fub extensão xlsx. Esse arquivo foi iniciado e passou pela preencher fub mas ainda está sem o estilo que será aplicado nessa função.
+        tamanho:Corresponde ao tamanho das quantidade de bens.
+        stringTamanho: refere-se aonde esta localizado a string brasilia na pagina Receita e despesa para a referências das formulas.
+    """
     caminho = pegar_caminho(tabela)
     
     workbook = openpyxl.load_workbook(caminho)

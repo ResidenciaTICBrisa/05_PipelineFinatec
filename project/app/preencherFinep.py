@@ -3,7 +3,7 @@ from datetime import datetime,date
 import openpyxl
 from openpyxl.styles import Font
 import os
-from .estilo_fub import *
+from .estiloFINEP import *
 from collections import defaultdict
 import pandas as pd
 from sqlalchemy import create_engine
@@ -618,7 +618,6 @@ def rubricaGeral(codigo,data1,data2,planilha,rowBrasilia):
     return 0
 
 def Receita(planilha,codigo,data1,data2,tamanhoResumo,dataframe):
-   
     #dfReceitas,dfDemonstrativoReceitas,dfIss2,dfIss5 = consultaEntradaReceitas(codigo,data1,data2)
     dfReceitas,dfDemonstrativoReceitas = consultaEntradaReceitas(codigo,data1,data2)
     
@@ -791,18 +790,16 @@ def Receita(planilha,codigo,data1,data2,tamanhoResumo,dataframe):
     dfSoma = consultaRendimentosIRRF(codigo,data1,data2)
     dfcComPeriodo = consultaDevolucaoRecursos(codigo,data1,data2)
     Soma = dfSoma["Aplicação"] + dfSoma["IRRF"]
+   
     
-    all_null = Soma.isnull().all()
-    if all_null != True :
-        result = Soma.iloc[0] - Soma.iloc[1]
-    
-        stringRendimento = f'Rendimento de Aplicação'
-        stringRendimentoValor = f'E{tamanhoequipamentos + 6}'
-        sheet[stringRendimentoValor] = result
-        sheet[f'A{tamanhoequipamentos + 6}'] = stringRendimento
+    result = Soma.iloc[0] - Soma.iloc[1]
+  
+    stringRendimento = f'Rendimento de Aplicação'
+    stringRendimentoValor = f'E{tamanhoequipamentos + 6}'
+    sheet[stringRendimentoValor] = result
+    sheet[f'A{tamanhoequipamentos + 6}'] = stringRendimento
 
     
-
     
 
 
@@ -988,17 +985,15 @@ def ExeReceitaDespesa(planilha,codigo,data1,data2,stringTamanho):
     dfRendimentoAteOPeriodo = consultaRendimentosTodosAteOPeriodo(codigo,data2)
     
     Soma = dfSoma["Aplicação"] + dfSoma["IRRF"]
-    all_null = Soma.isnull().all()
     
-    if all_null != True :
-        result = Soma.iloc[0] - Soma.iloc[1]
-        stringObras = f'B{stringTamanho + 7}'
-        sheet[stringObras] = result
+    result = Soma.iloc[0] - Soma.iloc[1]
+    stringObras = f'B{stringTamanho + 7}'
+    sheet[stringObras] = result
 
-        SomaRendimentoAteoperido =  dfRendimentoAteOPeriodo["Aplicação"] + dfRendimentoAteOPeriodo["IRRF"]
-        resultado = SomaRendimentoAteoperido.iloc[0] - SomaRendimentoAteoperido.iloc[1]
-        stringObras = f'F{stringTamanho + 7}'
-        sheet[stringObras] = resultado
+    SomaRendimentoAteoperido =  dfRendimentoAteOPeriodo["Aplicação"] + dfRendimentoAteOPeriodo["IRRF"]
+    resultado = SomaRendimentoAteoperido.iloc[0] - SomaRendimentoAteoperido.iloc[1]
+    stringObras = f'F{stringTamanho + 7}'
+    sheet[stringObras] = resultado
     
 
    
@@ -1030,7 +1025,7 @@ def ExeReceitaDespesa(planilha,codigo,data1,data2,stringTamanho):
     workbook.close()
     return tamanho,dfComPeriodo
 
-def preencheFub(codigo,data1,data2,tabela):
+def preencheFinep(codigo,data1,data2,tabela):
     '''Preencher fub legado
         dadoRubrica = transforma em dicionario a consulta feita por sql e separa por rubricas.
         variaveisResumo= preenchimento da tabela Exec, são definidas em tres tipos:

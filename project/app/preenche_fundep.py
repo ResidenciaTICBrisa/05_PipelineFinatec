@@ -98,7 +98,7 @@ def getCollumNames(IDPROJETO, DATA1, DATA2):
     
 
   
-    sql = f"SELECT * FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? ORDER BY NumDocFinConvenio"
+    sql = f"SELECT * FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? AND CodRubrica NOT LIKE 2  ORDER BY DataPagamento"
 
 
     cursor.execute(sql, IDPROJETO, DATA1, DATA2)
@@ -164,7 +164,7 @@ def preenche_fundep(codigo,data1,data2,keys,planilha):
             size = len(valores_dboracle)
             tamanho.append(size)
     maior = max(tamanho)
-    print(tamanho)
+    # print(tamanho)
     tabela = pegar_caminho(planilha)
     estilo_fundep(tabela,maior)
     
@@ -194,10 +194,10 @@ def preenche_fundep(codigo,data1,data2,keys,planilha):
         valores_preenchimento = retornavalores(dados_db,li) 
         for rowkek, cell_data in enumerate(valores_preenchimento, start=7):
             worksheet5.cell(row=rowkek, column=coluna, value=cell_data)
-
+            # print(cell_data)
 
         coluna = coluna + 1
-        print(coluna)
+        # print(coluna)
     
 
 
