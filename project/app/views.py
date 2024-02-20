@@ -17,6 +17,7 @@ from .oracle_cruds import consultaPorID
 from .new_dev import preenche_planilha,extrair,pegar_caminho
 from .preenche_fundep import preenche_fundep
 from .preencheFub import consultaID,preencheFub
+from .preencherFinep import preencheFinep
 from .capa import inserir_round_retangulo
 from django.contrib.admin.models import LogEntry
 from .models import UserActivity
@@ -162,7 +163,6 @@ def projeto_legacy(request):
         preenche_planilha(testeCaminhoFundep,dict_final)
     if nome.nome_template == "fub":
         testeCaminhoFub = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"Modelo_Fub.xlsx")
-        print(testeCaminhoFub)
         preenche_planilha(testeCaminhoFub,dict_final)
     if nome.nome_template == "opas":
         opas = os.path.join(caminho_pasta_planilhas, "ModeloOPAS.xlsx")
@@ -171,7 +171,8 @@ def projeto_legacy(request):
         fap = os.path.join(caminho_pasta_planilhas, "ModeloFAP.xlsx")
         preenche_planilha(fap,dict_final)
     if nome.nome_template == "finep":
-        finep = os.path.join(caminho_pasta_planilhas, "ModeloFINEP.xlsx")
+        print("foi auqi")
+        finep = os.path.join(diretorio_atual, caminho_pasta_planilhas,"ModeloFINEP.xlsx")
         preenche_planilha(finep,dict_final)
 
 
@@ -199,8 +200,11 @@ def projeto_legacy(request):
         p_fap = os.path.join(caminhoPastaPlanilhasPreenchidas, "ModeloFAP.xlsx")
         file_path = pegar_caminho(p_fap)
     elif template_id == '5':
-        p_finep = os.path.join(caminhoPastaPlanilhasPreenchidas, "ModeloFINEP.xlsx")
-        file_path = pegar_caminho(p_finep)
+        print("ta aqui")
+        print("TAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"planilhaPreenchidaModeloFINEP.xlsx")
+        preencheFinep(codigo,convert_datetime_to_string(consultaInicio),convert_datetime_to_string(consultaFim),file_path)
+        inserir_round_retangulo(file_path,consultaInicio,consultaFim,db_fin)
     else:
         # Handle cases where 'download' doesn't match any expected values
         return HttpResponse("Invalid download request", status=400)
