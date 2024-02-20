@@ -30,7 +30,7 @@
             <th>Data<br>Assinatura</th>
             <th>Data<br>Vigência</th>
             <th>Coordenador</th>
-            <th>Valor<br>Aprovado</th>
+            <!-- <th>Valor<br>Aprovado</th> -->
             <th>Grupo</th>
             <th>Baixar</th>
         </tr>
@@ -45,7 +45,7 @@
             <td>{{ entry.DATA_ASSINATURA | date:"d/m/Y" | center:"15" }}</td>
             <td>{{ entry.DATA_VIGENCIA | date:"d/m/Y" }}</td>
             <td>{{ entry.COORDENADOR | title}}</td>
-            <td>R$ {{ entry.VALOR_APROVADO | floatformat:2 }}</td>
+            <!-- <td>R$ {{ entry.VALOR_APROVADO | floatformat:2 }}</td> -->
             <td>{{ entry.GRUPO_GESTORES }}</td>
             <td>
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal{{ entry.CODIGO }}">
@@ -67,7 +67,7 @@
                                 <p><strong>Data de Assinatura:</strong> {{ entry.DATA_ASSINATURA | date:"d/m/Y" }}</p>
                                 <p><strong>Data de Vigência:</strong> {{ entry.DATA_VIGENCIA | date:"d/m/Y" }}</p>
                                 <p><strong>Coordenador:</strong> {{ entry.COORDENADOR }}</p>
-                                <p><strong>Valor Aprovado:</strong> R$ {{ entry.VALOR_APROVADO | floatformat:2 }}</p>
+                                <!-- <p><strong>Valor Aprovado:</strong> R$ {{ entry.VALOR_APROVADO | floatformat:2 }}</p> -->
                                 <p><strong>Grupo:</strong> {{ entry.GRUPO_GESTORES }}</p>
                             </div>
                             <div class="modal-footer">

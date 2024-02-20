@@ -13,7 +13,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.password_validation import validate_password
 from django.views.generic import TemplateView
 from .models import Template, Employee
-from .oracle_cruds import consultaPorID
+# from .oracle_cruds import consultaPorID
 from .new_dev import preenche_planilha,extrair,pegar_caminho
 from .preenche_fundep import preenche_fundep
 from .preencheFub import consultaID,preencheFub
@@ -23,7 +23,9 @@ from django.contrib.admin.models import LogEntry
 from .models import UserActivity
 from django.core.paginator import Paginator
 from django.contrib import messages
-from backend.consultas_oracledb import getlimitedRows,getallRows
+# from backend.consultas_oracledb import getlimitedRows,getallRows
+from backend.consultaSQLServer import consultaCodConvenio, consultaTudo
+import pandas as pd
 
 def log_user_activity(user_id, tag, activity):
     UserActivity.objects.create(user_id=user_id, tag=tag, activity=activity)
@@ -81,7 +83,12 @@ def login(request):
             login_a(request, user)
             log_message = f"Acessou o sistema"
             log_user_activity(request.user, "Sistema", log_message)
-
+            
+            # carrega o dataframe para a sessao
+            df = consultaTudo()
+            request.session['df'] = df.to_json()
+            request.session['codigos'] = consultaCodConvenio(df)
+            
             return HttpResponseRedirect ('/projeto/')
         else:
             error_message = 'Usuário ou senha inválido.'
@@ -93,24 +100,13 @@ def login(request):
 
 @login_required(login_url="/login/")
 def projeto(request):
-    length = getallRows()
-    data = getlimitedRows(length)
-
-    relevant_data = []
-    for key, inner_dict in data.items():
-        relevant_info = {
-            'CODIGO': inner_dict.get('CODIGO', ''),
-        }
-        relevant_data.append(relevant_info)
-
-
     if request.method == 'POST':
         return projeto_legacy(request)
     else:
-        projects = [projeto['CODIGO'] for projeto in relevant_data]  # Obtendo apenas os códigos dos projetos
+        # projects = [projeto['CODIGO'] for projeto in relevant_data]  # Obtendo apenas os códigos dos projetos
         return render(request, 'projeto.html', {
             "templates": Template.objects.all(),
-            "projects": projects
+            "codigos": request.session['codigos']
         })
 
 def projeto_legacy(request):

@@ -1,29 +1,31 @@
 from django.shortcuts import render
 from .consultas_oracledb import getlimitedRows,getallRows
 from django.core.paginator import Paginator,EmptyPage, PageNotAnInteger
+from .consultaSQLServer import consultaLimitedDict
+import pandas as pd
 # Create your views here.
 
 def project_views(request):
-    length = getallRows()
-    data = getlimitedRows(length)
+    length = pd.read_json(request.session['df']).shape[0]
+    data = pd.read_json(request.session['df'])
+    # data = consultaLimitedDict(pd.read_json(request.session['df']), length)
+    print(pd.read_json(request.session['df']))
 
     relevant_data = []
-    for key, inner_dict in data.items():
+    for index, row in data.iterrows():
         relevant_info = {
-        'CODIGO': inner_dict.get('CODIGO', ''),
-        'NOME': inner_dict.get('NOME', ''),
-        'NOME_FINANCIADOR': inner_dict.get('NOME_FINANCIADOR', ''),
-        'DATA_ASSINATURA': inner_dict.get('DATA_ASSINATURA', ''),
-        'DATA_VIGENCIA': inner_dict.get('DATA_VIGENCIA', ''),
-        'COORDENADOR': inner_dict.get('COORDENADOR', ''),
-        'VALOR_APROVADO': inner_dict.get('VALOR_APROVADO', ''),
-        'GRUPO_GESTORES': inner_dict.get('GRUPO_GESTORES', ''),
-    
-        
-    }
+            'CODIGO': row['CodConvenio'],
+            'NOME': row['NomeConvenio'],
+            'NOME_FINANCIADOR': row['NomePessoaFinanciador'],
+            'DATA_ASSINATURA': row['DataAssinatura'],
+            'DATA_VIGENCIA': row['DataVigencia'],
+            'COORDENADOR': row['NomePessoaResponsavel'],
+            # 'VALOR_APROVADO': row['VALOR_APROVADO'],
+            'GRUPO_GESTORES': row['NomeGrupoGestor'],
+        }
         relevant_data.append(relevant_info)
          # Number of items to display per page
-    
+    print(relevant_data)
     search_query = request.GET.get('search', '')  
     if search_query:
         search_results = []
