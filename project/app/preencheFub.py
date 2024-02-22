@@ -222,8 +222,35 @@ def consultaConciliacaoBancaria(IDPROJETO, DATA1, DATA2):
     connection_url = URL.create("mssql+pyodbc", query={"odbc_connect": conStr})
     engine = create_engine(connection_url)
     parametros = [(IDPROJETO, DATA1, DATA2)]
-    consultaSemEstorno = f"SELECT DISTINCT DataPagamento,ValorPago,NumChequeDeposito,HisLancamento FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND CodRubrica = 9 AND DataPagamento BETWEEN ? AND ? AND LOWER(HisLancamento) NOT LIKE '%estorno%' order by DataPagamento"
-    consultaComEstorno =  f"SELECT DISTINCT DataPagamento,ValorPago,NumChequeDeposito,HisLancamento FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND CodRubrica = 9 AND DataPagamento BETWEEN ? AND ? AND LOWER(HisLancamento) LIKE '%estorno%' order by DataPagamento"
+    #consultaSemEstorno = f"SELECT DISTINCT DataPagamento,ValorPago,NumChequeDeposito,HisLancamento FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND CodRubrica = 9 AND DataPagamento BETWEEN ? AND ? AND LOWER(HisLancamento) NOT LIKE '%estorno%' order by DataPagamento"
+    #consultaComEstorno =  f"SELECT DISTINCT DataPagamento,ValorPago,NumChequeDeposito,HisLancamento FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND CodRubrica = 9 AND DataPagamento BETWEEN ? AND ? AND LOWER(HisLancamento) LIKE '%estorno%' order by DataPagamento"
+    
+    consultaSemEstorno = f"""
+    SELECT [LisLancamentoConvenio].DataPagamento,
+    [LisPagamentoDespesaConvenioAdministrativa].Valor ,
+    [LisLancamentoConvenio].NumChequeDeposito,[LisLancamentoConvenio].HisLancamento
+    FROM [Conveniar].[dbo].[LisLancamentoConvenio]
+    INNER JOIN  [Conveniar].[dbo].[LisDocumentoConvenio] ON [LisLancamentoConvenio].[CodDocFinConvenio] = [LisDocumentoConvenio].[CodDocFinConvenio]
+    INNER JOIN  [Conveniar].[dbo].[DocFinConvPagDespesa] ON [LisDocumentoConvenio].[CodDocFinConvenio] = [DocFinConvPagDespesa].[CodDocFinConvenio]
+    INNER JOIN  [Conveniar].[dbo].[LisPagamentoDespesaConvenio] ON [DocFinConvPagDespesa].[CodPedido] = [LisPagamentoDespesaConvenio].[CodPedido]
+    INNER JOIN  [Conveniar].[dbo].[LisPagamentoDespesaConvenioAdministrativa] ON [LisPagamentoDespesaConvenio].CodDespesaConvenio = [LisPagamentoDespesaConvenioAdministrativa].CodDespesaConvenio
+    AND [LisPagamentoDespesaConvenio].CodConvenio = [LisPagamentoDespesaConvenioAdministrativa].CodConvenio
+    WHERE [LisLancamentoConvenio].CodConvenio = ? AND [LisLancamentoConvenio].CodStatus = 27 AND [LisLancamentoConvenio].CodRubrica = 9 AND [LisLancamentoConvenio].DataPagamento BETWEEN ? AND ?
+    AND LOWER([LisLancamentoConvenio].HisLancamento) NOT LIKE '%estorno%' order by [LisLancamentoConvenio].DataPagamento"""
+
+    consultaComEstorno = f"""
+    SELECT [LisLancamentoConvenio].DataPagamento,
+    [LisPagamentoDespesaConvenioAdministrativa].Valor ,
+    [LisLancamentoConvenio].NumChequeDeposito,[LisLancamentoConvenio].HisLancamento
+    FROM [Conveniar].[dbo].[LisLancamentoConvenio]
+    INNER JOIN  [Conveniar].[dbo].[LisDocumentoConvenio] ON [LisLancamentoConvenio].[CodDocFinConvenio] = [LisDocumentoConvenio].[CodDocFinConvenio]
+    INNER JOIN  [Conveniar].[dbo].[DocFinConvPagDespesa] ON [LisDocumentoConvenio].[CodDocFinConvenio] = [DocFinConvPagDespesa].[CodDocFinConvenio]
+    INNER JOIN  [Conveniar].[dbo].[LisPagamentoDespesaConvenio] ON [DocFinConvPagDespesa].[CodPedido] = [LisPagamentoDespesaConvenio].[CodPedido]
+    INNER JOIN  [Conveniar].[dbo].[LisPagamentoDespesaConvenioAdministrativa] ON [LisPagamentoDespesaConvenio].CodDespesaConvenio = [LisPagamentoDespesaConvenioAdministrativa].CodDespesaConvenio
+    AND [LisPagamentoDespesaConvenio].CodConvenio = [LisPagamentoDespesaConvenioAdministrativa].CodConvenio
+    WHERE [LisLancamentoConvenio].CodConvenio = ? AND [LisLancamentoConvenio].CodStatus = 27 AND [LisLancamentoConvenio].CodRubrica = 9 AND [LisLancamentoConvenio].DataPagamento BETWEEN ? AND ?
+    AND LOWER([LisLancamentoConvenio].HisLancamento) LIKE '%estorno%' order by [LisLancamentoConvenio].DataPagamento"""
+    
     dfSemEstorno = pd.read_sql(consultaSemEstorno, engine, params=parametros)
     dfComEstorno = pd.read_sql(consultaComEstorno, engine, params=parametros)
    
@@ -300,12 +327,12 @@ def consultaNomeRubricaCodRubrica(IDPROJETO, DATA1, DATA2,):
     return dfNomeRubricaCodRubrica
 
 def consultaProjeto(IDPROJETO, DATA1, DATA2,codigoRubrica):
-    ''' Função que vai pega os dados da Rubrica 9 Despesas Financeiras e transformalos em dataframe
-    para poder popular a databela Despesas Financeiras
+    ''' Consulta dinamica do SQL relacionado a rubrica correspondente,cada pagina tem sua própria consulta correspondente a rubrica
         Argumentos
             IDPROJETO = CodConvenio na tabela nova, corresponde ao codigo do projeto
             DATA1 = Data Inicial Selecinado pelo Usuario
             DATA2 = Data Final Selecionado pelo Usuario
+            codigoRubrica = código da rubrica 
     '''
     file_path = pegar_pass("passs.txt")
     conStr = ''
@@ -315,11 +342,13 @@ def consultaProjeto(IDPROJETO, DATA1, DATA2,codigoRubrica):
     connection_url = URL.create("mssql+pyodbc", query={"odbc_connect": conStr})
     engine = create_engine(connection_url)
     parametros = [(IDPROJETO, DATA1, DATA2,codigoRubrica)]
-    queryConsultaComRubrica = f"SELECT NomeFavorecido,FavorecidoCPFCNPJ,NomeTipoLancamento,HisLancamento,NumDocPago,DataEmissao,NumChequeDeposito,DataPagamento, ValorPago FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? and CodRubrica = ? "
+    queryConsultaComRubrica = f"SELECT NomeFavorecido,FavorecidoCPFCNPJ,NomeTipoLancamento,HisLancamento,NumDocPago,DataEmissao,NumChequeDeposito,DataPagamento, ValorPago FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? AND LOWER(HisLancamento) NOT LIKE '%estorno%' and CodRubrica = ? "
+    queryConsultaComRubricaEstorno = f"SELECT NomeFavorecido,FavorecidoCPFCNPJ,NomeTipoLancamento,HisLancamento,NumDocPago,DataEmissao,NumChequeDeposito,DataPagamento, ValorPago FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? AND LOWER(HisLancamento) LIKE '%estorno%' and CodRubrica = ? "
     dfconsultaDadosPorRubrica = pd.read_sql(queryConsultaComRubrica, engine, params=parametros)
+    dfconsultaDadosPorRubricaComEstorno = pd.read_sql(queryConsultaComRubricaEstorno,engine, params=parametros)
 
 
-    return dfconsultaDadosPorRubrica
+    return dfconsultaDadosPorRubrica,dfconsultaDadosPorRubricaComEstorno
 
 def consultaEntradaReceitas(IDPROJETO, DATA1, DATA2):
   
@@ -331,7 +360,7 @@ def consultaEntradaReceitas(IDPROJETO, DATA1, DATA2):
     connection_url = URL.create("mssql+pyodbc", query={"odbc_connect": conStr})
     engine = create_engine(connection_url)
     parametros = [(IDPROJETO, DATA1, DATA2,)]
-    consultaEntradaReceita = f"SELECT DataPagamento,NumChequeDeposito,NomeFavorecido,ValorPago,CodRubrica FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND  (CodRubrica = 2 OR CodRubrica = 67 OR CodRubrica = 88) AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? ORDER BY  DataPagamento,NumChequeDeposito"
+    consultaEntradaReceita = f"SELECT DataPagamento,NumChequeDeposito,NomeFavorecido,ValorPago,CodRubrica FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND  (CodRubrica = 2 OR CodRubrica = 67 OR CodRubrica = 88) AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? ORDER BY  CodDocFinConvenio,CodRubrica"
     consultaDemonstrativoReceita = f"SELECT NomeFavorecido,HisLancamento,NumChequeDeposito,DataPagamento,ValorPago,CodRubrica FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND (CodRubrica = 2 OR CodRubrica = 67 OR CodRubrica = 88) AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? ORDER BY  DataPagamento,NumChequeDeposito"
     dfReceitas = pd.read_sql(consultaEntradaReceita, engine, params=parametros)
     dfDemonstrativoReceitas = pd.read_sql(consultaDemonstrativoReceita, engine, params=parametros)
@@ -562,7 +591,7 @@ def rubricaGeral(codigo,data1,data2,planilha,rowBrasilia):
 
     for index, values in dfNomeRubricaCodigoRubrica.iterrows():
         
-        dfConsultaProjeto = consultaProjeto(codigo, data1, data2,values['CodRubrica'])
+        dfConsultaProjeto ,dfconsultaDadosPorRubricaComEstorno= consultaProjeto(codigo, data1, data2,values['CodRubrica'])
         
        
         if values['NomeRubrica'] == "Obrigações Tributárias e contributivas":
@@ -590,7 +619,7 @@ def rubricaGeral(codigo,data1,data2,planilha,rowBrasilia):
         
 
         
-        if values['NomeRubrica'] != "Rendimentos de Aplicações Financeiras" and values['NomeRubrica'] != "Despesas Financeiras" and values['NomeRubrica'] != "Receitas":
+        if values['NomeRubrica'] != "Rendimentos de Aplicações Financeiras" and values['NomeRubrica'] != "Despesas Financeiras" and values['NomeRubrica'] != "Receitas" and ['NomeRubrica'] != "Devolução de Recursos":
             nomeTabela = values['NomeRubrica']
             tituloStyle = values['NomeRubrica']
             workbook = openpyxl.load_workbook(tabela)
@@ -599,7 +628,10 @@ def rubricaGeral(codigo,data1,data2,planilha,rowBrasilia):
             workbook.close()
 
             tamanho = len(dfConsultaProjeto)
-            estiloGeral(tabela,tamanho,tituloStyle,nomeTabela,rowBrasilia)
+            tamanhoRetorno = len(dfconsultaDadosPorRubricaComEstorno)
+            # print(f'tamanhoRetorno{tamanhoRetorno}')
+            
+            rowEstorno = estiloGeral(tabela,tamanho,tituloStyle,nomeTabela,rowBrasilia,tamanhoRetorno)
             workbook = openpyxl.load_workbook(tabela)
             sheet2 = workbook[values['NomeRubrica']]
             dfConsultaProjeto.index = dfConsultaProjeto.index + 1
@@ -607,7 +639,13 @@ def rubricaGeral(codigo,data1,data2,planilha,rowBrasilia):
                 for col_num, value in enumerate(row_data, start=1):#inicio coluna
                     value = convert_datetime_to_stringdt(value)
                     sheet2.cell(row=row_num, column=col_num, value=value)
-                
+            dfconsultaDadosPorRubricaComEstorno.index = dfconsultaDadosPorRubricaComEstorno.index + 1
+            for row_num, rowEstorno in enumerate(dfconsultaDadosPorRubricaComEstorno.itertuples(), start=10): #inicio linha
+                for col_num, value in enumerate(rowEstorno, start=1): #inicio coluna
+                    if col_num == 4:
+                        continue
+                    value = convert_datetime_to_stringdt(value)
+                    sheet2.cell(row=row_num, column=col_num, value=value)    
             
             workbook.save(tabela)
             workbook.close()
@@ -741,7 +779,7 @@ def Receita(planilha,codigo,data1,data2,tamanhoResumo,dataframe):
        
 
 
-    values_to_remove = ["Receitas", "Rendimentos de Aplicações Financeiras", "Despesas Financeiras",'Material Permanente e Equipamento Nacional','Material Permanente e Equipamento Importado','Equipamentos e Material Permanente','Devolução de Recursos','Encargos - ISS 5%']
+    values_to_remove = ["Receitas", "Rendimentos de Aplicações Financeiras", "Despesas Financeiras",'Material Permanente e Equipamento Nacional','Material Permanente e Equipamento Importado','Equipamentos e Material Permanente','Devolução de Recursos','Encargos - ISS 5% ']
     dataframe = dataframe[~dataframe['NomeRubrica'].isin(values_to_remove)]
     for row_num, row_data in enumerate(dataframe.itertuples(index = False), start=16):#inicio linha
         for col_num, value in enumerate(row_data, start=8):#inicio coluna
@@ -794,12 +832,14 @@ def Receita(planilha,codigo,data1,data2,tamanhoResumo,dataframe):
     
     all_null = Soma.isnull().all()
     if all_null != True :
-        result = Soma.iloc[0] - Soma.iloc[1]
-    
-        stringRendimento = f'Rendimento de Aplicação'
-        stringRendimentoValor = f'E{tamanhoequipamentos + 6}'
-        sheet[stringRendimentoValor] = result
-        sheet[f'A{tamanhoequipamentos + 6}'] = stringRendimento
+            if len(Soma) == 1:
+                result = Soma.iloc[0]
+            else:
+                result = Soma.iloc[0] - Soma.iloc[1]
+                stringRendimento = f'Rendimento de Aplicação'
+                stringRendimentoValor = f'E{tamanhoequipamentos + 6}'
+                sheet[stringRendimentoValor] = result
+                sheet[f'A{tamanhoequipamentos + 6}'] = stringRendimento
 
     
 
@@ -849,7 +889,7 @@ def ExeReceitaDespesa(planilha,codigo,data1,data2,stringTamanho):
     
     tamanho = tamanho - 3
 
-    stringTamanho = tamanho + 16 
+    stringTamanho = tamanho + 16
     estiloExecReceitaDespesa(tabela,tamanho,stringTamanho)
     #preencher
     workbook = openpyxl.load_workbook(planilha)
@@ -876,10 +916,10 @@ def ExeReceitaDespesa(planilha,codigo,data1,data2,stringTamanho):
     string_periodo = f"Período que abrange esta prestação: {output_date_str} a {output_date_str2}"
     sheet['A7'] = string_periodo
     consulta_coordenador = consultaID(codigo)
-    stringCoordenador= f'F{stringTamanho+11}' # retorna lugar do coordanor
-    stringCoordanadorCargo = f'F{stringTamanho+12}'
+    stringCoordenador= f'F{stringTamanho+13}' # retorna lugar do coordanor
+    stringCoordanadorCargo = f'F{stringTamanho+14}'
     sheet[stringCoordanadorCargo] = f"Coordenador(a)"
-    stringTamanhoCPF = f'F{stringTamanho+13}' # retorna lugar do coordanor
+    stringTamanhoCPF = f'F{stringTamanho+15}' # retorna lugar do coordanor
     sheet[stringCoordenador] = consulta_coordenador['NomePessoaResponsavel']
     sheet[stringTamanhoCPF] = formatar_cpf(consulta_coordenador['CPFCoordenador'])
     string_titulo = f"Título do Projeto: {consulta_coordenador['NomeConvenio']}"
@@ -917,7 +957,7 @@ def ExeReceitaDespesa(planilha,codigo,data1,data2,stringTamanho):
     12: "Dezembro"
 }   
 
-    stringTamanhoBrasilia = f'A{stringTamanho+10}' # retorna lugar de brasilia
+    stringTamanhoBrasilia = f'A{stringTamanho+12}' # retorna lugar de brasilia
     hoje = date.today()
     data_formatada = f"{hoje.day} de {meses_dict[hoje.month]} de {hoje.year}"
     sheet[stringTamanhoBrasilia] = f'Brasilia, {data_formatada}'
@@ -991,14 +1031,19 @@ def ExeReceitaDespesa(planilha,codigo,data1,data2,stringTamanho):
     all_null = Soma.isnull().all()
     
     if all_null != True :
-        result = Soma.iloc[0] - Soma.iloc[1]
-        stringObras = f'B{stringTamanho + 7}'
-        sheet[stringObras] = result
+        # print(Soma)
+        # print(len(Soma))
+        if len(Soma) == 1:
+             result = Soma.iloc[0]
+        else:
+            result = Soma.iloc[0] - Soma.iloc[1]
+            stringObras = f'B{stringTamanho + 9}'
+            sheet[stringObras] = result
 
-        SomaRendimentoAteoperido =  dfRendimentoAteOPeriodo["Aplicação"] + dfRendimentoAteOPeriodo["IRRF"]
-        resultado = SomaRendimentoAteoperido.iloc[0] - SomaRendimentoAteoperido.iloc[1]
-        stringObras = f'F{stringTamanho + 7}'
-        sheet[stringObras] = resultado
+            SomaRendimentoAteoperido =  dfRendimentoAteOPeriodo["Aplicação"] + dfRendimentoAteOPeriodo["IRRF"]
+            resultado = SomaRendimentoAteoperido.iloc[0] - SomaRendimentoAteoperido.iloc[1]
+            stringObras = f'F{stringTamanho + 9}'
+            sheet[stringObras] = resultado
     
 
    
@@ -1060,8 +1105,6 @@ def preencheFub(codigo,data1,data2,tabela):
     tamanho,dataframe = ExeReceitaDespesa(tabela,codigo,data1,data2,15)
     tamanhoPosicaoBrasilia,dfReceitas,dfDemonstrativoReceitas = Receita(tabela,codigo,data1,data2,tamanho,dataframe)
     demonstrativo(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia,dfDemonstrativoReceitas,dfReceitas)
-    # tamanhoPosicaoBrasilia,dfReceitas,dfDemonstrativoReceitas,dfIss2,dfIss5 = Receita(tabela,codigo,data1,data2,tamanho,dataframe)
-    # demonstrativo(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia,dfDemonstrativoReceitas,dfReceitas,dfIss2,dfIss5)
     rubricaGeral(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
     conciliacaoBancaria(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
     rowRendimento= rendimentoDeAplicacao(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
