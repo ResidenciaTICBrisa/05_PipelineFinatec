@@ -180,7 +180,7 @@ def inserir_round_retangulo(planilha,data1,data2,dicionariofin):
         images.append(img)
 
   
-
+    #daqui pra cima testado
  
     #estilo imagem
     worksheet.add_image(images[20], "B2")#prestação
@@ -205,6 +205,7 @@ def inserir_round_retangulo(planilha,data1,data2,dicionariofin):
     worksheet['E6'].font = Font(name="Tahoma", size=9, color="204c80",bold=False)
     worksheet['E6'].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
 
+    
     worksheet.add_image(images[23], "B9")#projeto
     worksheet.merge_cells('B9:D13')
     worksheet['B9'] = 'PROJETO'
@@ -266,6 +267,8 @@ def inserir_round_retangulo(planilha,data1,data2,dicionariofin):
     worksheet['K21'].font = Font(name="Tahoma", size=10, color="204c80",bold=False)
     worksheet['K21'].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
 
+    #testado
+
     worksheet.add_image(images[25], "B19")#Centro de custo
     worksheet.merge_cells('B19:D20')
     worksheet['B19'] = 'CENTRO DE CUSTO'
@@ -287,6 +290,8 @@ def inserir_round_retangulo(planilha,data1,data2,dicionariofin):
     worksheet['E21'] = f"{(data1)} a {(data2)}"
     worksheet['E21'].font = Font(name="Tahoma", size=10, color="204c80",bold=False)
     worksheet['E21'].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
+    #testado
+
 
     worksheet.add_image(images[7], "B30")#Assistente
     worksheet.merge_cells('B30:D32')
@@ -324,3 +329,4 @@ def inserir_round_retangulo(planilha,data1,data2,dicionariofin):
 
     # Save the workbook
     workbook.save(planilha)
+    workbook.close()

@@ -135,62 +135,7 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
     sheet['F12'].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
 
 
-    #totais
-    #total espesas correntes linha 15
 
-    formula = f"=SUM(B16:B{size})"
-    sheet['B15'] = formula
-    formula = f"=SUM(C16:C{size})"
-    sheet['C15'] = formula
-    formula = f"=SUM(D16:D{size})"
-    sheet['D15'] = formula
-
-    formula = f"=SUM(F16:F{size})"
-    sheet['F15'] = formula
-    formula = f"=SUM(G16:G{size})"
-    sheet['G15'] = formula
-    formula = f"=SUM(H16:H{size})"
-    sheet['H15'] = formula
-
-    #Total Despesas de Capital
-    formula = f"=SUM(B{size2+2}:B{size2+4})"
-    sheet[f'B{size2}'] = formula
-
-    formula = f"=SUM(C{size2+2}:C{size2+4})"
-    sheet[f'C{size2}'] = formula
-
-    formula = f"=SUM(D{size2+2}:D{size2+4})"
-    sheet[f'D{size2}'] = formula
-
-    formula = f"=SUM(F{size2+2}:F{size2+4})"
-    sheet[f'F{size2}'] = formula
-
-    formula = f"=SUM(G{size2+2}:G{size2+4})"
-    sheet[f'G{size2}'] = formula
-
-    formula = f"=SUM(H{size2+2}:H{size2+4})"
-    sheet[f'H{size2}'] = formula
-
-
-    #Total Utilização de rendimentos
-
-    formula = f"=B{size2+6}"
-    sheet[f'B{size2+5}'] = formula
-
-    formula = f"=C{size2+6}"
-    sheet[f'C{size2+5}'] = formula
-
-    formula = f"=D{size2+6}"
-    sheet[f'D{size2+5}'] = formula
-
-    formula = f"=F{size2+6}"
-    sheet[f'F{size2+5}'] = formula
-
-    formula = f"=G{size2+6})"
-    sheet[f'G{size2+5}'] = formula
-
-    formula = f"=H{size2+6}"
-    sheet[f'H{size2+5}'] = formula
 
    
 
@@ -200,8 +145,8 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
     #%porcentagem Despesas de Capital
     #IFERROR (C16/B16;0)
     percentage_style = NamedStyle(name='percentage', number_format='0%')
-    #SALDAO
-    for row in sheet.iter_rows(min_row=15, max_row=size2+7, min_col=1, max_col=9):
+    #diferença e calculo da porcentagem
+    for row in sheet.iter_rows(min_row=15, max_row=size2+9, min_col=1, max_col=9):
         for cell in row:
             if cell.column == 4:
                 stringSaldo = f"=B{cell.row} - C{cell.row}"
@@ -220,7 +165,7 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
                 cell.style = percentage_style
             
     #adicionara mascara do numero
-    for row in sheet.iter_rows(min_row=15, max_row=size2+7, min_col=1, max_col=9):
+    for row in sheet.iter_rows(min_row=15, max_row=size2+9, min_col=1, max_col=9):
         for cell in row:
             if cell.column != 5 and cell.column != 9:
                 cell.number_format ='#,##0.00'
@@ -235,7 +180,7 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
     #adicionar borda em tudo
     borda = Border(right=Side(border_style="medium"))
     sheet.sheet_view.showGridLines = False
-    for row in sheet.iter_rows(min_row=1, max_row=size2+12,min_col=9,max_col=9):
+    for row in sheet.iter_rows(min_row=1, max_row=size2+14,min_col=9,max_col=9):
         for cell in row:
             cell.border = borda
 
@@ -245,7 +190,7 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
         for cell in row:
             cell.font = font
     #preenche a coluna A e        F com cinza
-    for row in sheet.iter_rows(min_row=16, max_row=size2+7,min_col=1,max_col=9):
+    for row in sheet.iter_rows(min_row=16, max_row=size2+9,min_col=1,max_col=9):
         for cell in row:
             if cell.column == 1 or cell.column == 6 or cell.column == 2:
                 cell.fill = PatternFill(start_color=cinza, end_color=cinza,
@@ -263,7 +208,7 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
                                             fill_type = "solid")
                 cell.font = Font(name='Arial', size=12,bold= True)
 
-            if cell.row == size2 or cell.row == size2 +5 or cell.row == size2 + 7 :
+            if cell.row == size2 or cell.row == size2 +5 or cell.row == size2 + 7  or cell.row== size2+9:
                 cell.fill = PatternFill(start_color=azul_claro, end_color=azul_claro,
                                             fill_type = "solid")
                 cell.font = Font(name='Arial', size=12,bold= True)    
@@ -326,7 +271,6 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
     sheet[nacionalStringCelula] = nacionalString
 
     
-    
 
     importadoString = f"    b) Importado"
     importadoStringCelula = f'A{size2+4}'
@@ -336,7 +280,7 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
 
     #depsesas e capital
     utilRendimentosString = f"III.UTILIZAÇÃO DE RENDIMENTOS"
-    utilRendimentosStringCelula = f'A{size2+5}'
+    utilRendimentosStringCelula = f'A{size2+7}'
     sheet[utilRendimentosStringCelula] = utilRendimentosString
     cell=sheet[utilRendimentosStringCelula]
     cell.font = Font(name="Arial", size=12, color="000000",bold = True)
@@ -346,44 +290,152 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
 
     
     apliFinString = f"Aplicação Financeira"
-    apliFinStringCelula = f'A{size2+6}'
+    apliFinStringCelula = f'A{size2+8}'
     sheet[apliFinStringCelula] = apliFinString
 
 
     totalString = f"TOTAL"
-    totalStringCelula = f'A{size2+7}'
+    totalStringCelula = f'A{size2+5}'
     sheet[totalStringCelula] = totalString
     cell=sheet[totalStringCelula]
     cell.font = Font(name="Arial", size=12, color="000000",bold = True)
     cell.fill = PatternFill(start_color='9c9c9c', end_color='9c9c9c',fill_type = "solid")
+    cell.alignment = Alignment(horizontal="center",vertical="center")
 
       #total total
 
     formula = f"=SUM(B{size2}, B15)"
-    sheet[f'B{size2+7}'] = formula
+    sheet[f'B{size2+5}'] = formula
 
     formula = f"=SUM(C{size2}, C15)"
-    sheet[f'C{size2+7}'] = formula
+    sheet[f'C{size2+5}'] = formula
 
     formula = f"=SUM(D{size2}, D15)"
-    sheet[f'D{size2+7}'] = formula
+    sheet[f'D{size2+5}'] = formula
 
     formula = f"=SUM(F{size2}, F15)"
-    sheet[f'F{size2+7}'] = formula
+    sheet[f'F{size2+5}'] = formula
 
     formula = f"=SUM(G{size2}, G15)"
-    sheet[f'G{size2+7}'] = formula
+    sheet[f'G{size2+5}'] = formula
 
     formula = f"=SUM(H{size2},H15)"
+    sheet[f'H{size2+5}'] = formula
+
+
+    #barra de total nova 22/02
+    totalString = f"TOTAL"
+    totalStringCelula = f'A{size2+9}'
+    sheet[totalStringCelula] = totalString
+    cell=sheet[totalStringCelula]
+    cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+    cell.fill = PatternFill(start_color='9c9c9c', end_color='9c9c9c',fill_type = "solid")
+    cell.alignment = Alignment(horizontal="center",vertical="center")
+
+    #soma barra total nova
+
+    formula = f"=SUM(B{size2+8})"
+    sheet[f'B{size2+9}'] = formula
+
+    formula = f"=SUM(C{size2+8})"
+    sheet[f'C{size2+9}'] = formula
+
+    formula = f"=SUM(D{size2+8})"
+    sheet[f'D{size2+9}'] = formula
+
+    formula = f"=SUM(F{size2+8})"
+    sheet[f'F{size2+9}'] = formula
+
+    formula = f"=SUM(G{size2+8})"
+    sheet[f'G{size2+9}'] = formula
+
+    formula = f"=SUM(H{size2+8})"
+    sheet[f'H{size2+9}'] = formula
+
+    #3.UTILIZAÇÂO DE RENDIMENTOS
+    formula = f"=SUM(A{size2+8})"
+    sheet[f'A{size2+7}'] = formula
+
+    formula = f"=SUM(B{size2+8})"
+    sheet[f'B{size2+7}'] = formula
+
+    formula = f"=SUM(C{size2+8})"
+    sheet[f'C{size2+7}'] = formula
+
+    formula = f"=SUM(D{size2+8})"
+    sheet[f'D{size2+7}'] = formula
+
+    formula = f"=SUM(F{size2+8})"
+    sheet[f'F{size2+7}'] = formula
+
+    formula = f"=SUM(G{size2+8})"
+    sheet[f'G{size2+7}'] = formula
+
+    formula = f"=SUM(H{size2+8})"
     sheet[f'H{size2+7}'] = formula
-
-
-
  
+        #totais
+    #total espesas correntes linha 15
+
+    formula = f"=SUM(B16:B{size})"
+    sheet['B15'] = formula
+    formula = f"=SUM(C16:C{size})"
+    sheet['C15'] = formula
+    formula = f'=SUMIF(D16:D{size}, ">0")'
+    sheet['D15'] = formula
+
+    formula = f"=SUM(F16:F{size})"
+    sheet['F15'] = formula
+    formula = f"=SUM(G16:G{size})"
+    sheet['G15'] = formula
+    formula = f'=SUMIF(H16:H{size}, ">0")'
+    sheet['H15'] = formula
+
+    #Total Despesas de Capital
+    formula = f"=SUM(B{size2+2}:B{size2+4})"
+    sheet[f'B{size2}'] = formula
+
+    formula = f"=SUM(C{size2+2}:C{size2+4})"
+    sheet[f'C{size2}'] = formula
+
+    formula = f"=SUM(D{size2+2}:D{size2+4})"
+    sheet[f'D{size2}'] = formula
+
+    formula = f"=SUM(F{size2+2}:F{size2+4})"
+    sheet[f'F{size2}'] = formula
+
+    formula = f"=SUM(G{size2+2}:G{size2+4})"
+    sheet[f'G{size2}'] = formula
+
+    formula = f"=SUM(H{size2+2}:H{size2+4})"
+    sheet[f'H{size2}'] = formula
+
+
+    #Total Utilização de rendimentos
+
+    formula = f"=B{size2+8}"
+    sheet[f'B{size2+5}'] = formula
+
+    formula = f"=C{size2+8}"
+    sheet[f'C{size2+5}'] = formula
+
+    formula = f"=D{size2+8}"
+    sheet[f'D{size2+5}'] = formula
+
+    formula = f"=F{size2+8}"
+    sheet[f'F{size2+5}'] = formula
+
+    formula = f"=G{size2+8}"
+    sheet[f'G{size2+5}'] = formula
+
+    formula = f"=H{size2+8}"
+    sheet[f'H{size2+5}'] = formula
+
+
 
 
      #brasilia
-    brasilia_row = size2 + 9
+    brasilia_row = size2 + 11
     brasilia_formula = f"='Receita x Despesa'!A{stringTamanho}:I{stringTamanho}"
     brasilia_merge_cells = f'A{brasilia_row}:I{brasilia_row}'
     sheet.merge_cells(brasilia_merge_cells)
@@ -393,12 +445,12 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
     top_left_brasilia_cell.alignment = Alignment(horizontal="center",vertical="center")
 
     #DiretorFinanceiro
-    diretor_row = size2 + 10
-    diretor_cargo_row = size2 + 11
-    diretor_cpf_row = size2 + 12
+    diretor_row = size2 + 12
+    diretor_cargo_row = size2 + 13
+    diretor_cpf_row = size2 + 14
     
     diretor_nome_formula = f"Daniel Monteiro Rosa"
-    diretor_cargo_formula = f"='Diretor-Financeiro"
+    diretor_cargo_formula = f"Diretor-Financeiro"
     diretor_cpf_formula = f"450.720.272-87"
     diretor_merge_cells = f'A{diretor_row}:D{diretor_row}'
     diretor_cargo_merge_cells = f'A{diretor_cargo_row}:D{diretor_cargo_row}'
@@ -420,9 +472,9 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
     top_left_diretor_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
     top_left_diretor_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
     #Coordenadora
-    coordenadora_row = size2 + 10
-    coordenadora_cargo_row = size2 + 11
-    coordenadora_cpf_row = size2 + 12
+    coordenadora_row = size2 + 12
+    coordenadora_cargo_row = size2 + 13
+    coordenadora_cpf_row = size2 + 14
     coordenadora_nome_formula = f"='Receita x Despesa'!H{stringTamanho+3}"
     coordenadora_cargo_formula = f"='Receita x Despesa'!H{stringTamanho+4}"
     coordenadora_cpf_formula = f"='Receita x Despesa'!H{stringTamanho+5}"
@@ -655,6 +707,11 @@ def estiloReceitaXDespesa(tabela,stringTamanho):
     #SUM total despesa
     formula = f'=SUM(J{size2+2}+J13)'
     celula = f'J{size2+12}'
+    sheet[celula] = formula
+
+    #sum II. DESPESAS DE CAPITAl
+    formula = f'=SUM(I{size+2}:I{size+5})'
+    celula = f'I{size+1}'
     sheet[celula] = formula
 
    #Despesas realizadas
@@ -928,7 +985,7 @@ def estiloReceitaXDespesa(tabela,stringTamanho):
     #retorna tamanho de brasilia e de equipamentos
     return size2 + 16,size+3
 
-def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
+def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho,tamanhoestorno):
     '''Esse estilo e considerado geral por que todas as tabelas que compõe utilizam das mesma colunas.
       
         Argumentos:
@@ -941,7 +998,7 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
                                         locals()[input2].fill = openpyxl.styles.PatternFill(start_color=azul_claro, end_color=azul_claro, fill_type='solid"'....
             nomeTabela: variável utilizada para a criação do nome da tabela.Ela deriva das rubricas que são colocadas no input quando essa função e chamada.
             stringTamanho: refere-se aonde esta localizado a string brasilia na pagina Receita e despesa para a referencias das formulas.
-            
+            tamanhoEstorno = Correspondente ao tamanho do estrono
     '''
     
     nomeSheet=nomeVariavel
@@ -959,7 +1016,7 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
     borda = Border(right=Side(border_style="medium"))
     worksheet.sheet_view.showGridLines = False
     # 
-    for row in worksheet.iter_rows(min_row=1, max_row=size+11,min_col=10,max_col=10):
+    for row in worksheet.iter_rows(min_row=1, max_row=size+12,min_col=10,max_col=10):
         for cell in row:
             cell.border = borda
             
@@ -1161,9 +1218,34 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
     merge_formula = f'D{row_number}:E{row_number}'
     worksheet.merge_cells(merge_formula)
 
-    
+    #mergecells
+    for x in range(size+4,size+5+tamanhoestorno):
+        worksheet.merge_cells(start_row=x ,start_column=4, end_row=x, end_column=5)
+
+   
+    #estorno
+
+    for rows in worksheet.iter_rows(min_row=size+5, max_row=size+4+tamanhoestorno, min_col=1, max_col=10):
+        for cell in rows:
+            if cell.row % 2:
+                    cell.fill = PatternFill(start_color=cinza, end_color=cinza,
+                                            fill_type = "solid")
+            if cell.column == 10:        
+                cell.number_format = 'R$ #,##0.00'
+            cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="hair") ,bottom=Side(border_style="hair"))
+            
+    #bordas,corsimcornao,money
+    # Set the height of each row to 60
+    for row in worksheet.iter_rows(min_row=size+4, max_row=size+4+tamanhoestorno):
+        worksheet.row_dimensions[row[0].row].height = 60
+
+    min_row = size + 4
+    max_row = size + 4 + tamanhoestorno
+
+      
+
     #subtotal2
-    sub_total2_row = size + 5
+    sub_total2_row = size + 6 +tamanhoestorno
     subtotal_merge_cells= f'A{sub_total2_row}:I{sub_total2_row}'
     worksheet.merge_cells(subtotal_merge_cells)
     top_left_subtotal2_cell_formula = f'A{sub_total2_row}'
@@ -1176,12 +1258,13 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
 
     sub_formula_row_celula = f'J{sub_total2_row}'
     worksheet[sub_formula_row_celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
+    worksheet[sub_formula_row_celula].value = f'=SUM(J{size+5}:J{sub_total2_row-1})'
     worksheet[sub_formula_row_celula].font = Font(name="Arial", size=12, color="000000",bold=True)
     worksheet[sub_formula_row_celula].number_format = 'R$ #,##0.00'
     worksheet[sub_formula_row_celula].border = Border(top=Side(border_style="thin") ,left = Side(border_style="thin") ,right =Side(border_style="medium") ,bottom=Side(border_style="medium") )
 
       #total1-2
-    total12_row = size + 6
+    total12_row = size + 7 + tamanhoestorno
     total12_merge_cells = f'A{total12_row}:I{total12_row}'
     worksheet.merge_cells(total12_merge_cells)
     top_left_total12_cell_formula = f'A{total12_row}'
@@ -1194,7 +1277,7 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
 
 
     #total_formula
-    total_formula_row = size + 6
+    total_formula_row = size + 7 + tamanhoestorno
     total_formulaa = f'=J{size+2}'
     total_formula_row_celula = f'J{total_formula_row}'
     worksheet[total_formula_row_celula].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
@@ -1208,7 +1291,7 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
     
 
     #brasilia
-    brasilia_row = size + 7
+    brasilia_row = size + 8 +tamanhoestorno
     brasilia_formula = f"='Receita x Despesa'!A{stringTamanho}:J{stringTamanho}"
     brasilia_merge_cells = f'A{brasilia_row}:I{brasilia_row}'
     worksheet.merge_cells(brasilia_merge_cells)
@@ -1218,9 +1301,9 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
     top_left_brasilia_cell.alignment = Alignment(horizontal="center",vertical="center")
 
     #DiretorFinanceiro
-    diretor_row = size + 8
-    diretor_cargo_row = size + 9
-    diretor_cpf_row = size + 10
+    diretor_row = size + 9 + tamanhoestorno
+    diretor_cargo_row = size + 10 + tamanhoestorno
+    diretor_cpf_row = size + 11 + tamanhoestorno
     
     diretor_nome_formula = f"='Receita x Despesa'!A{stringTamanho+3}"
     diretor_cargo_formula = f"='Receita x Despesa'!A{stringTamanho+4}"
@@ -1245,9 +1328,9 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
     top_left_diretor_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
     top_left_diretor_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
     #Coordenadora
-    coordenadora_row = size + 8
-    coordenadora_cargo_row = size + 9
-    coordenadora_cpf_row = size + 10
+    coordenadora_row = size + 9 + tamanhoestorno
+    coordenadora_cargo_row = size + 10 + tamanhoestorno
+    coordenadora_cpf_row = size + 11 + tamanhoestorno
     coordenadora_nome_formula = f"='Receita x Despesa'!H{stringTamanho+3}"
     coordenadora_cargo_formula = f"='Receita x Despesa'!H{stringTamanho+4}"
     coordenadora_cpf_formula = f"='Receita x Despesa'!H{stringTamanho+5}"
@@ -1279,7 +1362,9 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
     #     for cell in row:
     #         cell.border = borda
             
-    
+    for row in worksheet.iter_rows(min_row=1, max_row=coordenadora_cpf_row+1,min_col=11,max_col=11):
+        for cell in row:
+                cell.border = Border(top=Side(border_style="none") ,left = Side(border_style="medium") ,right =Side(border_style="none") ,bottom=Side(border_style="none") )
 
     for row in worksheet.iter_rows(min_row=coordenadora_cpf_row+1, max_row=coordenadora_cpf_row+1,min_col=1,max_col=10):
         for cell in row:
@@ -1290,6 +1375,8 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
 
     workbook.save(tabela)
     workbook.close()
+
+    return size+4
 
 def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2,stringTamanho):
     """Estilo um pouco diferente pois necessita de dois aspectos dinâmicos que é primeiramente a quantidade de entradas de pagamento de tarifas bancárias e por fim a quantidade de estorno. Sabendo
