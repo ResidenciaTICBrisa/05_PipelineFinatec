@@ -1,5 +1,6 @@
 import os
 import datetime
+
 import re
 from django.shortcuts import render
 from django.contrib.auth.decorators import user_passes_test
@@ -34,6 +35,14 @@ def convert_datetime_to_string(value):
     if isinstance(value, datetime.datetime):
         return value.strftime('%d/%m/%Y')
     return value
+def convert_datetime_to_string2(value):
+       # Convert string to datetime object
+    date_object = datetime.datetime.strptime(value, "%Y-%m-%d")
+    
+    # Format the datetime object to the desired format
+    formatted_date = date_object.strftime("%d.%m.%Y")
+    
+    return formatted_date
 
 def extract_strings(input_string):
     # Use regular expressions to find the text before and after '@@'
@@ -154,22 +163,28 @@ def projeto_legacy(request):
 
     # Combina o diretório atual com o caminho para a pasta "planilhas_preenchidas" e o nome do arquivo
 
+    #corrigindo datas
+    consultaInicial = convert_datetime_to_string2(consultaInicio)
+    consultaFinal = convert_datetime_to_string2(consultaFim)
+    
+    print(consultaFinal)
+
     if nome.nome_template == "fundep":
         testeCaminhoFundep = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"ModeloFUNDEP.xlsx")
-        preenche_planilha(testeCaminhoFundep,dict_final)
+        preenche_planilha(testeCaminhoFundep,dict_final,codigo,template_id,consultaInicial,consultaFinal)
     if nome.nome_template == "fub":
         testeCaminhoFub = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"Modelo_Fub.xlsx")
-        preenche_planilha(testeCaminhoFub,dict_final)
+        preenche_planilha(testeCaminhoFub,dict_final,codigo,template_id,consultaInicial,consultaFinal)
     if nome.nome_template == "opas":
         opas = os.path.join(caminho_pasta_planilhas, "ModeloOPAS.xlsx")
-        preenche_planilha(opas,dict_final)
+        preenche_planilha(opas,dict_final,codigo,template_id,consultaInicial,consultaFinal)
     if nome.nome_template == "fap":
         fap = os.path.join(caminho_pasta_planilhas, "ModeloFAP.xlsx")
-        preenche_planilha(fap,dict_final)
+        preenche_planilha(fap,dict_final,codigo,template_id,consultaInicial,consultaFinal)
     if nome.nome_template == "finep":
-        print("foi auqi")
+        
         finep = os.path.join(diretorio_atual, caminho_pasta_planilhas,"ModeloFINEP.xlsx")
-        preenche_planilha(finep,dict_final)
+        preenche_planilha(finep,dict_final,codigo,template_id,consultaInicial,consultaFinal)
 
 
     file_path = None
@@ -178,7 +193,7 @@ def projeto_legacy(request):
         keys = ['NomeFavorecido','FavorecidoCPFCNPJ','NomeTipoLancamento',
                 'HisLancamento','NumDocPago','DataEmissao','NumChequeDeposito',
                 'DataPagamento', 'ValorPago']
-        file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"planilhaPreenchidaModelo_Fub.xlsx")
+        file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"PC - {codigo} - {consultaInicial} a {consultaFinal}.xlsx")
 
         preencheFub(codigo,convert_datetime_to_string(consultaInicio),convert_datetime_to_string(consultaFim),file_path)
         inserir_round_retangulo(file_path,consultaInicio,consultaFim,db_fin)
@@ -196,8 +211,7 @@ def projeto_legacy(request):
         p_fap = os.path.join(caminhoPastaPlanilhasPreenchidas, "ModeloFAP.xlsx")
         file_path = pegar_caminho(p_fap)
     elif template_id == '5':
-        print("ta aqui")
-        print("TAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+
         file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"planilhaPreenchidaModeloFINEP.xlsx")
         preencheFinep(codigo,convert_datetime_to_string(consultaInicio),convert_datetime_to_string(consultaFim),file_path)
         inserir_round_retangulo(file_path,consultaInicio,consultaFim,db_fin)
@@ -209,7 +223,6 @@ def projeto_legacy(request):
     if os.path.exists(file_path):
         with open(file_path, 'rb') as f:
             response = HttpResponse(f.read(), content_type='application/octet-stream')
-            #print(f'aaaa{os.path.basename(file_path)}')
             response['Content-Disposition'] = f'attachment; filename="{os.path.basename(file_path)}"'
 
             # adicionando log de consulta
