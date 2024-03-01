@@ -1384,9 +1384,9 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho,tamanhoesto
     top_left_diretor_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
     top_left_diretor_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
     #Coordenadora
-    coordenadora_row = size + 9 + tamanhoestorno + 10
-    coordenadora_cargo_row = size + 10 + tamanhoestorno + 10 
-    coordenadora_cpf_row = size + 11 + tamanhoestorno + 10
+    coordenadora_row = size + 9 + tamanhoestorno 
+    coordenadora_cargo_row = size + 10 + tamanhoestorno  
+    coordenadora_cpf_row = diretor_cpf_row
     coordenadora_nome_formula = f"='Receita x Despesa'!H{stringTamanho+3}"
     coordenadora_cargo_formula = f"='Receita x Despesa'!H{stringTamanho+4}"
     coordenadora_cpf_formula = f"='Receita x Despesa'!H{stringTamanho+5}"
@@ -1702,9 +1702,9 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2,stringTamanho):
     top_left_diretor_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
     top_left_diretor_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
     #Coordenadora
-    coordenadora_row = size + tamanho2 + 10
-    coordenadora_cargo_row = size + 11 + tamanho2
-    coordenadora_cpf_row = size + 12+ tamanho2
+    coordenadora_row = diretor_row
+    coordenadora_cargo_row = diretor_cargo_row
+    coordenadora_cpf_row = diretor_cpf_row
     coordenadora_nome_formula = f"='Receita x Despesa'!H{stringTamanho+3}"
     coordenadora_cargo_formula = f"='Receita x Despesa'!H{stringTamanho+4}"
     coordenadora_cpf_formula = f"='Receita x Despesa'!H{stringTamanho+5}"
