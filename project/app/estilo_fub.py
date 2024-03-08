@@ -2256,9 +2256,9 @@ def estiloRelacaoBens(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
     top_left_brasilia_cell.alignment = Alignment(horizontal="center",vertical="center")
 
     #DiretorFinanceiro
-    diretor_row = size + 81
-    diretor_cargo_row = size + 91
-    diretor_cpf_row = size + 101
+    diretor_row = size + 8
+    diretor_cargo_row = size + 9
+    diretor_cpf_row = size + 10
     diretor_nome_formula = f"='Receita x Despesa'!A{stringTamanho+3}"
     diretor_cargo_formula = f"='Receita x Despesa'!A{stringTamanho+4}"
     diretor_cpf_formula = f"='Receita x Despesa'!A{stringTamanho+5}"
@@ -2282,9 +2282,9 @@ def estiloRelacaoBens(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
     top_left_diretor_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
     top_left_diretor_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
     #Coordenadora
-    coordenadora_row = size + 81
-    coordenadora_cargo_row = size + 91
-    coordenadora_cpf_row = size + 101
+    coordenadora_row = size + 8
+    coordenadora_cargo_row = size + 9
+    coordenadora_cpf_row = size + 10
     coordenadora_nome_formula = f"='Receita x Despesa'!H{stringTamanho+3}"
     coordenadora_cargo_formula = f"='Receita x Despesa'!H{stringTamanho+4}"
     coordenadora_cpf_formula = f"='Receita x Despesa'!H{stringTamanho+5}"

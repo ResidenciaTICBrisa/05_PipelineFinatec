@@ -3,11 +3,12 @@ from datetime import datetime,date
 import openpyxl
 from openpyxl.styles import Font
 import os
-from .estiloFINEP import *
+from .estilo_fub import *
 from collections import defaultdict
 import pandas as pd
 from sqlalchemy import create_engine
 from sqlalchemy.engine import URL
+import numpy as np  
 
 def convert_datetime_to_string(value):
     if isinstance(value, datetime):
@@ -222,13 +223,52 @@ def consultaConciliacaoBancaria(IDPROJETO, DATA1, DATA2):
     connection_url = URL.create("mssql+pyodbc", query={"odbc_connect": conStr})
     engine = create_engine(connection_url)
     parametros = [(IDPROJETO, DATA1, DATA2)]
-    consultaSemEstorno = f"SELECT DISTINCT DataPagamento,ValorPago,NumChequeDeposito,HisLancamento FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND CodRubrica = 9 AND DataPagamento BETWEEN ? AND ? AND LOWER(HisLancamento) NOT LIKE '%estorno%' order by DataPagamento"
-    consultaComEstorno =  f"SELECT DISTINCT DataPagamento,ValorPago,NumChequeDeposito,HisLancamento FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND CodRubrica = 9 AND DataPagamento BETWEEN ? AND ? AND LOWER(HisLancamento) LIKE '%estorno%' order by DataPagamento"
+    #consultaSemEstorno = f"SELECT DISTINCT DataPagamento,ValorPago,NumChequeDeposito,HisLancamento FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND CodRubrica = 9 AND DataPagamento BETWEEN ? AND ? AND LOWER(HisLancamento) NOT LIKE '%estorno%' order by DataPagamento"
+    #consultaComEstorno =  f"SELECT DISTINCT DataPagamento,ValorPago,NumChequeDeposito,HisLancamento FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND CodRubrica = 9 AND DataPagamento BETWEEN ? AND ? AND LOWER(HisLancamento) LIKE '%estorno%' order by DataPagamento"
+    
+    consultaSemEstorno = f"""
+    SELECT [LisLancamentoConvenio].DataPagamento,
+    [LisPagamentoDespesaConvenioAdministrativa].Valor ,
+    [LisLancamentoConvenio].NumChequeDeposito,[LisLancamentoConvenio].HisLancamento
+    FROM [Conveniar].[dbo].[LisLancamentoConvenio]
+    INNER JOIN  [Conveniar].[dbo].[LisDocumentoConvenio] ON [LisLancamentoConvenio].[CodDocFinConvenio] = [LisDocumentoConvenio].[CodDocFinConvenio]
+    INNER JOIN  [Conveniar].[dbo].[DocFinConvPagDespesa] ON [LisDocumentoConvenio].[CodDocFinConvenio] = [DocFinConvPagDespesa].[CodDocFinConvenio]
+    INNER JOIN  [Conveniar].[dbo].[LisPagamentoDespesaConvenio] ON [DocFinConvPagDespesa].[CodPedido] = [LisPagamentoDespesaConvenio].[CodPedido]
+    INNER JOIN  [Conveniar].[dbo].[LisPagamentoDespesaConvenioAdministrativa] ON [LisPagamentoDespesaConvenio].CodDespesaConvenio = [LisPagamentoDespesaConvenioAdministrativa].CodDespesaConvenio
+    AND [LisPagamentoDespesaConvenio].CodConvenio = [LisPagamentoDespesaConvenioAdministrativa].CodConvenio
+    WHERE [LisLancamentoConvenio].CodConvenio = ? AND [LisLancamentoConvenio].CodStatus = 27 AND [LisLancamentoConvenio].CodRubrica = 9 AND [LisLancamentoConvenio].DataPagamento BETWEEN ? AND ?
+    AND LOWER([LisLancamentoConvenio].HisLancamento) NOT LIKE '%estorno%' order by [LisLancamentoConvenio].DataPagamento"""
+
+    consultaComEstorno = f"SELECT DISTINCT DataPagamento,ValorPago,NumChequeDeposito,HisLancamento FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND CodRubrica = 9 AND DataPagamento BETWEEN ? AND ? AND LOWER(HisLancamento)  LIKE '%estorno%' order by DataPagamento"
+    
     dfSemEstorno = pd.read_sql(consultaSemEstorno, engine, params=parametros)
     dfComEstorno = pd.read_sql(consultaComEstorno, engine, params=parametros)
    
 
     return dfSemEstorno,dfComEstorno
+
+def consultaConciliaoBancarioSaldoTotal(IDPROJETO,DATA1,DATA2):
+    file_path = pegar_pass("passs.txt")
+    conStr = ''
+    with open(file_path, 'r') as file:
+            conStr = file.readline().strip()
+
+    connection_url = URL.create("mssql+pyodbc", query={"odbc_connect": conStr})
+    engine = create_engine(connection_url)
+    parametros = [(IDPROJETO, DATA1)]
+    PARAMET = [(IDPROJETO, DATA1, DATA2)]
+    consultaSumTotal= f"SELECT SUM(ValorPago) AS TotalPago FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND CodRubrica = 9 AND DataPagamento <= ? AND LOWER(HisLancamento) NOT LIKE '%estorno%'"
+    sumTotalEstorno = f"SELECT SUM(ValorPago) AS TotalPago FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND CodRubrica = 9 AND DataPagamento BETWEEN  ? AND ? AND LOWER(HisLancamento)  LIKE '%estorno%'  "
+    sumTotalSemEstorno = f"SELECT SUM(ValorPago) AS TotalPago FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND CodRubrica = 9 AND DataPagamento BETWEEN  ? AND ? AND LOWER(HisLancamento) NOT LIKE '%estorno%'  "
+
+    
+    consultaSaldoTotal= pd.read_sql(consultaSumTotal, engine, params=parametros)
+    consultaSaldoTotalEstorno= pd.read_sql(sumTotalEstorno, engine, params=PARAMET)
+    consultaSaldoTotalSemEstorno= pd.read_sql(sumTotalSemEstorno, engine, params=PARAMET)
+    
+   
+
+    return consultaSaldoTotal,consultaSaldoTotalEstorno,consultaSaldoTotalSemEstorno
 
 def consultaID(IDPROJETO):
 
@@ -300,12 +340,12 @@ def consultaNomeRubricaCodRubrica(IDPROJETO, DATA1, DATA2,):
     return dfNomeRubricaCodRubrica
 
 def consultaProjeto(IDPROJETO, DATA1, DATA2,codigoRubrica):
-    ''' Função que vai pega os dados da Rubrica 9 Despesas Financeiras e transformalos em dataframe
-    para poder popular a databela Despesas Financeiras
+    ''' Consulta dinamica do SQL relacionado a rubrica correspondente,cada pagina tem sua própria consulta correspondente a rubrica
         Argumentos
             IDPROJETO = CodConvenio na tabela nova, corresponde ao codigo do projeto
             DATA1 = Data Inicial Selecinado pelo Usuario
             DATA2 = Data Final Selecionado pelo Usuario
+            codigoRubrica = código da rubrica 
     '''
     file_path = pegar_pass("passs.txt")
     conStr = ''
@@ -315,11 +355,18 @@ def consultaProjeto(IDPROJETO, DATA1, DATA2,codigoRubrica):
     connection_url = URL.create("mssql+pyodbc", query={"odbc_connect": conStr})
     engine = create_engine(connection_url)
     parametros = [(IDPROJETO, DATA1, DATA2,codigoRubrica)]
-    queryConsultaComRubrica = f"SELECT NomeFavorecido,FavorecidoCPFCNPJ,NomeTipoLancamento,HisLancamento,NumDocPago,DataEmissao,NumChequeDeposito,DataPagamento, ValorPago FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? and CodRubrica = ? "
+    parametrosPJ=[(IDPROJETO, DATA1, DATA2)]
+    queryConsultaComRubrica = f"SELECT NomeFavorecido,CASE WHEN LEN(FavorecidoCPFCNPJ) > 11 THEN STUFF(STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 3, 0, '.'), 7, 0, '.'), 11, 0, '/'), 16, 0, '-') WHEN LEN(FavorecidoCPFCNPJ) = 11 THEN STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 4, 0, '.'), 8, 0, '.'), 12, 0, '-') ELSE FavorecidoCPFCNPJ END AS FormattedFavorecidoCPFCNPJ,NomeTipoLancamento,HisLancamento,NumDocPago,DataEmissao,NumChequeDeposito,DataPagamento, ValorPago FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? AND LOWER(HisLancamento) NOT LIKE '%estorno%' and CodRubrica = ? "
+    queryConsultaComRubricaEstorno = f"SELECT NomeFavorecido,CASE WHEN LEN(FavorecidoCPFCNPJ) > 11 THEN STUFF(STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 3, 0, '.'), 7, 0, '.'), 11, 0, '/'), 16, 0, '-') WHEN LEN(FavorecidoCPFCNPJ) = 11 THEN STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 4, 0, '.'), 8, 0, '.'), 12, 0, '-') ELSE FavorecidoCPFCNPJ END AS FormattedFavorecidoCPFCNPJ,HisLancamento,NumChequeDeposito,DataPagamento, ValorPago FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? AND LOWER(HisLancamento) LIKE '%estorno%' and CodRubrica = ? "
+    queryConsultaPJDOA = f"SELECT NomeFavorecido,CASE WHEN LEN(FavorecidoCPFCNPJ) > 11 THEN STUFF(STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 3, 0, '.'), 7, 0, '.'), 11, 0, '/'), 16, 0, '-') WHEN LEN(FavorecidoCPFCNPJ) = 11 THEN STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 4, 0, '.'), 8, 0, '.'), 12, 0, '-') ELSE FavorecidoCPFCNPJ END AS FormattedFavorecidoCPFCNPJ,NomeTipoLancamento,HisLancamento,NumDocPago,DataEmissao,NumChequeDeposito,DataPagamento, ValorPago FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? AND LOWER(HisLancamento) NOT LIKE '%estorno%' AND CodRubrica IN (57,75,26) "
+    queryConsultaPJDOAEstorno = f"SELECT NomeFavorecido,CASE WHEN LEN(FavorecidoCPFCNPJ) > 11 THEN STUFF(STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 3, 0, '.'), 7, 0, '.'), 11, 0, '/'), 16, 0, '-') WHEN LEN(FavorecidoCPFCNPJ) = 11 THEN STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 4, 0, '.'), 8, 0, '.'), 12, 0, '-') ELSE FavorecidoCPFCNPJ END AS FormattedFavorecidoCPFCNPJ,HisLancamento,NumChequeDeposito,DataPagamento, ValorPago FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? AND LOWER(HisLancamento) LIKE '%estorno%' AND CodRubrica IN (57,75,26) "
     dfconsultaDadosPorRubrica = pd.read_sql(queryConsultaComRubrica, engine, params=parametros)
+    dfconsultaDadosPorRubricaComEstorno = pd.read_sql(queryConsultaComRubricaEstorno,engine, params=parametros)
+    dfPJDOA = pd.read_sql(queryConsultaPJDOA, engine, params=parametrosPJ)
+    dfPJDOAESTORNO = pd.read_sql(queryConsultaPJDOAEstorno,engine, params=parametrosPJ)
 
 
-    return dfconsultaDadosPorRubrica
+    return dfPJDOA,dfPJDOAESTORNO,dfconsultaDadosPorRubrica,dfconsultaDadosPorRubricaComEstorno
 
 def consultaEntradaReceitas(IDPROJETO, DATA1, DATA2):
   
@@ -331,7 +378,7 @@ def consultaEntradaReceitas(IDPROJETO, DATA1, DATA2):
     connection_url = URL.create("mssql+pyodbc", query={"odbc_connect": conStr})
     engine = create_engine(connection_url)
     parametros = [(IDPROJETO, DATA1, DATA2,)]
-    consultaEntradaReceita = f"SELECT DataPagamento,NumChequeDeposito,NomeFavorecido,ValorPago,CodRubrica FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND  (CodRubrica = 2 OR CodRubrica = 67 OR CodRubrica = 88) AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? ORDER BY  DataPagamento,NumChequeDeposito"
+    consultaEntradaReceita = f"SELECT DataPagamento,NumChequeDeposito,NomeFavorecido,ValorPago,CodRubrica FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND  (CodRubrica = 2 OR CodRubrica = 67 OR CodRubrica = 88) AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? ORDER BY  CodDocFinConvenio,CodRubrica"
     consultaDemonstrativoReceita = f"SELECT NomeFavorecido,HisLancamento,NumChequeDeposito,DataPagamento,ValorPago,CodRubrica FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND (CodRubrica = 2 OR CodRubrica = 67 OR CodRubrica = 88) AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? ORDER BY  DataPagamento,NumChequeDeposito"
     dfReceitas = pd.read_sql(consultaEntradaReceita, engine, params=parametros)
     dfDemonstrativoReceitas = pd.read_sql(consultaDemonstrativoReceita, engine, params=parametros)
@@ -444,21 +491,26 @@ def conciliacaoBancaria(codigo,data1,data2,planilha,stringTamanho):
 
         #for row in worksheet333.iter_rows(min_row=16, max_row=tamanho, min_col=1, max_col=4):
 
-       # Write data starting from the first row
-        for row_num, row_data in enumerate(dataframeSemEstorno.itertuples(index=False), start=16):#inicio linha
+      
+        for row_num, row_data in enumerate(dataframeSemEstorno.itertuples(index=False), start=17):#inicio linha
             for col_num, value in enumerate(row_data, start=1):#inicio coluna
                 worksheet333.cell(row=row_num, column=col_num, value=value)
                
        
-        linha2 = 16+4+tamanho
+        linha2 = 17+4+tamanho
 
 
         for row_num, row_data in enumerate(dataframeComEstorno.itertuples(index=False), start=linha2):#inicio linha
             for col_num, value in enumerate(row_data, start=1):#inicio coluna
                 worksheet333.cell(row=row_num, column=col_num, value=value)
          
+       #saldo anterior
+                
+        consultaSaldoTotal,consultaSaldoTotalEstorno,consultaSaldoTotalSemEstorno = consultaConciliaoBancarioSaldoTotal(codigo,data1,data2)
         
-
+        a = consultaSaldoTotal.iloc[0].item()
+        
+        worksheet333['B16'] = a
         workb.save(tabela)
         workb.close
 
@@ -542,7 +594,7 @@ def rendimentoDeAplicacao(codigo,data1,data2,planilha,rowBrasilia):
     merged_df['DataPagamento'] = merged_df['data_formatada']
     merged_df = merged_df.drop('data_formatada', axis=1)
    
-    for row_num, row_data in enumerate(merged_df.itertuples(index=False), start=14):#inicio linha
+    for row_num, row_data in enumerate(merged_df.itertuples(index=False), start=15):#inicio linha
         for col_num, value in enumerate(row_data, start=1):#inicio coluna 
             if col_num == 2:
                 col_num = 5
@@ -553,17 +605,21 @@ def rendimentoDeAplicacao(codigo,data1,data2,planilha,rowBrasilia):
    
     workbook.save(tabela)
     workbook.close()
-    return (len(merged_df))+14
+    return (len(merged_df))+15
 
 def rubricaGeral(codigo,data1,data2,planilha,rowBrasilia):
      #consulta todas rubricas
     tabela = pegar_caminho(planilha)
     dfNomeRubricaCodigoRubrica = consultaNomeRubricaCodRubrica(codigo, data1, data2)
-
+    
     for index, values in dfNomeRubricaCodigoRubrica.iterrows():
-        
-        dfConsultaProjeto = consultaProjeto(codigo, data1, data2,values['CodRubrica'])
-        
+       
+        dfPJDOA,dfPJDOAESTORNO,dfConsultaProjeto ,dfconsultaDadosPorRubricaComEstorno= consultaProjeto(codigo, data1, data2,values['CodRubrica'])
+            #remove as rubricas nao desejadas
+        # values_to_remove = ["Receitas", "Rendimentos de Aplicações Financeiras", "Despesas Financeiras",'Devolução de Recursos','Outros Serviços de Terceiros - Pessoa Jurídica ','Despesas Operacionais e Administrativas - Finatec']
+        # dfConsultaProjeto = dfConsultaProjeto[~dfConsultaProjeto['NomeRubrica'].isin(values_to_remove)]
+        # dfconsultaDadosPorRubricaComEstorno = dfconsultaDadosPorRubricaComEstorno[~dfconsultaDadosPorRubricaComEstorno['NomeRubrica'].isin(values_to_remove)]
+
        
         if values['NomeRubrica'] == "Obrigações Tributárias e contributivas":
             values['NomeRubrica'] = "Obrigações Tributárias"
@@ -587,10 +643,12 @@ def rubricaGeral(codigo,data1,data2,planilha,rowBrasilia):
             values['NomeRubrica'] = f"AuxFinanceiro Pesquisador"
         if values['NomeRubrica'] == f"Equipamentos e Material Permanente" :
             values['NomeRubrica'] = f"Equip e Mat Permanente"
-        
 
-        
-        if values['NomeRubrica'] != "Rendimentos de Aplicações Financeiras" and values['NomeRubrica'] != "Despesas Financeiras" and values['NomeRubrica'] != "Receitas":
+
+    
+
+        if values['NomeRubrica'] == "Outros Serviços Terceiros - PJ" or values['NomeRubrica'] == "Serviços de Terceiros Pessoa Jurídica":
+            values['NomeRubrica'] = "Outros Serviços Terceiros -PJ"
             nomeTabela = values['NomeRubrica']
             tituloStyle = values['NomeRubrica']
             workbook = openpyxl.load_workbook(tabela)
@@ -598,19 +656,77 @@ def rubricaGeral(codigo,data1,data2,planilha,rowBrasilia):
             workbook.save(tabela)
             workbook.close()
 
-            tamanho = len(dfConsultaProjeto)
-            estiloGeral(tabela,tamanho,tituloStyle,nomeTabela,rowBrasilia)
+            
+            tamanho = len(dfPJDOA)
+            tamanhoRetorno = len(dfPJDOAESTORNO)
+            
+            rownovo = estiloGeral(tabela,tamanho,tituloStyle,nomeTabela,rowBrasilia,tamanhoRetorno)
             workbook = openpyxl.load_workbook(tabela)
             sheet2 = workbook[values['NomeRubrica']]
-            dfConsultaProjeto.index = dfConsultaProjeto.index + 1
-            for row_num, row_data in enumerate(dfConsultaProjeto.itertuples(), start=10):#inicio linha
+            dfPJDOA.index = dfPJDOA.index + 1
+            for row_num, row_data in enumerate(dfPJDOA.itertuples(), start=10):#inicio linha
                 for col_num, value in enumerate(row_data, start=1):#inicio coluna
                     value = convert_datetime_to_stringdt(value)
                     sheet2.cell(row=row_num, column=col_num, value=value)
-                
+            dfPJDOAESTORNO.index = dfPJDOAESTORNO.index + 1
+
+
+            for row_num, row_data in enumerate(dfPJDOAESTORNO.itertuples(), start=rownovo): #inicio linha
+                for col_num, value in enumerate(row_data, start=1): #inicio coluna
+                    if col_num == 5:
+                        continue
+                    value = convert_datetime_to_stringdt(value)
+                    sheet2.cell(row=row_num, column=col_num, value=value)    
             
             workbook.save(tabela)
             workbook.close()
+             
+     
+        else:
+
+            if values['NomeRubrica'] != "Rendimentos de Aplicações Financeiras" and values['NomeRubrica'] != "Despesas Financeiras" and values['NomeRubrica'] != "Receitas" and values['NomeRubrica'] != "Devolução de Recursos" and values['NomeRubrica'] != "Outros Serviços Terceiros - PJ"and values['NomeRubrica'] != "Despesas Operacionais":
+                    nomeTabela = values['NomeRubrica']
+                    tituloStyle = values['NomeRubrica']
+                    workbook = openpyxl.load_workbook(tabela)
+                    sheet2 = workbook.create_sheet(title=f"{values['NomeRubrica']}")
+                    workbook.save(tabela)
+                    workbook.close()
+
+                    tamanho = len(dfConsultaProjeto)
+                    tamanhoRetorno = len(dfconsultaDadosPorRubricaComEstorno)
+                    
+                  
+                    
+                    rowEstorno = estiloGeral(tabela,tamanho,tituloStyle,nomeTabela,rowBrasilia,tamanhoRetorno)
+                    workbook = openpyxl.load_workbook(tabela)
+                    sheet2 = workbook[values['NomeRubrica']]
+                    dfConsultaProjeto.index = dfConsultaProjeto.index + 1
+                    for row_num, row_data in enumerate(dfConsultaProjeto.itertuples(), start=10):#inicio linha
+                        for col_num, value in enumerate(row_data, start=1):#inicio coluna
+                            value = convert_datetime_to_stringdt(value)
+                            sheet2.cell(row=row_num, column=col_num, value=value)
+                    
+                    dfconsultaDadosPorRubricaComEstorno.index = dfconsultaDadosPorRubricaComEstorno.index + 1
+                    rowEstorno = rowEstorno + 1
+                    #
+                    tamanhoDf = len(dfconsultaDadosPorRubricaComEstorno)
+                    
+                    dfconsultaDadosPorRubricaComEstorno.insert(3, "col1", np.random.uniform(1, tamanhoDf, tamanhoDf), allow_duplicates=True)
+                    dfconsultaDadosPorRubricaComEstorno.insert(6, 'Col2', None)
+                    dfconsultaDadosPorRubricaComEstorno.insert(7, 'Col3', None)
+                    
+                    
+                    
+                    for row_num, row_data in enumerate(dfconsultaDadosPorRubricaComEstorno.itertuples(), start=rowEstorno): #inicio linha
+                        for col_num, value in enumerate(row_data, start=1): #inicio coluna
+                            
+                            if col_num == 5:
+                                continue
+                            value = convert_datetime_to_stringdt(value)
+                            sheet2.cell(row=row_num, column=col_num, value=value)    
+                    
+                    workbook.save(tabela)
+                    workbook.close()
 
        
 
@@ -618,6 +734,7 @@ def rubricaGeral(codigo,data1,data2,planilha,rowBrasilia):
     return 0
 
 def Receita(planilha,codigo,data1,data2,tamanhoResumo,dataframe):
+   
     #dfReceitas,dfDemonstrativoReceitas,dfIss2,dfIss5 = consultaEntradaReceitas(codigo,data1,data2)
     dfReceitas,dfDemonstrativoReceitas = consultaEntradaReceitas(codigo,data1,data2)
     
@@ -630,6 +747,8 @@ def Receita(planilha,codigo,data1,data2,tamanhoResumo,dataframe):
     caminho = pegar_caminho(planilha)
     #tamanho equipamento ja e valido pois recebeu o tamanho maior e retornou o tamanho equipamentos da string
     tamanho,tamanhoequipamentos = estiloReceitaXDespesa(caminho,tamanhoResumo)
+
+    
     
     #o tamanho na verdade tem que ser do data frame se ele for maior
    
@@ -739,9 +858,41 @@ def Receita(planilha,codigo,data1,data2,tamanhoResumo,dataframe):
         sheet[stringObras] = dataframe.loc[dataframe['NomeRubrica'] == 'Material Permanente e Equipamento Importado', 'VALOR_TOTAL_PERIODO'].values[0]
        
 
-
-    values_to_remove = ["Receitas", "Rendimentos de Aplicações Financeiras", "Despesas Financeiras",'Material Permanente e Equipamento Nacional','Material Permanente e Equipamento Importado','Equipamentos e Material Permanente','Devolução de Recursos','Encargos - ISS 5%']
+    #remove as rubricas nao desejadas
+    values_to_remove = ["Receitas", "Rendimentos de Aplicações Financeiras", "Despesas Financeiras",'Material Permanente e Equipamento Nacional','Material Permanente e Equipamento Importado','Equipamentos e Material Permanente','Devolução de Recursos','Encargos - ISS 5% ']
     dataframe = dataframe[~dataframe['NomeRubrica'].isin(values_to_remove)]
+  
+    string_exists = dataframe['NomeRubrica'].isin(["Despesas Operacionais e Administrativas - Finatec"]).any()
+    if string_exists:
+    # Extract the value from "Despesas Operacionais e Administrativas - Finatec"
+     value_to_add = dataframe.loc[dataframe['NomeRubrica'] == 'Despesas Operacionais e Administrativas - Finatec', 'VALOR_TOTAL_PERIODO'].values[0]
+
+    string_exists = dataframe['NomeRubrica'].isin(["Outros Serviços de Terceiros - Pessoa Jurídica "]).any()
+    string_exists2 = dataframe['NomeRubrica'].isin(["Serviços de Terceiros Pessoa Jurídica"]).any()
+    if string_exists or string_exists2:
+        if string_exists:
+        # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
+            index_to_update = dataframe.loc[dataframe['NomeRubrica'] == 'Outros Serviços de Terceiros - Pessoa Jurídica '].index[0]
+
+            # Add the value to "Outros Serviços de Terceiros - Pessoa Jurídica"
+            dataframe.at[index_to_update, 'VALOR_TOTAL_PERIODO'] += value_to_add
+
+            # Drop the row for "Despesas Operacionais e Administrativas - Finatec"
+            dataframe = dataframe[dataframe['NomeRubrica'] != 'Despesas Operacionais e Administrativas - Finatec']
+        if string_exists2:
+        # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
+            index_to_update = dataframe.loc[dataframe['NomeRubrica'] == 'Serviços de Terceiros Pessoa Jurídica'].index[0]
+
+            # Add the value to "Outros Serviços de Terceiros - Pessoa Jurídica"
+            dataframe.at[index_to_update, 'VALOR_TOTAL_PERIODO'] += value_to_add
+
+            # Drop the row for "Despesas Operacionais e Administrativas - Finatec"
+            dataframe = dataframe[dataframe['NomeRubrica'] != 'Despesas Operacionais e Administrativas - Finatec']
+
+    
+    
+    #dataframe.loc[['Outros Serviços de Terceiros - Pessoa Jurídica ']] += dataframe.loc[['Despesas Operacionais e Administrativas - Finatec']]
+   
     for row_num, row_data in enumerate(dataframe.itertuples(index = False), start=16):#inicio linha
         for col_num, value in enumerate(row_data, start=8):#inicio coluna
                 sheet.cell(row=row_num, column=col_num, value=convert_datetime_to_string(value))
@@ -790,28 +941,53 @@ def Receita(planilha,codigo,data1,data2,tamanhoResumo,dataframe):
     dfSoma = consultaRendimentosIRRF(codigo,data1,data2)
     dfcComPeriodo = consultaDevolucaoRecursos(codigo,data1,data2)
     Soma = dfSoma["Aplicação"] + dfSoma["IRRF"]
+    
+    all_null = Soma.isnull().all()
+    if all_null != True :
+            if len(Soma) == 1:
+                result = Soma.iloc[0]
+            else:
+                result = Soma.iloc[0] - Soma.iloc[1]
+                stringRendimento = f'Rendimento de Aplicação'
+                stringRendimentoValor = f'E{tamanhoequipamentos + 6}'
+                sheet[stringRendimentoValor] = result
+                sheet[f'A{tamanhoequipamentos + 6}'] = stringRendimento
+
+    
+    #tarifasbancarias
+                
+    consultaSaldoTotal,consultaSaldoTotalEstorno,consultaSaldoTotalSemEstorno=consultaConciliaoBancarioSaldoTotal(codigo,data1,data2)
+
+    c = consultaSaldoTotal.iloc[0].item()
+    resultEstorno = consultaSaldoTotalSemEstorno.iloc[0].item()
+    resultSemEstorno = consultaSaldoTotalEstorno.iloc[0].item()
+    
+
+   
+    if c == None:
+         c = 0
+
+    if resultEstorno == None:
+         resultEstorno = 0
+    if resultSemEstorno == None:
+         resultSemEstorno = 0
+
+    
+
+    stringRendimentoValor = f'I{tamanhoequipamentos + 9}'
+    sheet[stringRendimentoValor] = resultEstorno + c
+   
    
     
-    result = Soma.iloc[0] - Soma.iloc[1]
-  
-    stringRendimento = f'Rendimento de Aplicação'
-    stringRendimentoValor = f'E{tamanhoequipamentos + 6}'
-    sheet[stringRendimentoValor] = result
-    sheet[f'A{tamanhoequipamentos + 6}'] = stringRendimento
-
-    
+    stringRendimentoValor = f'I{tamanhoequipamentos + 10}'
+    sheet[stringRendimentoValor] = resultSemEstorno
     
 
-
-    # # #devoluçãoderecursos
+    #devoluçãoderecursos
 
     stringRendimentoValor = f'I{tamanhoequipamentos + 7}'
     sheet[stringRendimentoValor] = dfcComPeriodo.iloc[0,0]
     
-
-       
-
-
 
     workbook.save(planilha)
     workbook.close()
@@ -846,7 +1022,7 @@ def ExeReceitaDespesa(planilha,codigo,data1,data2,stringTamanho):
     
     tamanho = tamanho - 3
 
-    stringTamanho = tamanho + 16 
+    stringTamanho = tamanho + 16
     estiloExecReceitaDespesa(tabela,tamanho,stringTamanho)
     #preencher
     workbook = openpyxl.load_workbook(planilha)
@@ -873,10 +1049,10 @@ def ExeReceitaDespesa(planilha,codigo,data1,data2,stringTamanho):
     string_periodo = f"Período que abrange esta prestação: {output_date_str} a {output_date_str2}"
     sheet['A7'] = string_periodo
     consulta_coordenador = consultaID(codigo)
-    stringCoordenador= f'F{stringTamanho+11}' # retorna lugar do coordanor
-    stringCoordanadorCargo = f'F{stringTamanho+12}'
+    stringCoordenador= f'F{stringTamanho+13}' # retorna lugar do coordanor
+    stringCoordanadorCargo = f'F{stringTamanho+14}'
     sheet[stringCoordanadorCargo] = f"Coordenador(a)"
-    stringTamanhoCPF = f'F{stringTamanho+13}' # retorna lugar do coordanor
+    stringTamanhoCPF = f'F{stringTamanho+15}' # retorna lugar do coordanor
     sheet[stringCoordenador] = consulta_coordenador['NomePessoaResponsavel']
     sheet[stringTamanhoCPF] = formatar_cpf(consulta_coordenador['CPFCoordenador'])
     string_titulo = f"Título do Projeto: {consulta_coordenador['NomeConvenio']}"
@@ -914,7 +1090,7 @@ def ExeReceitaDespesa(planilha,codigo,data1,data2,stringTamanho):
     12: "Dezembro"
 }   
 
-    stringTamanhoBrasilia = f'A{stringTamanho+10}' # retorna lugar de brasilia
+    stringTamanhoBrasilia = f'A{stringTamanho+12}' # retorna lugar de brasilia
     hoje = date.today()
     data_formatada = f"{hoje.day} de {meses_dict[hoje.month]} de {hoje.year}"
     sheet[stringTamanhoBrasilia] = f'Brasilia, {data_formatada}'
@@ -985,15 +1161,21 @@ def ExeReceitaDespesa(planilha,codigo,data1,data2,stringTamanho):
     dfRendimentoAteOPeriodo = consultaRendimentosTodosAteOPeriodo(codigo,data2)
     
     Soma = dfSoma["Aplicação"] + dfSoma["IRRF"]
+    all_null = Soma.isnull().all()
     
-    result = Soma.iloc[0] - Soma.iloc[1]
-    stringObras = f'B{stringTamanho + 7}'
-    sheet[stringObras] = result
+    if all_null != True :
+        
+        if len(Soma) == 1:
+             result = Soma.iloc[0]
+        else:
+            result = Soma.iloc[0] - Soma.iloc[1]
+            stringObras = f'B{stringTamanho + 9}'
+            sheet[stringObras] = result
 
-    SomaRendimentoAteoperido =  dfRendimentoAteOPeriodo["Aplicação"] + dfRendimentoAteOPeriodo["IRRF"]
-    resultado = SomaRendimentoAteoperido.iloc[0] - SomaRendimentoAteoperido.iloc[1]
-    stringObras = f'F{stringTamanho + 7}'
-    sheet[stringObras] = resultado
+            SomaRendimentoAteoperido =  dfRendimentoAteOPeriodo["Aplicação"] + dfRendimentoAteOPeriodo["IRRF"]
+            resultado = SomaRendimentoAteoperido.iloc[0] - SomaRendimentoAteoperido.iloc[1]
+            stringObras = f'F{stringTamanho + 9}'
+            sheet[stringObras] = resultado
     
 
    
@@ -1004,6 +1186,39 @@ def ExeReceitaDespesa(planilha,codigo,data1,data2,stringTamanho):
 
     # Use boolean indexing to drop rows based on the values in the first column
     dfMerged = dfMerged[~dfMerged['NomeRubrica'].isin(values_to_remove)]
+   
+
+    string_exists = dfMerged['NomeRubrica'].isin(["Despesas Operacionais e Administrativas - Finatec"]).any()
+    if string_exists:
+    # Extract the row for "Despesas Operacionais e Administrativas - Finatec"
+            row_to_add = dfMerged.loc[dfMerged['NomeRubrica'] == 'Despesas Operacionais e Administrativas - Finatec'].iloc[0]
+
+
+    string_exists = dfMerged['NomeRubrica'].isin(["Outros Serviços de Terceiros - Pessoa Jurídica "]).any()
+    string_exists2 = dfMerged['NomeRubrica'].isin(["Serviços de Terceiros Pessoa Jurídica"]).any()
+    if string_exists or string_exists2:
+        if string_exists:
+        # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
+            index_to_update = dfMerged.loc[dfMerged['NomeRubrica'] == 'Outros Serviços de Terceiros - Pessoa Jurídica '].index[0]
+
+            # Update the values in "Outros Serviços de Terceiros - Pessoa Jurídica" row with the values from "Despesas Operacionais e Administrativas - Finatec"
+            dfMerged.iloc[index_to_update] += row_to_add
+
+            # Drop the row for "Despesas Operacionais e Administrativas - Finatec"
+            dfMerged = dfMerged[dfMerged['NomeRubrica'] != 'Despesas Operacionais e Administrativas - Finatec']
+        if string_exists2:
+        # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
+            index_to_update = dfMerged.loc[dfMerged['NomeRubrica'] == "Serviços de Terceiros Pessoa Jurídica"].index[0]
+
+            # Update the values in "Outros Serviços de Terceiros - Pessoa Jurídica" row with the values from "Despesas Operacionais e Administrativas - Finatec"
+            dfMerged.iloc[index_to_update] += row_to_add
+
+            # Drop the row for "Despesas Operacionais e Administrativas - Finatec"
+            dfMerged = dfMerged[dfMerged['NomeRubrica'] != 'Despesas Operacionais e Administrativas - Finatec']
+
+
+    
+
     for row_num, row_data in enumerate(dfMerged.itertuples(index = False), start=16):#inicio linha
         for col_num, value in enumerate(row_data, start=1):#inicio coluna
                 if col_num == 2:
@@ -1025,7 +1240,7 @@ def ExeReceitaDespesa(planilha,codigo,data1,data2,stringTamanho):
     workbook.close()
     return tamanho,dfComPeriodo
 
-def preencheFinep(codigo,data1,data2,tabela):
+def preencheFub(codigo,data1,data2,tabela):
     '''Preencher fub legado
         dadoRubrica = transforma em dicionario a consulta feita por sql e separa por rubricas.
         variaveisResumo= preenchimento da tabela Exec, são definidas em tres tipos:
@@ -1055,11 +1270,8 @@ def preencheFinep(codigo,data1,data2,tabela):
     tamanho,dataframe = ExeReceitaDespesa(tabela,codigo,data1,data2,15)
     tamanhoPosicaoBrasilia,dfReceitas,dfDemonstrativoReceitas = Receita(tabela,codigo,data1,data2,tamanho,dataframe)
     demonstrativo(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia,dfDemonstrativoReceitas,dfReceitas)
-    # tamanhoPosicaoBrasilia,dfReceitas,dfDemonstrativoReceitas,dfIss2,dfIss5 = Receita(tabela,codigo,data1,data2,tamanho,dataframe)
-    # demonstrativo(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia,dfDemonstrativoReceitas,dfReceitas,dfIss2,dfIss5)
     rubricaGeral(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
     conciliacaoBancaria(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
     rowRendimento= rendimentoDeAplicacao(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
-    
     relacaodeBens(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
     
