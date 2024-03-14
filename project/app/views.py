@@ -18,7 +18,7 @@ from .models import Template, Employee
 from .new_dev import preenche_planilha,extrair,pegar_caminho
 from .preenche_fundep import preenche_fundep
 from .preencheFub import consultaID,preencheFub
-from .preencherFinep import preencheFinep
+# from .preencherFinep import preencheFinep
 from .capa import inserir_round_retangulo
 from django.contrib.admin.models import LogEntry
 from .models import UserActivity

@@ -355,17 +355,103 @@ def consultaProjeto(IDPROJETO, DATA1, DATA2,codigoRubrica):
     connection_url = URL.create("mssql+pyodbc", query={"odbc_connect": conStr})
     engine = create_engine(connection_url)
     parametros = [(IDPROJETO, DATA1, DATA2,codigoRubrica)]
+    parametrosComRubricaEstorno  = [(IDPROJETO, DATA1, DATA2,codigoRubrica,IDPROJETO,DATA1, DATA2,codigoRubrica,)]
     parametrosPJ=[(IDPROJETO, DATA1, DATA2)]
-    queryConsultaComRubrica = f"SELECT NomeFavorecido,CASE WHEN LEN(FavorecidoCPFCNPJ) > 11 THEN STUFF(STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 3, 0, '.'), 7, 0, '.'), 11, 0, '/'), 16, 0, '-') WHEN LEN(FavorecidoCPFCNPJ) = 11 THEN STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 4, 0, '.'), 8, 0, '.'), 12, 0, '-') ELSE FavorecidoCPFCNPJ END AS FormattedFavorecidoCPFCNPJ,NomeTipoLancamento,HisLancamento,NumDocPago,DataEmissao,NumChequeDeposito,DataPagamento, ValorPago FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? AND LOWER(HisLancamento) NOT LIKE '%estorno%' and CodRubrica = ? "
-    queryConsultaComRubricaEstorno = f"SELECT NomeFavorecido,CASE WHEN LEN(FavorecidoCPFCNPJ) > 11 THEN STUFF(STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 3, 0, '.'), 7, 0, '.'), 11, 0, '/'), 16, 0, '-') WHEN LEN(FavorecidoCPFCNPJ) = 11 THEN STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 4, 0, '.'), 8, 0, '.'), 12, 0, '-') ELSE FavorecidoCPFCNPJ END AS FormattedFavorecidoCPFCNPJ,HisLancamento,NumChequeDeposito,DataPagamento, ValorPago FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? AND LOWER(HisLancamento) LIKE '%estorno%' and CodRubrica = ? "
-    queryConsultaPJDOA = f"SELECT NomeFavorecido,CASE WHEN LEN(FavorecidoCPFCNPJ) > 11 THEN STUFF(STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 3, 0, '.'), 7, 0, '.'), 11, 0, '/'), 16, 0, '-') WHEN LEN(FavorecidoCPFCNPJ) = 11 THEN STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 4, 0, '.'), 8, 0, '.'), 12, 0, '-') ELSE FavorecidoCPFCNPJ END AS FormattedFavorecidoCPFCNPJ,NomeTipoLancamento,HisLancamento,NumDocPago,DataEmissao,NumChequeDeposito,DataPagamento, ValorPago FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? AND LOWER(HisLancamento) NOT LIKE '%estorno%' AND CodRubrica IN (57,75,26) "
-    queryConsultaPJDOAEstorno = f"SELECT NomeFavorecido,CASE WHEN LEN(FavorecidoCPFCNPJ) > 11 THEN STUFF(STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 3, 0, '.'), 7, 0, '.'), 11, 0, '/'), 16, 0, '-') WHEN LEN(FavorecidoCPFCNPJ) = 11 THEN STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 4, 0, '.'), 8, 0, '.'), 12, 0, '-') ELSE FavorecidoCPFCNPJ END AS FormattedFavorecidoCPFCNPJ,HisLancamento,NumChequeDeposito,DataPagamento, ValorPago FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? AND LOWER(HisLancamento) LIKE '%estorno%' AND CodRubrica IN (57,75,26) "
+    parametrosPJestorno=[(IDPROJETO, DATA1, DATA2,IDPROJETO, DATA1, DATA2)]
+    queryConsultaComRubrica = f"""SELECT NomeFavorecido,
+     CASE WHEN LEN(FavorecidoCPFCNPJ) > 11 THEN STUFF(STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 3, 0, '.'), 7, 0, '.'), 11, 0, '/'), 16, 0, '-') 
+     WHEN LEN(FavorecidoCPFCNPJ) = 11 THEN STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 4, 0, '.'), 8, 0, '.'), 12, 0, '-') ELSE FavorecidoCPFCNPJ END AS FormattedFavorecidoCPFCNPJ,
+     [LisConvenioItemAprovado].[DescConvenioItemAprovado],
+     HisLancamento,
+     NumDocPago,
+     DataEmissao,
+     NumChequeDeposito,
+     DataPagamento,
+     ValorPago 
+     FROM [Conveniar].[dbo].[LisLancamentoConvenio] 
+     LEFT JOIN [Conveniar].[dbo].[PlanoTrabalhoLancamento] ON [LisLancamentoConvenio].[CodLancamento] = [PlanoTrabalhoLancamento].[CodLancamentoGerado] 
+     LEFT JOIN [Conveniar].[dbo].[LisConvenioItemAprovado] ON [PlanoTrabalhoLancamento].[CodConvenioItemAprovado] = [LisConvenioItemAprovado].[CodConvenioItemAprovado] 
+     WHERE [LisLancamentoConvenio].CodConvenio = ? AND [LisLancamentoConvenio].CodStatus = 27
+     AND [LisLancamentoConvenio].DataPagamento BETWEEN ? AND ? AND LOWER([LisLancamentoConvenio].HisLancamento) NOT LIKE '%estorno%' and [LisLancamentoConvenio].CodRubrica = ? order by DataPagamento"""
+    
+    queryConsultaComRubricaEstorno = f"""SELECT NomeFavorecido
+    ,CASE WHEN LEN(FavorecidoCPFCNPJ) > 11 THEN STUFF(STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 3, 0, '.'), 7, 0, '.'), 11, 0, '/'), 16, 0, '-')
+     WHEN LEN(FavorecidoCPFCNPJ) = 11 THEN STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 4, 0, '.'), 8, 0, '.'), 12, 0, '-') ELSE FavorecidoCPFCNPJ END AS FormattedFavorecidoCPFCNPJ,
+     HisLancamento,
+     NumChequeDeposito,
+     DataPagamento, 
+     ValorPago FROM [Conveniar].[dbo].[LisLancamentoConvenio]
+     LEFT JOIN [Conveniar].[dbo].[PlanoTrabalhoLancamento] ON [LisLancamentoConvenio].[CodLancamento] = [PlanoTrabalhoLancamento].[CodLancamentoGerado]
+     LEFT JOIN [Conveniar].[dbo].[LisConvenioItemAprovado] ON [PlanoTrabalhoLancamento].[CodConvenioItemAprovado] = [LisConvenioItemAprovado].[CodConvenioItemAprovado]
+     WHERE 
+     [LisLancamentoConvenio].CodConvenio = ? 
+     AND CodStatus = 27 
+     AND NomeTipoCreditoDebito = 'C' 
+     AND DataPagamento BETWEEN ? AND ? 
+     AND LOWER(HisLancamento) LIKE '%estorno%' 
+     and [LisLancamentoConvenio].CodRubrica = ? 
+     OR CodStatus = 27
+     AND [LisLancamentoConvenio].CodConvenio = ?  
+     AND DataPagamento BETWEEN ? AND ? 
+     AND LOWER(HisLancamento)  LIKE '%estorno%'
+     AND [LisLancamentoConvenio].CodRubrica = ? 
+     
+     order by DataPagamento """
+    
+    queryConsultaPJDOA = f"""SELECT NomeFavorecido,
+     CASE WHEN LEN(FavorecidoCPFCNPJ) > 11 THEN STUFF(STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 3, 0, '.'), 7, 0, '.'), 11, 0, '/'), 16, 0, '-') 
+     WHEN LEN(FavorecidoCPFCNPJ) = 11 THEN STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 4, 0, '.'), 8, 0, '.'), 12, 0, '-') ELSE FavorecidoCPFCNPJ END AS FormattedFavorecidoCPFCNPJ,
+     [LisConvenioItemAprovado].[DescConvenioItemAprovado],
+     HisLancamento,
+     NumDocPago,
+     DataEmissao,
+     NumChequeDeposito,
+     DataPagamento,
+     ValorPago 
+     FROM [Conveniar].[dbo].[LisLancamentoConvenio]
+     LEFT JOIN [Conveniar].[dbo].[PlanoTrabalhoLancamento] ON [LisLancamentoConvenio].[CodLancamento] = [PlanoTrabalhoLancamento].[CodLancamentoGerado] 
+     LEFT JOIN [Conveniar].[dbo].[LisConvenioItemAprovado] ON [PlanoTrabalhoLancamento].[CodConvenioItemAprovado] = [LisConvenioItemAprovado].[CodConvenioItemAprovado] 
+     WHERE [LisLancamentoConvenio].CodConvenio = ? 
+     AND CodStatus = 27
+     AND DataPagamento BETWEEN ? AND ? 
+     AND LOWER(HisLancamento) NOT LIKE '%estorno%' 
+     AND [LisLancamentoConvenio].CodRubrica IN (57,75,26) 
+     order by DataPagamento """
+
+    queryConsultaPJDOAEstorno = f"""
+    SELECT NomeFavorecido,
+    CASE WHEN LEN(FavorecidoCPFCNPJ) > 11 THEN STUFF(STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 3, 0, '.'), 7, 0, '.'), 11, 0, '/'), 16, 0, '-') 
+    WHEN LEN(FavorecidoCPFCNPJ) = 11 THEN STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 4, 0, '.'), 8, 0, '.'), 12, 0, '-') ELSE FavorecidoCPFCNPJ END AS FormattedFavorecidoCPFCNPJ,
+    HisLancamento,
+    NumChequeDeposito,
+    DataPagamento,
+    ValorPago FROM [Conveniar].[dbo].[LisLancamentoConvenio] 
+    
+    LEFT JOIN [Conveniar].[dbo].[PlanoTrabalhoLancamento] ON [LisLancamentoConvenio].[CodLancamento] = [PlanoTrabalhoLancamento].[CodLancamentoGerado] 
+    LEFT JOIN [Conveniar].[dbo].[LisConvenioItemAprovado] ON [PlanoTrabalhoLancamento].[CodConvenioItemAprovado] = [LisConvenioItemAprovado].[CodConvenioItemAprovado] 
+    WHERE 
+    [LisLancamentoConvenio].CodConvenio = ?
+    AND CodStatus = 27 
+    AND DataPagamento BETWEEN ? AND ? 
+    AND LOWER(HisLancamento) LIKE '%estorno%' 
+    AND [LisLancamentoConvenio].CodRubrica IN (57,75,26)
+    OR CodStatus = 27  
+    AND [LisLancamentoConvenio].CodConvenio = ? 
+    AND DataPagamento BETWEEN ? AND ? 
+    AND LOWER(HisLancamento)  LIKE '%estorno%' 
+    AND [LisLancamentoConvenio].CodRubrica IN (57,75,26)
+    AND NomeTipoCreditoDebito = 'C'
+    order by DataPagamento 
+      """
     dfconsultaDadosPorRubrica = pd.read_sql(queryConsultaComRubrica, engine, params=parametros)
-    dfconsultaDadosPorRubricaComEstorno = pd.read_sql(queryConsultaComRubricaEstorno,engine, params=parametros)
+    # queryConsultaComRubricaEstorno = f"SELECT NomeFavorecido,CASE WHEN LEN(FavorecidoCPFCNPJ) > 11 THEN STUFF(STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 3, 0, '.'), 7, 0, '.'), 11, 0, '/'), 16, 0, '-') WHEN LEN(FavorecidoCPFCNPJ) = 11 THEN STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 4, 0, '.'), 8, 0, '.'), 12, 0, '-') ELSE FavorecidoCPFCNPJ END AS FormattedFavorecidoCPFCNPJ,HisLancamento,NumChequeDeposito,DataPagamento, ValorPago FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? AND LOWER(HisLancamento) LIKE '%estorno%' and CodRubrica = ? order by DataPagamento "
+    # queryConsultaPJDOA = f"SELECT NomeFavorecido,CASE WHEN LEN(FavorecidoCPFCNPJ) > 11 THEN STUFF(STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 3, 0, '.'), 7, 0, '.'), 11, 0, '/'), 16, 0, '-') WHEN LEN(FavorecidoCPFCNPJ) = 11 THEN STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 4, 0, '.'), 8, 0, '.'), 12, 0, '-') ELSE FavorecidoCPFCNPJ END AS FormattedFavorecidoCPFCNPJ,NomeTipoLancamento,HisLancamento,NumDocPago,DataEmissao,NumChequeDeposito,DataPagamento, ValorPago FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? AND LOWER(HisLancamento) NOT LIKE '%estorno%' AND CodRubrica IN (57,75,26) order by DataPagamento "
+    # queryConsultaPJDOAEstorno = f"SELECT NomeFavorecido,CASE WHEN LEN(FavorecidoCPFCNPJ) > 11 THEN STUFF(STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 3, 0, '.'), 7, 0, '.'), 11, 0, '/'), 16, 0, '-') WHEN LEN(FavorecidoCPFCNPJ) = 11 THEN STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 4, 0, '.'), 8, 0, '.'), 12, 0, '-') ELSE FavorecidoCPFCNPJ END AS FormattedFavorecidoCPFCNPJ,HisLancamento,NumChequeDeposito,DataPagamento, ValorPago FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? AND LOWER(HisLancamento) LIKE '%estorno%' AND CodRubrica IN (57,75,26) order by DataPagamento "
+    # dfconsultaDadosPorRubrica = pd.read_sql(queryConsultaComRubrica, engine, params=parametros)
+    dfconsultaDadosPorRubricaComEstorno = pd.read_sql(queryConsultaComRubricaEstorno,engine, params=parametrosComRubricaEstorno)
     dfPJDOA = pd.read_sql(queryConsultaPJDOA, engine, params=parametrosPJ)
-    dfPJDOAESTORNO = pd.read_sql(queryConsultaPJDOAEstorno,engine, params=parametrosPJ)
-
-
+    dfPJDOAESTORNO = pd.read_sql(queryConsultaPJDOAEstorno,engine, params=parametrosPJestorno)
+    
     return dfPJDOA,dfPJDOAESTORNO,dfconsultaDadosPorRubrica,dfconsultaDadosPorRubricaComEstorno
 
 def consultaEntradaReceitas(IDPROJETO, DATA1, DATA2):
@@ -615,6 +701,7 @@ def rubricaGeral(codigo,data1,data2,planilha,rowBrasilia):
     for index, values in dfNomeRubricaCodigoRubrica.iterrows():
        
         dfPJDOA,dfPJDOAESTORNO,dfConsultaProjeto ,dfconsultaDadosPorRubricaComEstorno= consultaProjeto(codigo, data1, data2,values['CodRubrica'])
+        
             #remove as rubricas nao desejadas
         # values_to_remove = ["Receitas", "Rendimentos de Aplicações Financeiras", "Despesas Financeiras",'Devolução de Recursos','Outros Serviços de Terceiros - Pessoa Jurídica ','Despesas Operacionais e Administrativas - Finatec']
         # dfConsultaProjeto = dfConsultaProjeto[~dfConsultaProjeto['NomeRubrica'].isin(values_to_remove)]
@@ -706,20 +793,21 @@ def rubricaGeral(codigo,data1,data2,planilha,rowBrasilia):
                             value = convert_datetime_to_stringdt(value)
                             sheet2.cell(row=row_num, column=col_num, value=value)
                     
-                    dfconsultaDadosPorRubricaComEstorno.index = dfconsultaDadosPorRubricaComEstorno.index + 1
+                    # dfconsultaDadosPorRubricaComEstorno.index = dfconsultaDadosPorRubricaComEstorno.index + 1
                     rowEstorno = rowEstorno + 1
                     #
                     tamanhoDf = len(dfconsultaDadosPorRubricaComEstorno)
+                    dfconsultaDadosPorRubricaComEstorno.insert(0, "col1", None)
+                    dfconsultaDadosPorRubricaComEstorno.insert(4, 'Col2', None)
+                    dfconsultaDadosPorRubricaComEstorno.insert(4, 'Col3', None)
+                    dfconsultaDadosPorRubricaComEstorno.insert(5, 'Col4', None)
                     
-                    dfconsultaDadosPorRubricaComEstorno.insert(3, "col1", np.random.uniform(1, tamanhoDf, tamanhoDf), allow_duplicates=True)
-                    dfconsultaDadosPorRubricaComEstorno.insert(6, 'Col2', None)
-                    dfconsultaDadosPorRubricaComEstorno.insert(7, 'Col3', None)
                     
                     
                     
-                    for row_num, row_data in enumerate(dfconsultaDadosPorRubricaComEstorno.itertuples(), start=rowEstorno): #inicio linha
+                    for row_num, row_data in enumerate(dfconsultaDadosPorRubricaComEstorno.itertuples(index=False), start=rowEstorno): #inicio linha
                         for col_num, value in enumerate(row_data, start=1): #inicio coluna
-                            
+                        
                             if col_num == 5:
                                 continue
                             value = convert_datetime_to_stringdt(value)
@@ -1192,6 +1280,8 @@ def ExeReceitaDespesa(planilha,codigo,data1,data2,stringTamanho):
     if string_exists:
     # Extract the row for "Despesas Operacionais e Administrativas - Finatec"
             row_to_add = dfMerged.loc[dfMerged['NomeRubrica'] == 'Despesas Operacionais e Administrativas - Finatec'].iloc[0]
+    else:   
+            row_to_add = 0
 
 
     string_exists = dfMerged['NomeRubrica'].isin(["Outros Serviços de Terceiros - Pessoa Jurídica "]).any()
@@ -1269,9 +1359,9 @@ def preencheFub(codigo,data1,data2,tabela):
     '''
     tamanho,dataframe = ExeReceitaDespesa(tabela,codigo,data1,data2,15)
     tamanhoPosicaoBrasilia,dfReceitas,dfDemonstrativoReceitas = Receita(tabela,codigo,data1,data2,tamanho,dataframe)
-    demonstrativo(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia,dfDemonstrativoReceitas,dfReceitas)
+    # demonstrativo(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia,dfDemonstrativoReceitas,dfReceitas)
     rubricaGeral(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
-    conciliacaoBancaria(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
-    rowRendimento= rendimentoDeAplicacao(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
-    relacaodeBens(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
+    # conciliacaoBancaria(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
+    # rowRendimento= rendimentoDeAplicacao(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
+    # relacaodeBens(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
     

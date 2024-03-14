@@ -154,6 +154,7 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
             if cell.column == 8:
                 stringSaldo = f"=F{cell.row} - G{cell.row}"
                 cell.value = stringSaldo
+              
 
             if cell.column == 5:
                 stringPorcentagem = f"=IFERROR(C{cell.row}/B{cell.row}, 0)"
@@ -431,6 +432,12 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
     sheet[f'H{size2+9}'] = formula
 
    
+
+    #somasaldo h
+    stringSaldo = f"=SUM(F{size2+8}+G{size2+8})"
+   
+    sheet[f"H{size2+8}"] = stringSaldo
+    
 
      #brasilia
     brasilia_row = size2 + 11
@@ -1284,12 +1291,17 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho,tamanhoesto
     for rows in worksheet.iter_rows(min_row=size+5, max_row=size+4+tamanhoestorno, min_col=1, max_col=10):
         for cell in rows:
             if cell.row % 2:
+                    cell.font = Font(name="Arial", size=12, color="000000")
                     cell.fill = PatternFill(start_color=cinza, end_color=cinza,
                                             fill_type = "solid")
             if cell.column == 10:        
                 cell.number_format = 'R$ #,##0.00'
+                cell.font = Font(name="Arial", size=12, color="000000")
+
             cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="hair") ,bottom=Side(border_style="hair"))
-            
+            cell.font = Font(name="Arial", size=12, color="000000")
+
+
     #bordas,corsimcornao,money
     # Set the height of each row to 60
     for row in worksheet.iter_rows(min_row=size+4, max_row=size+4+tamanhoestorno):
