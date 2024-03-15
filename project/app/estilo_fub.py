@@ -1542,7 +1542,7 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2,stringTamanho):
         sttring = f"D{i}:F{i}"
         worksheet.merge_cells(sttring)
         
-    for i in range(size+3,size+4+tamanho2):
+    for i in range(size+3,size+4+tamanho2+1):
         sttring = f"D{i}:F{i}"
         worksheet.merge_cells(sttring)
 
@@ -1614,10 +1614,34 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2,stringTamanho):
     for rows in worksheet.iter_rows(min_row=row_number, max_row=row_number, min_col=1, max_col=6):
             for cell in rows:
                 cell.font = Font(name="Arial", size=12, color="000000",bold=True)
+                cell.alignment = Alignment(horizontal="center",vertical="center")
+
+    #saldo anterior restituição
+    row_restituicao = f'A{size+4}'         
+    worksheet[row_restituicao] = 'Saldo anterior'
+    worksheet[row_restituicao].font = Font(name="Arial", size=12, color="000000")
+    worksheet[row_restituicao].alignment = Alignment(horizontal="left",vertical="center")
+    worksheet[row_restituicao].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
+    row_restituicao = f'b{size+4}'         
+    worksheet[row_restituicao].font = Font(name="Arial", size=12, color="000000")
+    worksheet[row_restituicao].alignment = Alignment(horizontal="left",vertical="center")
+    worksheet[row_restituicao].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
+    row_restituicao = f'c{size+4}'         
+    worksheet[row_restituicao] = 'Diversos'
+    worksheet[row_restituicao].font = Font(name="Arial", size=12, color="000000")
+    worksheet[row_restituicao].alignment = Alignment(horizontal="left",vertical="center")
+    worksheet[row_restituicao].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
+    row_restituicao = f'd{size+4}'         
+    worksheet[row_restituicao] = 'Restituição Prestações Anteriores'
+    worksheet[row_restituicao].font = Font(name="Arial", size=12, color="000000")
+    worksheet[row_restituicao].alignment = Alignment(horizontal="left",vertical="center")
+    worksheet[row_restituicao].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
 
 
 
-    for row in range(size+4,size+4+tamanho2):
+    size = size + 1
+
+    for row in range(size+3,size+4+tamanho2):
         cell = worksheet[f'B{row}']
         cell.style = custom_number_format_conciliacoes
         
@@ -1633,7 +1657,7 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2,stringTamanho):
 
 
     # FORMULATOTALrestituição
-    formula = f"=SUM(B{size+4}:B{size+tamanho2+3})"
+    formula = f"=SUM(B{size+3}:B{size+tamanho2+3})"
     celula = f'B{size+tamanho2+5}'
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
@@ -1660,7 +1684,7 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2,stringTamanho):
     saldodiposnivelformat_conciliacoes.fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     celular = worksheet[celula_string_total]
     celular.style = saldodiposnivelformat_conciliacoes
-    celular.value = f'=F10+F11+B{size} -B{size+tamanho2+5}'
+    celular.value = f'=F10+F11+B{size-1} -B{size+tamanho2+5}'
     #saldo anterior
     formula = f"Saldo anterior"
     celula = f'A16'

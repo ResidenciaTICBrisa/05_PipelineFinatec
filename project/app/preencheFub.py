@@ -223,6 +223,7 @@ def consultaConciliacaoBancaria(IDPROJETO, DATA1, DATA2):
     connection_url = URL.create("mssql+pyodbc", query={"odbc_connect": conStr})
     engine = create_engine(connection_url)
     parametros = [(IDPROJETO, DATA1, DATA2)]
+    parametros2 = [(IDPROJETO, DATA1, DATA2, IDPROJETO, DATA1, DATA2)]
     #consultaSemEstorno = f"SELECT DISTINCT DataPagamento,ValorPago,NumChequeDeposito,HisLancamento FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND CodRubrica = 9 AND DataPagamento BETWEEN ? AND ? AND LOWER(HisLancamento) NOT LIKE '%estorno%' order by DataPagamento"
     #consultaComEstorno =  f"SELECT DISTINCT DataPagamento,ValorPago,NumChequeDeposito,HisLancamento FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND CodRubrica = 9 AND DataPagamento BETWEEN ? AND ? AND LOWER(HisLancamento) LIKE '%estorno%' order by DataPagamento"
     
@@ -239,10 +240,26 @@ def consultaConciliacaoBancaria(IDPROJETO, DATA1, DATA2):
     WHERE [LisLancamentoConvenio].CodConvenio = ? AND [LisLancamentoConvenio].CodStatus = 27 AND [LisLancamentoConvenio].CodRubrica = 9 AND [LisLancamentoConvenio].DataPagamento BETWEEN ? AND ?
     AND LOWER([LisLancamentoConvenio].HisLancamento) NOT LIKE '%estorno%' order by [LisLancamentoConvenio].DataPagamento"""
 
-    consultaComEstorno = f"SELECT DISTINCT DataPagamento,ValorPago,NumChequeDeposito,HisLancamento FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND CodRubrica = 9 AND DataPagamento BETWEEN ? AND ? AND LOWER(HisLancamento)  LIKE '%estorno%' order by DataPagamento"
+    consultaComEstorno = f"""SELECT DataPagamento,
+    ValorPago,
+    NumChequeDeposito,
+    HisLancamento 
+    FROM [Conveniar].[dbo].[LisLancamentoConvenio] 
+    WHERE CodConvenio = ? 
+    AND CodStatus = 27 
+    AND CodRubrica = 9 
+    AND DataPagamento BETWEEN ? AND ? 
+    AND LOWER(HisLancamento)  LIKE '%estorno%'
+    OR
+    CodConvenio = ? 
+    AND CodStatus = 27 
+    AND CodRubrica = 9 
+    AND NomeTipoCreditoDebito = 'C' 
+    AND DataPagamento BETWEEN  ? AND ? 
+    order by DataPagamento"""
     
     dfSemEstorno = pd.read_sql(consultaSemEstorno, engine, params=parametros)
-    dfComEstorno = pd.read_sql(consultaComEstorno, engine, params=parametros)
+    dfComEstorno = pd.read_sql(consultaComEstorno, engine, params=parametros2)
    
 
     return dfSemEstorno,dfComEstorno
@@ -255,20 +272,71 @@ def consultaConciliaoBancarioSaldoTotal(IDPROJETO,DATA1,DATA2):
 
     connection_url = URL.create("mssql+pyodbc", query={"odbc_connect": conStr})
     engine = create_engine(connection_url)
-    parametros = [(IDPROJETO, DATA1)]
-    PARAMET = [(IDPROJETO, DATA1, DATA2)]
-    consultaSumTotal= f"SELECT SUM(ValorPago) AS TotalPago FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND CodRubrica = 9 AND DataPagamento <= ? AND LOWER(HisLancamento) NOT LIKE '%estorno%'"
-    sumTotalEstorno = f"SELECT SUM(ValorPago) AS TotalPago FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND CodRubrica = 9 AND DataPagamento BETWEEN  ? AND ? AND LOWER(HisLancamento)  LIKE '%estorno%'  "
-    sumTotalSemEstorno = f"SELECT SUM(ValorPago) AS TotalPago FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND CodRubrica = 9 AND DataPagamento BETWEEN  ? AND ? AND LOWER(HisLancamento) NOT LIKE '%estorno%'  "
+    parametrosconsultaSumTotal = [(IDPROJETO, DATA1)]
+    parametrosConsultaTotalRestituicao = [(IDPROJETO, DATA1,IDPROJETO, DATA1)]
+    parametrossumPeriodosemEstorno = [(IDPROJETO, DATA1, DATA2, IDPROJETO, DATA1, DATA2)]
+    parametrossumPeriodoComEstorno = [(IDPROJETO, DATA1, DATA2, IDPROJETO, DATA1, DATA2)]
+
+    SumTotal= f"""SELECT SUM(ValorPago) AS TotalPago
+    FROM [Conveniar].[dbo].[LisLancamentoConvenio] 
+    WHERE CodConvenio = ?
+    AND CodStatus = 27 
+    AND CodRubrica = 9 
+    AND DataPagamento <= ? 
+    AND LOWER(HisLancamento) NOT LIKE '%estorno%' 
+    """
+
+    SumTotalRestituicao = f"""SELECT SUM(ValorPago) AS TotalPago 
+    FROM [Conveniar].[dbo].[LisLancamentoConvenio] 
+    WHERE CodConvenio = ? 
+    AND CodStatus = 27 
+    AND CodRubrica = 9 
+    AND DataPagamento <=? 
+    AND LOWER(HisLancamento) LIKE '%estorno%'
+    OR
+    CodConvenio = ? 
+    AND CodStatus = 27 
+    AND CodRubrica = 9 
+    AND NomeTipoCreditoDebito = 'C' 
+    AND DataPagamento <= ? """
+
+
+    sumPeriodoSemEstorno = f"""SELECT SUM(ValorPago) AS TotalPago 
+    FROM [Conveniar].[dbo].[LisLancamentoConvenio] 
+    WHERE CodConvenio = ? 
+    AND CodStatus = 27 
+    AND CodRubrica = 9 
+    AND DataPagamento BETWEEN  ? AND ? 
+    AND LOWER(HisLancamento) NOT LIKE '%estorno%'
+    OR
+    CodConvenio = ? 
+    AND CodStatus = 27 
+    AND CodRubrica = 9 
+    AND NomeTipoCreditoDebito = 'D' 
+    AND DataPagamento BETWEEN  ? AND ? """
+
+    sumPeriodoComEstorno = f"""SELECT SUM(ValorPago) AS TotalPago 
+    FROM [Conveniar].[dbo].[LisLancamentoConvenio] 
+    WHERE CodConvenio = ? 
+    AND CodStatus = 27 
+    AND CodRubrica = 9 
+    AND DataPagamento BETWEEN  ? AND ? 
+    AND LOWER(HisLancamento) LIKE '%estorno%'
+    OR
+    CodConvenio = ? 
+    AND CodStatus = 27 
+    AND CodRubrica = 9 
+    AND NomeTipoCreditoDebito = 'C' 
+    AND DataPagamento BETWEEN  ? AND ? """
 
     
-    consultaSaldoTotal= pd.read_sql(consultaSumTotal, engine, params=parametros)
-    consultaSaldoTotalEstorno= pd.read_sql(sumTotalEstorno, engine, params=PARAMET)
-    consultaSaldoTotalSemEstorno= pd.read_sql(sumTotalSemEstorno, engine, params=PARAMET)
     
-   
+    consultaSaldoTotal= pd.read_sql(SumTotal, engine, params=parametrosconsultaSumTotal)
+    consultaSumTotalRestituicao= pd.read_sql(SumTotalRestituicao, engine, params=parametrosConsultaTotalRestituicao)
+    consultasumPeriodoSemEstorno= pd.read_sql(sumPeriodoSemEstorno, engine, params=parametrossumPeriodosemEstorno)
+    consultasumPeriodoComEstorno= pd.read_sql(sumPeriodoComEstorno, engine, params=parametrossumPeriodoComEstorno)
 
-    return consultaSaldoTotal,consultaSaldoTotalEstorno,consultaSaldoTotalSemEstorno
+    return consultaSaldoTotal,consultaSumTotalRestituicao,consultasumPeriodoSemEstorno,consultasumPeriodoComEstorno
 
 def consultaID(IDPROJETO):
 
@@ -388,9 +456,9 @@ def consultaProjeto(IDPROJETO, DATA1, DATA2,codigoRubrica):
      AND CodStatus = 27 
      AND NomeTipoCreditoDebito = 'C' 
      AND DataPagamento BETWEEN ? AND ? 
-     AND LOWER(HisLancamento) LIKE '%estorno%' 
      and [LisLancamentoConvenio].CodRubrica = ? 
-     OR CodStatus = 27
+     OR 
+     CodStatus = 27
      AND [LisLancamentoConvenio].CodConvenio = ?  
      AND DataPagamento BETWEEN ? AND ? 
      AND LOWER(HisLancamento)  LIKE '%estorno%'
@@ -433,7 +501,6 @@ def consultaProjeto(IDPROJETO, DATA1, DATA2,codigoRubrica):
     [LisLancamentoConvenio].CodConvenio = ?
     AND CodStatus = 27 
     AND DataPagamento BETWEEN ? AND ? 
-    AND LOWER(HisLancamento) LIKE '%estorno%' 
     AND [LisLancamentoConvenio].CodRubrica IN (57,75,26)
     OR CodStatus = 27  
     AND [LisLancamentoConvenio].CodConvenio = ? 
@@ -583,7 +650,7 @@ def conciliacaoBancaria(codigo,data1,data2,planilha,stringTamanho):
                 worksheet333.cell(row=row_num, column=col_num, value=value)
                
        
-        linha2 = 17+4+tamanho
+        linha2 = 17+4+tamanho+1
 
 
         for row_num, row_data in enumerate(dataframeComEstorno.itertuples(index=False), start=linha2):#inicio linha
@@ -592,11 +659,15 @@ def conciliacaoBancaria(codigo,data1,data2,planilha,stringTamanho):
          
        #saldo anterior
                 
-        consultaSaldoTotal,consultaSaldoTotalEstorno,consultaSaldoTotalSemEstorno = consultaConciliaoBancarioSaldoTotal(codigo,data1,data2)
-        
+        consultaSaldoTotal,consultaSumTotalRestituicao,consultasumPeriodoSemEstorno,consultasumPeriodoComEstorno=  consultaConciliaoBancarioSaldoTotal(codigo,data1,data2)
+     
         a = consultaSaldoTotal.iloc[0].item()
-        
+        b = consultaSumTotalRestituicao.iloc[0].item()
+       
+
         worksheet333['B16'] = a
+        worksheet333[f'B{linha2-1}'] = b
+
         workb.save(tabela)
         workb.close
 
@@ -698,6 +769,7 @@ def rubricaGeral(codigo,data1,data2,planilha,rowBrasilia):
     tabela = pegar_caminho(planilha)
     dfNomeRubricaCodigoRubrica = consultaNomeRubricaCodRubrica(codigo, data1, data2)
     
+    
     for index, values in dfNomeRubricaCodigoRubrica.iterrows():
        
         dfPJDOA,dfPJDOAESTORNO,dfConsultaProjeto ,dfconsultaDadosPorRubricaComEstorno= consultaProjeto(codigo, data1, data2,values['CodRubrica'])
@@ -710,6 +782,8 @@ def rubricaGeral(codigo,data1,data2,planilha,rowBrasilia):
        
         if values['NomeRubrica'] == "Obrigações Tributárias e contributivas":
             values['NomeRubrica'] = "Obrigações Tributárias"
+        if values['NomeRubrica'] == "Material Permanente e Equipamento Nacional":
+            values['NomeRubrica'] = "Equipamento Material Permanente"
         if values['NomeRubrica'] == "Serviços de Terceiros Pessoa Física":
             values['NomeRubrica'] = "Serviços de Terceiros PF"
         if values['NomeRubrica'] == f"Obrigações Tributárias e Contributivas - 20% de OST " :
@@ -952,32 +1026,46 @@ def Receita(planilha,codigo,data1,data2,tamanhoResumo,dataframe):
   
     string_exists = dataframe['NomeRubrica'].isin(["Despesas Operacionais e Administrativas - Finatec"]).any()
     if string_exists:
-    # Extract the value from "Despesas Operacionais e Administrativas - Finatec"
-     value_to_add = dataframe.loc[dataframe['NomeRubrica'] == 'Despesas Operacionais e Administrativas - Finatec', 'VALOR_TOTAL_PERIODO'].values[0]
+        # Extract the value from "Despesas Operacionais e Administrativas - Finatec"
+        value_to_add = dataframe.loc[dataframe['NomeRubrica'] == 'Despesas Operacionais e Administrativas - Finatec', 'VALOR_TOTAL_PERIODO'].values[0]
 
-    string_exists = dataframe['NomeRubrica'].isin(["Outros Serviços de Terceiros - Pessoa Jurídica "]).any()
-    string_exists2 = dataframe['NomeRubrica'].isin(["Serviços de Terceiros Pessoa Jurídica"]).any()
-    if string_exists or string_exists2:
-        if string_exists:
-        # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
-            index_to_update = dataframe.loc[dataframe['NomeRubrica'] == 'Outros Serviços de Terceiros - Pessoa Jurídica '].index[0]
+        string_exists = dataframe['NomeRubrica'].isin(["Outros Serviços de Terceiros - Pessoa Jurídica "]).any()
+        string_exists2 = dataframe['NomeRubrica'].isin(["Serviços de Terceiros Pessoa Jurídica"]).any()
+        if string_exists or string_exists2:
+            if string_exists:
+            # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
+                index_to_update = dataframe.loc[dataframe['NomeRubrica'] == 'Outros Serviços de Terceiros - Pessoa Jurídica '].index[0]
 
-            # Add the value to "Outros Serviços de Terceiros - Pessoa Jurídica"
-            dataframe.at[index_to_update, 'VALOR_TOTAL_PERIODO'] += value_to_add
+                # Add the value to "Outros Serviços de Terceiros - Pessoa Jurídica"
+                dataframe.at[index_to_update, 'VALOR_TOTAL_PERIODO'] += value_to_add
 
-            # Drop the row for "Despesas Operacionais e Administrativas - Finatec"
-            dataframe = dataframe[dataframe['NomeRubrica'] != 'Despesas Operacionais e Administrativas - Finatec']
-        if string_exists2:
-        # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
-            index_to_update = dataframe.loc[dataframe['NomeRubrica'] == 'Serviços de Terceiros Pessoa Jurídica'].index[0]
+                # Drop the row for "Despesas Operacionais e Administrativas - Finatec"
+                dataframe = dataframe[dataframe['NomeRubrica'] != 'Despesas Operacionais e Administrativas - Finatec']
+            if string_exists2:
+            # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
+                index_to_update = dataframe.loc[dataframe['NomeRubrica'] == 'Serviços de Terceiros Pessoa Jurídica'].index[0]
 
-            # Add the value to "Outros Serviços de Terceiros - Pessoa Jurídica"
-            dataframe.at[index_to_update, 'VALOR_TOTAL_PERIODO'] += value_to_add
+                # Add the value to "Outros Serviços de Terceiros - Pessoa Jurídica"
+                dataframe.at[index_to_update, 'VALOR_TOTAL_PERIODO'] += value_to_add
 
-            # Drop the row for "Despesas Operacionais e Administrativas - Finatec"
-            dataframe = dataframe[dataframe['NomeRubrica'] != 'Despesas Operacionais e Administrativas - Finatec']
+                # Drop the row for "Despesas Operacionais e Administrativas - Finatec"
+                dataframe = dataframe[dataframe['NomeRubrica'] != 'Despesas Operacionais e Administrativas - Finatec']
 
-    
+    # else:
+    #     string_exists = dataframe['NomeRubrica'].isin(["Outros Serviços de Terceiros - Pessoa Jurídica "]).any()
+    #     string_exists2 = dataframe['NomeRubrica'].isin(["Serviços de Terceiros Pessoa Jurídica"]).any()
+    #     if string_exists or string_exists2:
+    #         if string_exists:
+    #         # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
+    #             index_to_update = dataframe.loc[dataframe['NomeRubrica'] == 'Outros Serviços de Terceiros - Pessoa Jurídica '].index[0]
+
+            
+    #         if string_exists2:
+    #         # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
+    #             index_to_update = dataframe.loc[dataframe['NomeRubrica'] == 'Serviços de Terceiros Pessoa Jurídica'].index[0]
+
+              
+            
     
     #dataframe.loc[['Outros Serviços de Terceiros - Pessoa Jurídica ']] += dataframe.loc[['Despesas Operacionais e Administrativas - Finatec']]
    
@@ -1044,31 +1132,39 @@ def Receita(planilha,codigo,data1,data2,tamanhoResumo,dataframe):
     
     #tarifasbancarias
                 
-    consultaSaldoTotal,consultaSaldoTotalEstorno,consultaSaldoTotalSemEstorno=consultaConciliaoBancarioSaldoTotal(codigo,data1,data2)
-
+    consultaSaldoTotal,consultaSumTotalRestituicao,consultasumPeriodoSemEstorno,consultasumPeriodoComEstorno=consultaConciliaoBancarioSaldoTotal(codigo,data1,data2)
+   
     c = consultaSaldoTotal.iloc[0].item()
-    resultEstorno = consultaSaldoTotalSemEstorno.iloc[0].item()
-    resultSemEstorno = consultaSaldoTotalEstorno.iloc[0].item()
+    print(c)
+    print(consultaSumTotalRestituicao)
+    print(consultaSumTotalRestituicao.iloc[0].item())
+    print(f'AAAAAAAAAAAAAA')
+    d = consultaSumTotalRestituicao.iloc[0].item()
+    resultEstorno = consultasumPeriodoSemEstorno.iloc[0].item()
+    resultSemEstorno = consultasumPeriodoComEstorno.iloc[0].item()
     
 
-   
+   #checa soma total ate a data
     if c == None:
          c = 0
-
+    if d == None:
+         d = 0    
+    #checa o total resituição 
     if resultEstorno == None:
          resultEstorno = 0
     if resultSemEstorno == None:
          resultSemEstorno = 0
 
-    
 
+    
+     #TTarifa Bancária - Despesa (-)
     stringRendimentoValor = f'I{tamanhoequipamentos + 9}'
     sheet[stringRendimentoValor] = resultEstorno + c
    
    
-    
+    #Tarifa Bancária - Restituição (+)
     stringRendimentoValor = f'I{tamanhoequipamentos + 10}'
-    sheet[stringRendimentoValor] = resultSemEstorno
+    sheet[stringRendimentoValor] = resultSemEstorno + d
     
 
     #devoluçãoderecursos
@@ -1274,38 +1370,56 @@ def ExeReceitaDespesa(planilha,codigo,data1,data2,stringTamanho):
 
     # Use boolean indexing to drop rows based on the values in the first column
     dfMerged = dfMerged[~dfMerged['NomeRubrica'].isin(values_to_remove)]
-   
+    
+    
 
     string_exists = dfMerged['NomeRubrica'].isin(["Despesas Operacionais e Administrativas - Finatec"]).any()
     if string_exists:
     # Extract the row for "Despesas Operacionais e Administrativas - Finatec"
             row_to_add = dfMerged.loc[dfMerged['NomeRubrica'] == 'Despesas Operacionais e Administrativas - Finatec'].iloc[0]
-    else:   
-            row_to_add = 0
+   
+    
+    stringDOA_exists = dfMerged['NomeRubrica'].isin(["Despesas Operacionais e Administrativas - Finatec"]).any()
+    if stringDOA_exists:
+        string_exists = dfMerged['NomeRubrica'].isin(["Outros Serviços de Terceiros - Pessoa Jurídica "]).any()
+        string_exists2 = dfMerged['NomeRubrica'].isin(["Serviços de Terceiros Pessoa Jurídica"]).any()
+        if string_exists or string_exists2:
+            if string_exists:
+            # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
+                index_to_update = dfMerged.loc[dfMerged['NomeRubrica'] == 'Outros Serviços de Terceiros - Pessoa Jurídica '].index[0]
 
+                # Update the values in "Outros Serviços de Terceiros - Pessoa Jurídica" row with the values from "Despesas Operacionais e Administrativas - Finatec"
+                dfMerged.iloc[index_to_update] += row_to_add
 
-    string_exists = dfMerged['NomeRubrica'].isin(["Outros Serviços de Terceiros - Pessoa Jurídica "]).any()
-    string_exists2 = dfMerged['NomeRubrica'].isin(["Serviços de Terceiros Pessoa Jurídica"]).any()
-    if string_exists or string_exists2:
-        if string_exists:
-        # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
-            index_to_update = dfMerged.loc[dfMerged['NomeRubrica'] == 'Outros Serviços de Terceiros - Pessoa Jurídica '].index[0]
+                # Drop the row for "Despesas Operacionais e Administrativas - Finatec"
+                dfMerged = dfMerged[dfMerged['NomeRubrica'] != 'Despesas Operacionais e Administrativas - Finatec']
+            if string_exists2:
+            # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
+                index_to_update = dfMerged.loc[dfMerged['NomeRubrica'] == "Serviços de Terceiros Pessoa Jurídica"].index[0]
 
-            # Update the values in "Outros Serviços de Terceiros - Pessoa Jurídica" row with the values from "Despesas Operacionais e Administrativas - Finatec"
-            dfMerged.iloc[index_to_update] += row_to_add
+                # Update the values in "Outros Serviços de Terceiros - Pessoa Jurídica" row with the values from "Despesas Operacionais e Administrativas - Finatec"
+                dfMerged.iloc[index_to_update] += row_to_add
 
-            # Drop the row for "Despesas Operacionais e Administrativas - Finatec"
-            dfMerged = dfMerged[dfMerged['NomeRubrica'] != 'Despesas Operacionais e Administrativas - Finatec']
-        if string_exists2:
-        # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
-            index_to_update = dfMerged.loc[dfMerged['NomeRubrica'] == "Serviços de Terceiros Pessoa Jurídica"].index[0]
+                # Drop the row for "Despesas Operacionais e Administrativas - Finatec"
+                dfMerged = dfMerged[dfMerged['NomeRubrica'] != 'Despesas Operacionais e Administrativas - Finatec']
+    # else:
+    #         string_exists = dfMerged['NomeRubrica'].isin(["Outros Serviços de Terceiros - Pessoa Jurídica "]).any()
+    #         string_exists2 = dfMerged['NomeRubrica'].isin(["Serviços de Terceiros Pessoa Jurídica"]).any()
+    #         if string_exists or string_exists2:
+    #             if string_exists:
+    #             # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
+    #                 index_to_update = dfMerged.loc[dfMerged['NomeRubrica'] == 'Outros Serviços de Terceiros - Pessoa Jurídica '].index[0]
 
-            # Update the values in "Outros Serviços de Terceiros - Pessoa Jurídica" row with the values from "Despesas Operacionais e Administrativas - Finatec"
-            dfMerged.iloc[index_to_update] += row_to_add
+                    
 
-            # Drop the row for "Despesas Operacionais e Administrativas - Finatec"
-            dfMerged = dfMerged[dfMerged['NomeRubrica'] != 'Despesas Operacionais e Administrativas - Finatec']
+    #             if string_exists2:
+    #             # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
+    #                 index_to_update = dfMerged.loc[dfMerged['NomeRubrica'] == "Serviços de Terceiros Pessoa Jurídica"].index[0]
 
+               
+
+              
+            
 
     
 
@@ -1358,10 +1472,11 @@ def preencheFub(codigo,data1,data2,tabela):
 
     '''
     tamanho,dataframe = ExeReceitaDespesa(tabela,codigo,data1,data2,15)
+    print(dataframe)
     tamanhoPosicaoBrasilia,dfReceitas,dfDemonstrativoReceitas = Receita(tabela,codigo,data1,data2,tamanho,dataframe)
-    # demonstrativo(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia,dfDemonstrativoReceitas,dfReceitas)
-    rubricaGeral(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
-    # conciliacaoBancaria(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
+    demonstrativo(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia,dfDemonstrativoReceitas,dfReceitas)
+    # rubricaGeral(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
+    #conciliacaoBancaria(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
     # rowRendimento= rendimentoDeAplicacao(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
     # relacaodeBens(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
     
