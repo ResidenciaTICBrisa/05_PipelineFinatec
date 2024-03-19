@@ -531,8 +531,19 @@ def consultaEntradaReceitas(IDPROJETO, DATA1, DATA2):
     connection_url = URL.create("mssql+pyodbc", query={"odbc_connect": conStr})
     engine = create_engine(connection_url)
     parametros = [(IDPROJETO, DATA1, DATA2,)]
-    consultaEntradaReceita = f"SELECT DataPagamento,NumChequeDeposito,NomeFavorecido,ValorPago,CodRubrica FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND  (CodRubrica = 2 OR CodRubrica = 67 OR CodRubrica = 88) AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? ORDER BY  CodDocFinConvenio,CodRubrica"
-    consultaDemonstrativoReceita = f"SELECT NomeFavorecido,HisLancamento,NumChequeDeposito,DataPagamento,ValorPago,CodRubrica FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND (CodRubrica = 2 OR CodRubrica = 67 OR CodRubrica = 88) AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? ORDER BY  DataPagamento,NumChequeDeposito"
+    consultaEntradaReceita = f"""SELECT DataPagamento,
+    NumChequeDeposito
+    ,NomeFavorecido,
+    ValorPago,
+    CodRubrica FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND  (CodRubrica = 2 OR CodRubrica = 67 OR CodRubrica = 88) AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? 
+    ORDER BY  CodDocFinConvenio,CodRubrica"""
+    consultaDemonstrativoReceita = f"""SELECT NomeFavorecido,
+    HisLancamento,
+    NumChequeDeposito,
+    DataPagamento,
+    ValorPago,
+    CodRubrica FROM [Conveniar].[dbo].[LisLancamentoConvenio] 
+    WHERE CodConvenio = ? AND (CodRubrica = 2 OR CodRubrica = 67 OR CodRubrica = 88) AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? ORDER BY  DataPagamento,NumChequeDeposito"""
     dfReceitas = pd.read_sql(consultaEntradaReceita, engine, params=parametros)
     dfDemonstrativoReceitas = pd.read_sql(consultaDemonstrativoReceita, engine, params=parametros)
 
@@ -900,6 +911,8 @@ def Receita(planilha,codigo,data1,data2,tamanhoResumo,dataframe):
     #dfReceitas,dfDemonstrativoReceitas,dfIss2,dfIss5 = consultaEntradaReceitas(codigo,data1,data2)
     dfReceitas,dfDemonstrativoReceitas = consultaEntradaReceitas(codigo,data1,data2)
     
+   
+
     if len(dfReceitas) > tamanhoResumo:
         tamanhoResumo = len(dfReceitas)
     elif len(dataframe) > tamanhoResumo:
@@ -1135,10 +1148,7 @@ def Receita(planilha,codigo,data1,data2,tamanhoResumo,dataframe):
     consultaSaldoTotal,consultaSumTotalRestituicao,consultasumPeriodoSemEstorno,consultasumPeriodoComEstorno=consultaConciliaoBancarioSaldoTotal(codigo,data1,data2)
    
     c = consultaSaldoTotal.iloc[0].item()
-    print(c)
-    print(consultaSumTotalRestituicao)
-    print(consultaSumTotalRestituicao.iloc[0].item())
-    print(f'AAAAAAAAAAAAAA')
+   
     d = consultaSumTotalRestituicao.iloc[0].item()
     resultEstorno = consultasumPeriodoSemEstorno.iloc[0].item()
     resultSemEstorno = consultasumPeriodoComEstorno.iloc[0].item()
@@ -1373,14 +1383,41 @@ def ExeReceitaDespesa(planilha,codigo,data1,data2,stringTamanho):
     
     
 
-    string_exists = dfMerged['NomeRubrica'].isin(["Despesas Operacionais e Administrativas - Finatec"]).any()
-    if string_exists:
-    # Extract the row for "Despesas Operacionais e Administrativas - Finatec"
-            row_to_add = dfMerged.loc[dfMerged['NomeRubrica'] == 'Despesas Operacionais e Administrativas - Finatec'].iloc[0]
+    # string_exists = dfMerged['NomeRubrica'].isin(["Despesas Operacionais e Administrativas - Finatec"]).any()
+    # if string_exists:
+    # # Extract the row for "Despesas Operacionais e Administrativas - Finatec"
+    #         row_to_add = dfMerged.loc[dfMerged['NomeRubrica'] == 'Despesas Operacionais e Administrativas - Finatec'].iloc[0]
    
     
-    stringDOA_exists = dfMerged['NomeRubrica'].isin(["Despesas Operacionais e Administrativas - Finatec"]).any()
-    if stringDOA_exists:
+    # stringDOA_exists = dfMerged['NomeRubrica'].isin(["Despesas Operacionais e Administrativas - Finatec"]).any()
+    # if stringDOA_exists:
+    #     string_exists = dfMerged['NomeRubrica'].isin(["Outros Serviços de Terceiros - Pessoa Jurídica "]).any()
+    #     string_exists2 = dfMerged['NomeRubrica'].isin(["Serviços de Terceiros Pessoa Jurídica"]).any()
+    #     if string_exists or string_exists2:
+    #         if string_exists:
+    #         # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
+    #             index_to_update = dfMerged.loc[dfMerged['NomeRubrica'] == 'Outros Serviços de Terceiros - Pessoa Jurídica '].index[0]
+
+    #             # Update the values in "Outros Serviços de Terceiros - Pessoa Jurídica" row with the values from "Despesas Operacionais e Administrativas - Finatec"
+    #             dfMerged.iloc[index_to_update] += row_to_add
+
+    #             # Drop the row for "Despesas Operacionais e Administrativas - Finatec"
+    #             dfMerged = dfMerged[dfMerged['NomeRubrica'] != 'Despesas Operacionais e Administrativas - Finatec']
+    #         if string_exists2:
+    #         # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
+    #             index_to_update = dfMerged.loc[dfMerged['NomeRubrica'] == "Serviços de Terceiros Pessoa Jurídica"].index[0]
+
+    #             # Update the values in "Outros Serviços de Terceiros - Pessoa Jurídica" row with the values from "Despesas Operacionais e Administrativas - Finatec"
+    #             dfMerged.iloc[index_to_update] += row_to_add
+
+    #             # Drop the row for "Despesas Operacionais e Administrativas - Finatec"
+    #             dfMerged = dfMerged[dfMerged['NomeRubrica'] != 'Despesas Operacionais e Administrativas - Finatec']
+    print(dfMerged)
+    string_exists = dfMerged['NomeRubrica'].isin(["Despesas Operacionais e Administrativas - Finatec"]).any()
+    if string_exists:
+        # Extract the value from "Despesas Operacionais e Administrativas - Finatec"
+        value_to_add = dfMerged.loc[dfMerged['NomeRubrica'] == 'Despesas Operacionais e Administrativas - Finatec'].iloc[0]
+        
         string_exists = dfMerged['NomeRubrica'].isin(["Outros Serviços de Terceiros - Pessoa Jurídica "]).any()
         string_exists2 = dfMerged['NomeRubrica'].isin(["Serviços de Terceiros Pessoa Jurídica"]).any()
         if string_exists or string_exists2:
@@ -1388,38 +1425,26 @@ def ExeReceitaDespesa(planilha,codigo,data1,data2,stringTamanho):
             # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
                 index_to_update = dfMerged.loc[dfMerged['NomeRubrica'] == 'Outros Serviços de Terceiros - Pessoa Jurídica '].index[0]
 
-                # Update the values in "Outros Serviços de Terceiros - Pessoa Jurídica" row with the values from "Despesas Operacionais e Administrativas - Finatec"
-                dfMerged.iloc[index_to_update] += row_to_add
+                # Add the value to "Outros Serviços de Terceiros - Pessoa Jurídica"
+                dfMerged.iloc[index_to_update] += value_to_add
 
                 # Drop the row for "Despesas Operacionais e Administrativas - Finatec"
                 dfMerged = dfMerged[dfMerged['NomeRubrica'] != 'Despesas Operacionais e Administrativas - Finatec']
+            
+                
             if string_exists2:
             # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
-                index_to_update = dfMerged.loc[dfMerged['NomeRubrica'] == "Serviços de Terceiros Pessoa Jurídica"].index[0]
+                index_to_update = dfMerged.loc[dfMerged['NomeRubrica'] == 'Serviços de Terceiros Pessoa Jurídica'].index[0]
 
-                # Update the values in "Outros Serviços de Terceiros - Pessoa Jurídica" row with the values from "Despesas Operacionais e Administrativas - Finatec"
-                dfMerged.iloc[index_to_update] += row_to_add
+                # Add the value to "Outros Serviços de Terceiros - Pessoa Jurídica"
+                dfMerged.iloc[index_to_update] += value_to_add
 
                 # Drop the row for "Despesas Operacionais e Administrativas - Finatec"
                 dfMerged = dfMerged[dfMerged['NomeRubrica'] != 'Despesas Operacionais e Administrativas - Finatec']
-    # else:
-    #         string_exists = dfMerged['NomeRubrica'].isin(["Outros Serviços de Terceiros - Pessoa Jurídica "]).any()
-    #         string_exists2 = dfMerged['NomeRubrica'].isin(["Serviços de Terceiros Pessoa Jurídica"]).any()
-    #         if string_exists or string_exists2:
-    #             if string_exists:
-    #             # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
-    #                 index_to_update = dfMerged.loc[dfMerged['NomeRubrica'] == 'Outros Serviços de Terceiros - Pessoa Jurídica '].index[0]
 
-                    
-
-    #             if string_exists2:
-    #             # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
-    #                 index_to_update = dfMerged.loc[dfMerged['NomeRubrica'] == "Serviços de Terceiros Pessoa Jurídica"].index[0]
-
-               
 
               
-            
+    print(dfMerged)        
 
     
 
@@ -1472,7 +1497,7 @@ def preencheFub(codigo,data1,data2,tabela):
 
     '''
     tamanho,dataframe = ExeReceitaDespesa(tabela,codigo,data1,data2,15)
-    print(dataframe)
+    
     tamanhoPosicaoBrasilia,dfReceitas,dfDemonstrativoReceitas = Receita(tabela,codigo,data1,data2,tamanho,dataframe)
     demonstrativo(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia,dfDemonstrativoReceitas,dfReceitas)
     # rubricaGeral(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
