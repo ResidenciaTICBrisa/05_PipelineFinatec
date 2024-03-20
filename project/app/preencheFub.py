@@ -536,7 +536,7 @@ def consultaEntradaReceitas(IDPROJETO, DATA1, DATA2):
     ,NomeFavorecido,
     ValorPago,
     CodRubrica FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND  (CodRubrica = 2 OR CodRubrica = 67 OR CodRubrica = 88) AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? 
-    ORDER BY  CodDocFinConvenio,CodRubrica"""
+    ORDER BY  DataPagamento,CodDocFinConvenio,CodRubrica"""
     consultaDemonstrativoReceita = f"""SELECT NomeFavorecido,
     HisLancamento,
     NumChequeDeposito,
@@ -544,14 +544,26 @@ def consultaEntradaReceitas(IDPROJETO, DATA1, DATA2):
     ValorPago,
     CodRubrica FROM [Conveniar].[dbo].[LisLancamentoConvenio] 
     WHERE CodConvenio = ? AND (CodRubrica = 2 OR CodRubrica = 67 OR CodRubrica = 88) AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? ORDER BY  DataPagamento,NumChequeDeposito"""
+    consultaSomaTotal2_6788 = f"""
+        SELECT 
+            SUM(CASE WHEN CodRubrica IN (67, 88) THEN ValorPago ELSE 0 END) AS Sum_67_88,
+            SUM(CASE WHEN CodRubrica = 2 THEN ValorPago ELSE 0 END) AS Sum_2
+        FROM 
+            [Conveniar].[dbo].[LisLancamentoConvenio] 
+        WHERE 
+            CodConvenio = ? 
+            AND CodStatus = 27
+            AND DataPagamento BETWEEN ? AND ?
+            """
     dfReceitas = pd.read_sql(consultaEntradaReceita, engine, params=parametros)
     dfDemonstrativoReceitas = pd.read_sql(consultaDemonstrativoReceita, engine, params=parametros)
+    dfSomaTotal = pd.read_sql(consultaSomaTotal2_6788, engine, params=parametros)
 
     
     
 
 
-    return dfReceitas,dfDemonstrativoReceitas
+    return dfReceitas,dfDemonstrativoReceitas,dfSomaTotal
 
 def consultaReceitaEExecReceita(IDPROJETO, DATA1, DATA2):
     ''' Função que vai pega os dados da Rubrica 9 Despesas Financeiras e transformalos em dataframe
@@ -909,11 +921,11 @@ def rubricaGeral(codigo,data1,data2,planilha,rowBrasilia):
 def Receita(planilha,codigo,data1,data2,tamanhoResumo,dataframe):
    
     #dfReceitas,dfDemonstrativoReceitas,dfIss2,dfIss5 = consultaEntradaReceitas(codigo,data1,data2)
-    dfReceitas,dfDemonstrativoReceitas = consultaEntradaReceitas(codigo,data1,data2)
+    dfReceitas,dfDemonstrativoReceitas,dfSomaTotal = consultaEntradaReceitas(codigo,data1,data2)
     
    
 
-    if len(dfReceitas) > tamanhoResumo:
+    if len(dfReceitas) > tamanhoResumo and dfReceitas < 15:
         tamanhoResumo = len(dfReceitas)
     elif len(dataframe) > tamanhoResumo:
          tamanhoResumo = len(dataframe)
@@ -1087,45 +1099,46 @@ def Receita(planilha,codigo,data1,data2,tamanhoResumo,dataframe):
                 sheet.cell(row=row_num, column=col_num, value=convert_datetime_to_string(value))
 
 
-
-    #vai preencher o lado esquerdo da tabela a parte de receita
-    for row_num, row_data in enumerate(dfReceitas.itertuples(index = False), start=16):#inicio linha
-        for col_num, value in enumerate(row_data, start=1):#inicio coluna
-        
+    if dfReceitas < 15:
+        #vai preencher o lado esquerdo da tabela a parte de receita
+        for row_num, row_data in enumerate(dfReceitas.itertuples(index = False), start=16):#inicio linha
+            for col_num, value in enumerate(row_data, start=1):#inicio coluna
             
-            if col_num != 6:
-                if col_num == 4:
-                    col_num = 5
-                sheet.cell(row=row_num, column=col_num, value=convert_datetime_to_string(value)) 
-                cod_rubrica_value = row_data[4]
-                if col_num ==5:
-                    kek = row_data[3]
-                    if cod_rubrica_value == 88 or cod_rubrica_value == 67:
-                         kek = -row_data[3]
-                     
-                    sheet.cell(row=row_num, column=col_num, value=convert_datetime_to_string(kek)) 
-
-
-                if cod_rubrica_value == 88:
-                    if col_num == 3:
+                
+                if col_num != 6:
+                    if col_num == 4:
+                        col_num = 5
+                    sheet.cell(row=row_num, column=col_num, value=convert_datetime_to_string(value)) 
+                    cod_rubrica_value = row_data[4]
+                    if col_num ==5:
+                        kek = row_data[3]
+                        if cod_rubrica_value == 88 or cod_rubrica_value == 67:
+                            kek = -row_data[3]
                         
-                         val = f'ISS 2% {value}'
-                         sheet.cell(row=row_num, column=col_num, value=convert_datetime_to_string(val)) 
+                        sheet.cell(row=row_num, column=col_num, value=convert_datetime_to_string(kek)) 
 
-                  
+
+                    if cod_rubrica_value == 88:
+                        if col_num == 3:
+                            
+                            val = f'ISS 2% {value}'
+                            sheet.cell(row=row_num, column=col_num, value=convert_datetime_to_string(val)) 
+
                     
-                    sheet.cell(row=row_num, column=5).font = Font(name='Arial', size=12, bold=True, italic=False, color='FF0000')  
+                        
+                        sheet.cell(row=row_num, column=5).font = Font(name='Arial', size=12, bold=True, italic=False, color='FF0000')  
 
-                elif cod_rubrica_value == 67:
-                    if col_num == 3:
-                         
-                         vala = f'ISS 5% {value}'
-                         sheet.cell(row=row_num, column=col_num, value=convert_datetime_to_string(vala)) 
-                   
-                    sheet.cell(row=row_num, column=5).font = Font(name='Arial', size=12, bold=True, italic=False, color='FF0000')  
-                else:
-                    sheet.cell(row=row_num, column=5).font = Font(name='Arial', size=12, bold=True, italic=False, color='0000FF')  
-
+                    elif cod_rubrica_value == 67:
+                        if col_num == 3:
+                            
+                            vala = f'ISS 5% {value}'
+                            sheet.cell(row=row_num, column=col_num, value=convert_datetime_to_string(vala)) 
+                    
+                        sheet.cell(row=row_num, column=5).font = Font(name='Arial', size=12, bold=True, italic=False, color='FF0000')  
+                    else:
+                        sheet.cell(row=row_num, column=5).font = Font(name='Arial', size=12, bold=True, italic=False, color='0000FF')  
+    else:
+         print('jaca')   
     #rendimentosdeapliacação
     dfSoma = consultaRendimentosIRRF(codigo,data1,data2)
     dfcComPeriodo = consultaDevolucaoRecursos(codigo,data1,data2)
@@ -1412,7 +1425,7 @@ def ExeReceitaDespesa(planilha,codigo,data1,data2,stringTamanho):
 
     #             # Drop the row for "Despesas Operacionais e Administrativas - Finatec"
     #             dfMerged = dfMerged[dfMerged['NomeRubrica'] != 'Despesas Operacionais e Administrativas - Finatec']
-    print(dfMerged)
+    
     string_exists = dfMerged['NomeRubrica'].isin(["Despesas Operacionais e Administrativas - Finatec"]).any()
     if string_exists:
         # Extract the value from "Despesas Operacionais e Administrativas - Finatec"
@@ -1420,33 +1433,46 @@ def ExeReceitaDespesa(planilha,codigo,data1,data2,stringTamanho):
         
         string_exists = dfMerged['NomeRubrica'].isin(["Outros Serviços de Terceiros - Pessoa Jurídica "]).any()
         string_exists2 = dfMerged['NomeRubrica'].isin(["Serviços de Terceiros Pessoa Jurídica"]).any()
-        if string_exists or string_exists2:
+        string_exists3 = dfMerged['NomeRubrica'].isin(["Outros Serviços de Terceiros - Pessoa Jurídica"]).any()
+        
+        if string_exists or string_exists2 or string_exists3:
             if string_exists:
-            # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
-                index_to_update = dfMerged.loc[dfMerged['NomeRubrica'] == 'Outros Serviços de Terceiros - Pessoa Jurídica '].index[0]
-
-                # Add the value to "Outros Serviços de Terceiros - Pessoa Jurídica"
-                dfMerged.iloc[index_to_update] += value_to_add
-
-                # Drop the row for "Despesas Operacionais e Administrativas - Finatec"
-                dfMerged = dfMerged[dfMerged['NomeRubrica'] != 'Despesas Operacionais e Administrativas - Finatec']
-            
                 
-            if string_exists2:
             # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
-                index_to_update = dfMerged.loc[dfMerged['NomeRubrica'] == 'Serviços de Terceiros Pessoa Jurídica'].index[0]
-
+                
+                #index_to_update = dfMerged.loc[dfMerged['NomeRubrica'] == 'Outros Serviços de Terceiros - Pessoa Jurídica '].index[0]
+               
                 # Add the value to "Outros Serviços de Terceiros - Pessoa Jurídica"
-                dfMerged.iloc[index_to_update] += value_to_add
-
+               
+                dfMerged.loc[dfMerged['NomeRubrica'] == 'Outros Serviços de Terceiros - Pessoa Jurídica '] += value_to_add
+             
                 # Drop the row for "Despesas Operacionais e Administrativas - Finatec"
                 dfMerged = dfMerged[dfMerged['NomeRubrica'] != 'Despesas Operacionais e Administrativas - Finatec']
 
+            if string_exists2:
+               
+            # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
+                #index_to_update = dfMerged.loc[dfMerged['NomeRubrica'] == 'Serviços de Terceiros Pessoa Jurídica'].index[0]
 
-              
-    print(dfMerged)        
+                # Add the value to "Outros Serviços de Terceiros - Pessoa Jurídica"
+                dfMerged.loc[dfMerged['NomeRubrica'] == 'Serviços de Terceiros Pessoa Jurídica'] += value_to_add
 
-    
+                # Drop the row for "Despesas Operacionais e Administrativas - Finatec"
+                dfMerged = dfMerged[dfMerged['NomeRubrica'] != 'Despesas Operacionais e Administrativas - Finatec']
+            if string_exists3:
+            # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
+                
+                index_to_update = dfMerged.loc[dfMerged['NomeRubrica'] == 'Outros Serviços de Terceiros - Pessoa Jurídica'].index[0]
+                
+                # Add the value to "Outros Serviços de Terceiros - Pessoa Jurídica"
+                dfMerged.iloc[index_to_update] += value_to_add
+                
+                # Drop the row for "Despesas Operacionais e Administrativas - Finatec"
+                dfMerged = dfMerged[dfMerged['NomeRubrica'] != 'Despesas Operacionais e Administrativas - Finatec']    
+            
+
+          
+
 
     for row_num, row_data in enumerate(dfMerged.itertuples(index = False), start=16):#inicio linha
         for col_num, value in enumerate(row_data, start=1):#inicio coluna

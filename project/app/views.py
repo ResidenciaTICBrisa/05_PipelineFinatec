@@ -18,8 +18,9 @@ from .models import Template, Employee
 from .new_dev import preenche_planilha,extrair,pegar_caminho
 from .preenche_fundep import preenche_fundep
 from .preencheFub import consultaID,preencheFub
-# from .preencherFinep import preencheFinep
-from .capa import inserir_round_retangulo
+#from .preencherFinep import preencheFinep
+from .capaFub import inserir_round_retangulo
+from .capaGeral import inserir_round_retanguloGeral
 from django.contrib.admin.models import LogEntry
 from .models import UserActivity
 from django.core.paginator import Paginator
@@ -213,7 +214,7 @@ def projeto_legacy(request):
     elif template_id == '5':
 
         file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"planilhaPreenchidaModeloFINEP.xlsx")
-        preencheFinep(codigo,convert_datetime_to_string(consultaInicio),convert_datetime_to_string(consultaFim),file_path)
+        #preencheFinep(codigo,convert_datetime_to_string(consultaInicio),convert_datetime_to_string(consultaFim),file_path)
         inserir_round_retangulo(file_path,consultaInicio,consultaFim,db_fin)
     else:
         # Handle cases where 'download' doesn't match any expected values
