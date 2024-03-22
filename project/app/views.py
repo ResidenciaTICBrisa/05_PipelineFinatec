@@ -16,7 +16,8 @@ from django.views.generic import TemplateView
 from .models import Template, Employee
 # from .oracle_cruds import consultaPorID
 from .new_dev import preenche_planilha,extrair,pegar_caminho
-from .preenche_fundep import preenche_fundep
+from .preencheFundep import preenche_fundep
+from .preencheFap import preencheFap
 from .preencheFub import consultaID,preencheFub
 #from .preencherFinep import preencheFinep
 from .capaFub import inserir_round_retangulo
@@ -172,50 +173,49 @@ def projeto_legacy(request):
 
     if nome.nome_template == "fundep":
         testeCaminhoFundep = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"ModeloFUNDEP.xlsx")
-        preenche_planilha(testeCaminhoFundep,dict_final,codigo,template_id,consultaInicial,consultaFinal)
+        preenche_planilha(testeCaminhoFundep,dict_final,codigo,template_id,consultaInicial,consultaFinal,stringNomeFinanciador='FUNDEP')
     if nome.nome_template == "fub":
         testeCaminhoFub = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"Modelo_Fub.xlsx")
-        preenche_planilha(testeCaminhoFub,dict_final,codigo,template_id,consultaInicial,consultaFinal)
-    if nome.nome_template == "opas":
-        opas = os.path.join(caminho_pasta_planilhas, "ModeloOPAS.xlsx")
-        preenche_planilha(opas,dict_final,codigo,template_id,consultaInicial,consultaFinal)
+        preenche_planilha(testeCaminhoFub,dict_final,codigo,template_id,consultaInicial,consultaFinal,stringNomeFinanciador='FUB')
     if nome.nome_template == "fap":
-        fap = os.path.join(caminho_pasta_planilhas, "ModeloFAP.xlsx")
-        preenche_planilha(fap,dict_final,codigo,template_id,consultaInicial,consultaFinal)
+        testeCaminhoFap = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"modeloFap.xlsx")
+        preenche_planilha(testeCaminhoFap,dict_final,codigo,template_id,consultaInicial,consultaFinal,stringNomeFinanciador='FAP')
+        print("foiaqui")
     if nome.nome_template == "finep":
-        
-        finep = os.path.join(diretorio_atual, caminho_pasta_planilhas,"ModeloFINEP.xlsx")
-        preenche_planilha(finep,dict_final,codigo,template_id,consultaInicial,consultaFinal)
+        testeCaminhoFap = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"modeloFap.xlsx")
+        preenche_planilha(testeCaminhoFap,dict_final,codigo,template_id,consultaInicial,consultaFinal,stringNomeFinanciador='FINEP')
 
 
     file_path = None
     print(f"download{template_id}")
     if template_id == '1':
-        keys = ['NomeFavorecido','FavorecidoCPFCNPJ','NomeTipoLancamento',
-                'HisLancamento','NumDocPago','DataEmissao','NumChequeDeposito',
-                'DataPagamento', 'ValorPago']
-        file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"PC - {codigo} - {consultaInicial} a {consultaFinal}.xlsx")
 
+        # keys = ['NomeFavorecido','FavorecidoCPFCNPJ','NomeTipoLancamento',
+        #         'HisLancamento','NumDocPago','DataEmissao','NumChequeDeposito',
+        #         'DataPagamento', 'ValorPago']
+        file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"PC - FUB - {codigo} - {consultaInicial} a {consultaFinal}.xlsx")
         preencheFub(codigo,convert_datetime_to_string(consultaInicio),convert_datetime_to_string(consultaFim),file_path)
         inserir_round_retangulo(file_path,consultaInicio,consultaFim,db_fin)
+
     elif template_id == '2':
         keys = ['NomeFavorecido','FavorecidoCPFCNPJ','NomeRubrica','NumDocPago',
                 'DataEmissao','NumChequeDeposito','DataPagamento', 'ValorPago']
-        file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"planilhaPreenchidaModeloFUNDEP.xlsx")
-
+        file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas,f"PC - FUNDEP - {codigo} - {consultaInicial} a {consultaFinal}.xlsx")
         #file_path = pegar_caminho('/home/ubuntu/Desktop/05_PipelineFinatec/planilhas_preenchidas/planilhaPreenchidaModeloFUNDEP.xlsx')
         preenche_fundep(codigo,convert_datetime_to_string(consultaInicio),convert_datetime_to_string(consultaFim),keys,file_path)
-    elif template_id == '3':
-        p_opas = os.path.join(caminhoPastaPlanilhasPreenchidas, "ModeloOPAS.xlsx")
-        file_path = p_opas
-    elif template_id == '4':
-        p_fap = os.path.join(caminhoPastaPlanilhasPreenchidas, "ModeloFAP.xlsx")
-        file_path = pegar_caminho(p_fap)
-    elif template_id == '5':
 
-        file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"planilhaPreenchidaModeloFINEP.xlsx")
-        #preencheFinep(codigo,convert_datetime_to_string(consultaInicio),convert_datetime_to_string(consultaFim),file_path)
+    elif template_id == '3':
+
+        file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"PC - FINEP - {codigo} - {consultaInicial} a {consultaFinal}.xlsx")
+        #file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"PC - FAP - {codigo} - {consultaInicial} a {consultaFinal}.xlsx")
         inserir_round_retangulo(file_path,consultaInicio,consultaFim,db_fin)
+
+    elif template_id == '4':
+        print("foiaqui")
+        file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"PC - FAP - {codigo} - {consultaInicial} a {consultaFinal}.xlsx")
+        preencheFap(codigo,convert_datetime_to_string(consultaInicio),convert_datetime_to_string(consultaFim),file_path)
+        #inserir_round_retangulo(file_path,consultaInicio,consultaFim,db_fin)
+
     else:
         # Handle cases where 'download' doesn't match any expected values
         return HttpResponse("Invalid download request", status=400)

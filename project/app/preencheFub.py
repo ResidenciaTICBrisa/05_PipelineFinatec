@@ -439,8 +439,11 @@ def consultaProjeto(IDPROJETO, DATA1, DATA2,codigoRubrica):
      FROM [Conveniar].[dbo].[LisLancamentoConvenio] 
      LEFT JOIN [Conveniar].[dbo].[PlanoTrabalhoLancamento] ON [LisLancamentoConvenio].[CodLancamento] = [PlanoTrabalhoLancamento].[CodLancamentoGerado] 
      LEFT JOIN [Conveniar].[dbo].[LisConvenioItemAprovado] ON [PlanoTrabalhoLancamento].[CodConvenioItemAprovado] = [LisConvenioItemAprovado].[CodConvenioItemAprovado] 
-     WHERE [LisLancamentoConvenio].CodConvenio = ? AND [LisLancamentoConvenio].CodStatus = 27
-     AND [LisLancamentoConvenio].DataPagamento BETWEEN ? AND ? AND LOWER([LisLancamentoConvenio].HisLancamento) NOT LIKE '%estorno%' and [LisLancamentoConvenio].CodRubrica = ? order by DataPagamento"""
+     WHERE [LisLancamentoConvenio].CodConvenio = ? 
+     AND [LisLancamentoConvenio].CodStatus = 27
+     AND [LisLancamentoConvenio].DataPagamento BETWEEN ? AND ? 
+     AND LOWER([LisLancamentoConvenio].HisLancamento) NOT LIKE '%estorno%' 
+     and [LisLancamentoConvenio].CodRubrica = ? order by DataPagamento"""
     
     queryConsultaComRubricaEstorno = f"""SELECT NomeFavorecido
     ,CASE WHEN LEN(FavorecidoCPFCNPJ) > 11 THEN STUFF(STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 3, 0, '.'), 7, 0, '.'), 11, 0, '/'), 16, 0, '-')
@@ -502,12 +505,12 @@ def consultaProjeto(IDPROJETO, DATA1, DATA2,codigoRubrica):
     AND CodStatus = 27 
     AND DataPagamento BETWEEN ? AND ? 
     AND [LisLancamentoConvenio].CodRubrica IN (57,75,26)
+    AND NomeTipoCreditoDebito = 'C'
     OR CodStatus = 27  
     AND [LisLancamentoConvenio].CodConvenio = ? 
     AND DataPagamento BETWEEN ? AND ? 
     AND LOWER(HisLancamento)  LIKE '%estorno%' 
     AND [LisLancamentoConvenio].CodRubrica IN (57,75,26)
-    AND NomeTipoCreditoDebito = 'C'
     order by DataPagamento 
       """
     dfconsultaDadosPorRubrica = pd.read_sql(queryConsultaComRubrica, engine, params=parametros)
@@ -546,7 +549,8 @@ def consultaEntradaReceitas(IDPROJETO, DATA1, DATA2):
     WHERE CodConvenio = ? AND (CodRubrica = 2 OR CodRubrica = 67 OR CodRubrica = 88) AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? ORDER BY  DataPagamento,NumChequeDeposito"""
     consultaSomaTotal2_6788 = f"""
         SELECT 
-            SUM(CASE WHEN CodRubrica IN (67, 88) THEN ValorPago ELSE 0 END) AS Sum_67_88,
+            SUM(CASE WHEN CodRubrica = 88 THEN ValorPago ELSE 0 END) AS Sum_88,
+            SUM(CASE WHEN CodRubrica = 67 THEN ValorPago ELSE 0 END) AS Sum_67,
             SUM(CASE WHEN CodRubrica = 2 THEN ValorPago ELSE 0 END) AS Sum_2
         FROM 
             [Conveniar].[dbo].[LisLancamentoConvenio] 
@@ -557,8 +561,10 @@ def consultaEntradaReceitas(IDPROJETO, DATA1, DATA2):
             """
     dfReceitas = pd.read_sql(consultaEntradaReceita, engine, params=parametros)
     dfDemonstrativoReceitas = pd.read_sql(consultaDemonstrativoReceita, engine, params=parametros)
-    dfSomaTotal = pd.read_sql(consultaSomaTotal2_6788, engine, params=parametros)
-
+    dfSomaTotal = pd.read_sql(consultaSomaTotal2_6788, engine, params=parametros)#88% É ISS2%
+    #88% É ISS2%
+    #67 É ISS2%
+    #2 E ENTRADA DE RECEITA
     
     
 
@@ -852,10 +858,15 @@ def rubricaGeral(codigo,data1,data2,planilha,rowBrasilia):
                 for col_num, value in enumerate(row_data, start=1):#inicio coluna
                     value = convert_datetime_to_stringdt(value)
                     sheet2.cell(row=row_num, column=col_num, value=value)
-            dfPJDOAESTORNO.index = dfPJDOAESTORNO.index + 1
+            
+            dfPJDOAESTORNO.insert(0, "col1", None)
+            dfPJDOAESTORNO.insert(4, 'Col2', None)
+            dfPJDOAESTORNO.insert(4, 'Col3', None)
+            dfPJDOAESTORNO.insert(5, 'Col4', None)
 
-
-            for row_num, row_data in enumerate(dfPJDOAESTORNO.itertuples(), start=rownovo): #inicio linha
+            
+            rownovo = rownovo + 1
+            for row_num, row_data in enumerate(dfPJDOAESTORNO.itertuples(index=False), start=rownovo): #inicio linha
                 for col_num, value in enumerate(row_data, start=1): #inicio coluna
                     if col_num == 5:
                         continue
@@ -924,8 +935,7 @@ def Receita(planilha,codigo,data1,data2,tamanhoResumo,dataframe):
     dfReceitas,dfDemonstrativoReceitas,dfSomaTotal = consultaEntradaReceitas(codigo,data1,data2)
     
    
-
-    if len(dfReceitas) > tamanhoResumo and dfReceitas < 15:
+    if len(dfReceitas) > tamanhoResumo and len(dfReceitas) < 15:
         tamanhoResumo = len(dfReceitas)
     elif len(dataframe) > tamanhoResumo:
          tamanhoResumo = len(dataframe)
@@ -1048,11 +1058,12 @@ def Receita(planilha,codigo,data1,data2,tamanhoResumo,dataframe):
     #remove as rubricas nao desejadas
     values_to_remove = ["Receitas", "Rendimentos de Aplicações Financeiras", "Despesas Financeiras",'Material Permanente e Equipamento Nacional','Material Permanente e Equipamento Importado','Equipamentos e Material Permanente','Devolução de Recursos','Encargos - ISS 5% ']
     dataframe = dataframe[~dataframe['NomeRubrica'].isin(values_to_remove)]
+    
   
     string_exists = dataframe['NomeRubrica'].isin(["Despesas Operacionais e Administrativas - Finatec"]).any()
     if string_exists:
         # Extract the value from "Despesas Operacionais e Administrativas - Finatec"
-        value_to_add = dataframe.loc[dataframe['NomeRubrica'] == 'Despesas Operacionais e Administrativas - Finatec', 'VALOR_TOTAL_PERIODO'].values[0]
+        value_to_add = dataframe.loc[dataframe['NomeRubrica'] == 'Despesas Operacionais e Administrativas - Finatec'].iloc[0]
 
         string_exists = dataframe['NomeRubrica'].isin(["Outros Serviços de Terceiros - Pessoa Jurídica "]).any()
         string_exists2 = dataframe['NomeRubrica'].isin(["Serviços de Terceiros Pessoa Jurídica"]).any()
@@ -1060,9 +1071,10 @@ def Receita(planilha,codigo,data1,data2,tamanhoResumo,dataframe):
             if string_exists:
             # Find the index of "Outros Serviços de Terceiros - Pessoa Jurídica"
                 index_to_update = dataframe.loc[dataframe['NomeRubrica'] == 'Outros Serviços de Terceiros - Pessoa Jurídica '].index[0]
+                
 
                 # Add the value to "Outros Serviços de Terceiros - Pessoa Jurídica"
-                dataframe.at[index_to_update, 'VALOR_TOTAL_PERIODO'] += value_to_add
+                dataframe.loc[dataframe['NomeRubrica'] == 'Outros Serviços de Terceiros - Pessoa Jurídica '] += value_to_add
 
                 # Drop the row for "Despesas Operacionais e Administrativas - Finatec"
                 dataframe = dataframe[dataframe['NomeRubrica'] != 'Despesas Operacionais e Administrativas - Finatec']
@@ -1071,10 +1083,13 @@ def Receita(planilha,codigo,data1,data2,tamanhoResumo,dataframe):
                 index_to_update = dataframe.loc[dataframe['NomeRubrica'] == 'Serviços de Terceiros Pessoa Jurídica'].index[0]
 
                 # Add the value to "Outros Serviços de Terceiros - Pessoa Jurídica"
-                dataframe.at[index_to_update, 'VALOR_TOTAL_PERIODO'] += value_to_add
+                dataframe.loc[dataframe['NomeRubrica'] == 'Outros Serviços de Terceiros - Pessoa Jurídica '] += value_to_add
 
                 # Drop the row for "Despesas Operacionais e Administrativas - Finatec"
                 dataframe = dataframe[dataframe['NomeRubrica'] != 'Despesas Operacionais e Administrativas - Finatec']
+
+
+    
 
     # else:
     #     string_exists = dataframe['NomeRubrica'].isin(["Outros Serviços de Terceiros - Pessoa Jurídica "]).any()
@@ -1099,7 +1114,7 @@ def Receita(planilha,codigo,data1,data2,tamanhoResumo,dataframe):
                 sheet.cell(row=row_num, column=col_num, value=convert_datetime_to_string(value))
 
 
-    if dfReceitas < 15:
+    if len(dfReceitas) < 15:
         #vai preencher o lado esquerdo da tabela a parte de receita
         for row_num, row_data in enumerate(dfReceitas.itertuples(index = False), start=16):#inicio linha
             for col_num, value in enumerate(row_data, start=1):#inicio coluna
@@ -1138,7 +1153,28 @@ def Receita(planilha,codigo,data1,data2,tamanhoResumo,dataframe):
                     else:
                         sheet.cell(row=row_num, column=5).font = Font(name='Arial', size=12, bold=True, italic=False, color='0000FF')  
     else:
-         print('jaca')   
+        
+
+        number_format = 'R$ #,##0.00'
+      # Set font and value for row 17
+        sheet.cell(row=18, column=5).font = Font(name='Arial', size=12, bold=True, italic=False, color='FF0000')
+        sheet.cell(row=18, column=5).value = f'ISS 2% R$ {dfSomaTotal["Sum_88"].values[0]}'
+        sheet.cell(row=18, column=5).alignment = Alignment(horizontal="right",vertical="center")
+        sheet.cell(row=18, column=5).number_format = number_format
+
+
+        # Set font and value for row 16
+        sheet.cell(row=17, column=5).font = Font(name='Arial', size=12, bold=True, italic=False, color='FF0000')
+        sheet.cell(row=17, column=5).value = f'ISS 5% R$ {dfSomaTotal["Sum_67"].values[0]}'
+        sheet.cell(row=17, column=5).alignment = Alignment(horizontal="right",vertical="center")
+        sheet.cell(row=17, column=5).number_format = number_format
+
+        # Set font and value for row 15
+        sheet.cell(row=16, column=5).font = Font(name='Arial', size=12, bold=True, italic=False, color='0000FF')
+        sheet.cell(row=16, column=5).value = dfSomaTotal['Sum_2'].values[0]
+
+                 
+            
     #rendimentosdeapliacação
     dfSoma = consultaRendimentosIRRF(codigo,data1,data2)
     dfcComPeriodo = consultaDevolucaoRecursos(codigo,data1,data2)
@@ -1526,8 +1562,8 @@ def preencheFub(codigo,data1,data2,tabela):
     
     tamanhoPosicaoBrasilia,dfReceitas,dfDemonstrativoReceitas = Receita(tabela,codigo,data1,data2,tamanho,dataframe)
     demonstrativo(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia,dfDemonstrativoReceitas,dfReceitas)
-    # rubricaGeral(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
-    #conciliacaoBancaria(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
-    # rowRendimento= rendimentoDeAplicacao(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
-    # relacaodeBens(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
+    rubricaGeral(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
+    conciliacaoBancaria(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
+    rowRendimento= rendimentoDeAplicacao(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
+    relacaodeBens(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
     

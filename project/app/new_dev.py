@@ -82,7 +82,7 @@ def pegar_caminho(subdiretorio):
 #     print(f"arquivo salvo como  planilhas_preenchidas/{planilha}")
 #     return caminho_planilha
 
-def preenche_planilha(planilha, dicionario,codigo,template_id,consultaInicio,consultaFim):
+def preenche_planilha(planilha, dicionario,codigo,template_id,consultaInicio,consultaFim,stringNomeFinanciador):
 
 
     filename = os.path.basename(planilha)
@@ -112,7 +112,7 @@ def preenche_planilha(planilha, dicionario,codigo,template_id,consultaInicio,con
 
     # Combina o diretório atual com o caminho para a pasta "planilhas_preenchidas" e o nome do arquivo
     #salvar = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"planilhaPreenchida{filename}")
-    salvar = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"PC - {codigo} - {consultaInicio} a {consultaFim}.xlsx")
+    salvar = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"PC - {stringNomeFinanciador} - {codigo} - {consultaInicio} a {consultaFim}.xlsx")
 
 
     workbook.save(salvar)
