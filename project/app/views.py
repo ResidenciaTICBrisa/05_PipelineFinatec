@@ -214,7 +214,7 @@ def projeto_legacy(request):
         print("foiaqui")
         file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"PC - FAP - {codigo} - {consultaInicial} a {consultaFinal}.xlsx")
         preencheFap(codigo,convert_datetime_to_string(consultaInicio),convert_datetime_to_string(consultaFim),file_path)
-        #inserir_round_retangulo(file_path,consultaInicio,consultaFim,db_fin)
+        inserir_round_retanguloGeral(file_path,consultaInicio,consultaFim,db_fin)
 
     else:
         # Handle cases where 'download' doesn't match any expected values

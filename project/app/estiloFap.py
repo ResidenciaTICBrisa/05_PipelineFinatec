@@ -29,7 +29,7 @@ def pegar_caminho(subdiretorio):
     return caminho_pipeline
 
 
-def estiloAnexoDois(tabela,tamanho,nomeTabela,stringTamanho,tamanhoestorno):
+def estiloAnexoDois(tabela,tamanho):
     '''Esse estilo e considerado geral por que todas as tabelas que compõe utilizam das mesma colunas.
       
         Argumentos:
@@ -81,7 +81,7 @@ def estiloAnexoDois(tabela,tamanho,nomeTabela,stringTamanho,tamanhoestorno):
 
     #ANEXO II
    
-    nomeTabela = nomeTabela.upper()
+   
     worksheet['A1'] = f'ANEXO 2'
     worksheet['A1'].font = Font(name="Arial", size=12, color="000000",bold=True)
     worksheet['A1'].alignment = Alignment(horizontal="center",vertical="center")
@@ -125,7 +125,7 @@ def estiloAnexoDois(tabela,tamanho,nomeTabela,stringTamanho,tamanhoestorno):
     worksheet['A6'].font = Font(name="Arial", size=12, color="000000")
     worksheet['A6'].alignment = Alignment(horizontal="left",vertical="center")
     #Instituição Gestora:
-    worksheet['A7'] = "Instituição Gestora:"
+    worksheet['A7'] = "Instituição Gestora:Fundação de Empreendimentos Científicos e Tecnológicos - FINATEC"
     worksheet['A7'].font = Font(name="Arial", size=12, color="000000")
     worksheet['A7'].alignment = Alignment(horizontal="left",vertical="center")
     #Instituição Executora:
@@ -283,9 +283,9 @@ def estiloAnexoDois(tabela,tamanho,nomeTabela,stringTamanho,tamanhoestorno):
     diretor_cargo_row = size + 6
     diretor_cpf_row = size + 7
     
-    diretor_nome_formula = f"diretor"
-    diretor_cargo_formula = f"cargo"
-    diretor_cpf_formula = f"11122333"
+    diretor_nome_formula = f"Daniel Monteiro Rosa"
+    diretor_cargo_formula = f"Diretor-Financeiro"
+    diretor_cpf_formula = f"450.720.272-87"
     diretor_merge_cells = f'A{diretor_row}:D{diretor_row}'
     diretor_cargo_merge_cells = f'A{diretor_cargo_row}:D{diretor_cargo_row}'
     diretor_cpf_merge_cells = f'A{diretor_cpf_row}:D{diretor_cpf_row}'
@@ -432,11 +432,12 @@ def estiloAnexoDois(tabela,tamanho,nomeTabela,stringTamanho,tamanhoestorno):
 
     return brasilia_row
 
-def estiloAnexoTres(tabela,tamanho,nomeTabela,stringTamanho,tamanhoestorno):
+def estiloAnexoTres(tabela,tamanho,stringTamanho):
     if tamanho == 0:
          tamanho = 1
 
     nomeVariavel = f'Anexo3'
+    nomeTabela = f'ANEXO III'
     
     random_number = random.randint(1, 10000)
     nomeVariavel = f'{nomeVariavel}{random_number}'
@@ -502,6 +503,9 @@ def estiloAnexoTres(tabela,tamanho,nomeTabela,stringTamanho,tamanhoestorno):
     worksheet['J2'].border = Border(top=Side(border_style="none")  ,bottom=Side(border_style="none"), right=Side(border_style="thin"),left=Side(border_style='thin') )
     worksheet.merge_cells('J2:K2')
     
+    worksheet['J3'] = "='ANEXO II'!I3"
+    worksheet['J3'].font = Font(name="Arial", size=12, color="000000")
+    worksheet['J3'].alignment = Alignment(horizontal="left",vertical="center")
     worksheet['J3'].border = Border(top=Side(border_style="none")  ,bottom=Side(border_style="thin"), right=Side(border_style="thin"),left=Side(border_style='thin') )
     worksheet.merge_cells('J3:K3')
 
@@ -585,12 +589,12 @@ def estiloAnexoTres(tabela,tamanho,nomeTabela,stringTamanho,tamanhoestorno):
 
     #estilo mascara de dinheiro lina I
     for row in range(start_row,size+1):
-        cell = worksheet[f'I{row}']
+        cell = worksheet[f'H{row}']
         cell.style = locals()[input3]
     
     #estilo mascara de dinheiro lina J
     for row in range(start_row,size+1):
-        cell = worksheet[f'J{row}']
+        cell = worksheet[f'I{row}']
         cell.style = locals()[input3]
 
    #estilocinzasimcinzanao     
@@ -774,7 +778,7 @@ def estiloAnexoTres(tabela,tamanho,nomeTabela,stringTamanho,tamanhoestorno):
     workbook.save(tabela)
     workbook.close()
 
-def estiloAnexoQuatro(tabela,tamanho,nomeTabela,stringTamanho,tamanhoestorno):
+def estiloAnexoQuatro(tabela,tamanho,stringTamanho):
 
     if tamanho == 0:
          tamanho = 1
@@ -840,7 +844,7 @@ def estiloAnexoQuatro(tabela,tamanho,nomeTabela,stringTamanho,tamanhoestorno):
 
 
     #ANEXO II
-   
+    nomeTabela = 'ANEXO IV'
     nomeTabela = nomeTabela.upper()
     worksheet['A1'] = f'ANEXO IV'
     worksheet['A1'].font = Font(name="Arial", size=12, color="000000",bold=True)
@@ -871,29 +875,44 @@ def estiloAnexoQuatro(tabela,tamanho,nomeTabela,stringTamanho,tamanhoestorno):
     worksheet['F9'].font = Font(name="Arial", size=12, color="000000",bold=True)
     worksheet['F9'].alignment = Alignment(horizontal="center",vertical="center")
     worksheet.merge_cells('F9:G9')
+      #N TOA/Processo
+    worksheet['F10'] = f"='ANEXO II'!I3"
+    worksheet['F10'].font = Font(name="Arial", size=12, color="000000")
+    worksheet['F10'].alignment = Alignment(horizontal="center",vertical="center")
+    worksheet.merge_cells('F10:G10')
 
 
     #outorgado
     #Unidade Gestora:
-    worksheet['A9'] = "Unidade Gestora::"
+    worksheet['A9'] = "Unidade Gestora:"
     worksheet['A9'].font = Font(name="Arial", size=12, color="000000",bold=True)
-    worksheet['A9'].alignment = Alignment(horizontal="left",vertical="center")
+    worksheet['A9'].alignment = Alignment(horizontal="left",vertical="center",wrap_text=True)
     worksheet.merge_cells('A9:E9')
+    #Unidade Gestora:
+    worksheet['A10'] = "FINATEC - Fundação de Empreendimentos Científicos e Tecnológicos"
+    worksheet['A10'].font = Font(name="Arial", size=12, color="000000")
+    worksheet['A10'].alignment = Alignment(horizontal="left",vertical="center",wrap_text=True)
+    worksheet.merge_cells('A10:E10')
     #Projeto:
     worksheet['A11'] = "Projeto"
     worksheet['A11'].font = Font(name="Arial", size=12, color="000000",bold=True)
-    worksheet['A11'].alignment = Alignment(horizontal="left",vertical="center")
+    worksheet['A11'].alignment = Alignment(horizontal="left",vertical="center",wrap_text=True)
     worksheet.merge_cells('A11:E11')
+    #ProjetorEFERENCIA:
+    worksheet['A12'] = "='ANEXO II'!A6"
+    worksheet['A12'].font = Font(name="Arial", size=12, color="000000")
+    worksheet['A12'].alignment = Alignment(horizontal="left",vertical="center",wrap_text=True)
+    worksheet.merge_cells('A12:E13')
     #Período abrangido:
     worksheet['F11'] = "Período abrangido:"
     worksheet['F11'].font = Font(name="Arial", size=12, color="000000",bold=True)
-    worksheet['F11'].alignment = Alignment(horizontal="center",vertical="center")
+    worksheet['F11'].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
     worksheet.merge_cells('F11:G11')
 
     #APLICAÇÃO FINANCEIRA - CURTO PRAZO
     worksheet['A14'] = "APLICAÇÃO FINANCEIRA - "
     worksheet['A14'].font = Font(name="Arial", size=12, color="000000",bold=True)
-    worksheet['A14'].alignment = Alignment(horizontal="center",vertical="center")
+    worksheet['A14'].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
     worksheet.merge_cells('A14:G14')
 
  
@@ -1003,36 +1022,44 @@ def estiloAnexoQuatro(tabela,tamanho,nomeTabela,stringTamanho,tamanhoestorno):
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
+    worksheet[celula].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
+
      #C
     formula = f"=SUM(C{testeRow}:C{size-1})"
     celula = f'C{size}'
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
+    worksheet[celula].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
+
     #D
     formula = f"=SUM(D{testeRow}:D{size-1})"
     celula = f'D{size}'
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
+    worksheet[celula].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
     #E
     formula = f"=SUM(E{testeRow}:E{size-1})"
     celula = f'E{size}'
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
+    worksheet[celula].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
     #F
     formula = f"=SUM(F{testeRow}:F{size-1})"
     celula = f'F{size}'
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
+    worksheet[celula].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
     #G
     formula = f"=SUM(G{testeRow}:G{size-1})"
     celula = f'G{size}'
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
+    worksheet[celula].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
    
 
     #Total
@@ -1040,6 +1067,7 @@ def estiloAnexoQuatro(tabela,tamanho,nomeTabela,stringTamanho,tamanhoestorno):
     worksheet[celula_total] = f'TOTAL'
     worksheet[celula_total].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     worksheet[celula_total].font = Font(name="Arial", size=12, color="000000",bold=True)    
+    worksheet[celula].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
     #borda total
 
 

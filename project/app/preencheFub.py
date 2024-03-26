@@ -771,7 +771,7 @@ def rendimentoDeAplicacao(codigo,data1,data2,planilha,rowBrasilia):
     # tamanhoMaior = lambda tamanho: len(dfConsultaRendimentoAplicacao) if len(dfConsultaRendimentoAplicacao) > len(dfConsultaImposto) else len(dfConsultaImposto)
     # tamanhoMaiorParaOEstilo = tamanhoMaior(None)
     tamanhoMaiorParaOEstilo = len(merged_df)
-    estilo_rendimento_de_aplicacao(tabela,tamanhoMaiorParaOEstilo,rowBrasilia)
+
 
     workbook = openpyxl.load_workbook(tabela)
     sheet = workbook['Rendimento de Aplicação']
@@ -779,7 +779,10 @@ def rendimentoDeAplicacao(codigo,data1,data2,planilha,rowBrasilia):
     merged_df['data_formatada'] = merged_df['DataPagamento'].apply(formatarDataSemDia)
     merged_df['DataPagamento'] = merged_df['data_formatada']
     merged_df = merged_df.drop('data_formatada', axis=1)
-   
+    
+    estilo_rendimento_de_aplicacao(tabela,tamanhoMaiorParaOEstilo,rowBrasilia)
+
+
     for row_num, row_data in enumerate(merged_df.itertuples(index=False), start=15):#inicio linha
         for col_num, value in enumerate(row_data, start=1):#inicio coluna 
             if col_num == 2:
