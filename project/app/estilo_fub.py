@@ -1621,21 +1621,17 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2,stringTamanho):
     worksheet[row_restituicao] = 'Saldo anterior'
     worksheet[row_restituicao].font = Font(name="Arial", size=12, color="000000")
     worksheet[row_restituicao].alignment = Alignment(horizontal="left",vertical="center")
-    worksheet[row_restituicao].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
     row_restituicao = f'b{size+4}'         
     worksheet[row_restituicao].font = Font(name="Arial", size=12, color="000000")
     worksheet[row_restituicao].alignment = Alignment(horizontal="left",vertical="center")
-    worksheet[row_restituicao].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
     row_restituicao = f'c{size+4}'         
     worksheet[row_restituicao] = 'Diversos'
     worksheet[row_restituicao].font = Font(name="Arial", size=12, color="000000")
     worksheet[row_restituicao].alignment = Alignment(horizontal="left",vertical="center")
-    worksheet[row_restituicao].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
     row_restituicao = f'd{size+4}'         
     worksheet[row_restituicao] = 'Restituição Prestações Anteriores'
     worksheet[row_restituicao].font = Font(name="Arial", size=12, color="000000")
     worksheet[row_restituicao].alignment = Alignment(horizontal="left",vertical="center")
-    worksheet[row_restituicao].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
 
 
 

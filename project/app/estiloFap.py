@@ -808,7 +808,7 @@ def estiloAnexoQuatro(tabela,tamanho,stringTamanho):
     ]
     images = []
 
-    nomePasta = "imagemFap"
+    nomePasta = "../../imagemFap"
     diretorio = os.path.dirname(__file__)
 
     # Loop through the list of image names and create Image objects

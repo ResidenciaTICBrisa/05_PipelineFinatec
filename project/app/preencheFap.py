@@ -408,10 +408,10 @@ def anexoUm(tabela,codigo,data1,data2):
     sheet['E7'].alignment = Alignment(horizontal="left",vertical="center",wrap_text=True)
     sheet['C29'] = stringRendApli
     sheet['C29'].font = Font(name="Arial", size=12, color="000000",bold=True)
-    sheet['C29'].alignment = Alignment(horizontal="left",vertical="center",wrap_text=True)
+    sheet['C29'].alignment = Alignment(horizontal="right",vertical="center",wrap_text=True)
     sheet['D46'] = stringCoordenador.to_string(index=False)
     sheet['D46'].font = Font(name="Arial", size=12, color="000000")
-    sheet['D46'].alignment = Alignment(horizontal="left",vertical="center",wrap_text=True)
+    sheet['D46'].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
 
 
 

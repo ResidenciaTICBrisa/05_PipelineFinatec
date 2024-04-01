@@ -98,7 +98,7 @@ def getCollumNames(IDPROJETO, DATA1, DATA2):
     
 
   
-    sql = f"SELECT * FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? AND CodRubrica NOT IN(2,3)  ORDER BY DataPagamento"
+    sql = f"SELECT * FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? AND CodRubrica NOT IN(2,3,0)  ORDER BY DataPagamento"
 
 
     cursor.execute(sql, IDPROJETO, DATA1, DATA2)

@@ -319,6 +319,9 @@ def estiloRelatorioExecFinanceiroA1(tabela,tamanho,stringTamanho):
             for cell in rows:
                  if cell.column == 10:
                       cell.border =  Border(left =Side(border_style="thin",color='9e9e9e') ) 
+    
+
+   
                       
 
     #aumentar o tamanho da celula total
@@ -412,14 +415,13 @@ def estiloRelatorioExecFinanceiroA1(tabela,tamanho,stringTamanho):
 
     return 0
 
-def estiloDEMOSTRRECEITEDESPESAA2(tabela,stringTamanho):
+def estiloDEMOSTRRECEITEDESPESAA2(tabela,tamanho):
     '''Estilo da Pagina do Relatorio Receita e Despesa.
       
         Argumentos:
             tabela : recebe o arquivo correspondente a tabela Fub extensão xlsx. Esse arquivo ja foi iniciado e passou pela preencher fub mas ainda esta sem o estilo que sera aplicado nessa função.
             
-            stringTamanho : refere-se aonde esta localizado a string Brasilia nessa pagina, ela pega o  valor  entre o tamanho quantidade de rubricas que o projeto possui salvo algumas exeções
-            e a entrada de receitas/iss. O valor que for maior esse ditará tamanho.
+            tamanho : refere-se ao tamanho do dataframe que recebe
     '''
    
        
@@ -428,7 +430,7 @@ def estiloDEMOSTRRECEITEDESPESAA2(tabela,stringTamanho):
     # carrega a planilha de acordo com o caminho
     workbook = openpyxl.load_workbook(caminho)
     sheet = workbook['DEMOSTR. RECEITA E DESPESA A.2']
-    size = stringTamanho + 13;
+    size = tamanho + 13
     #tamanaho contando despes decapital, obras e instalaçoes, e euipamentos
     size2 = size + 8  
     cinza = "d9d9d9"
@@ -875,7 +877,11 @@ def estiloDEMOSTRRECEITEDESPESAA2(tabela,stringTamanho):
     sheet[celula] = formula
         
           
-            
+    #total acumulado somatorio
+     #Adicionar Soma na coluna E
+    for rows in sheet.iter_rows(min_row=14, max_row=size+7, min_col=4, max_col=4):
+            for cell in rows:
+                      cell.value =  f"=SUM(B{cell.row}:C{cell.row})"  
 
 
 

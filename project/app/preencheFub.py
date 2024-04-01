@@ -697,6 +697,9 @@ def conciliacaoBancaria(codigo,data1,data2,planilha,stringTamanho):
         worksheet333['B16'] = a
         worksheet333[f'B{linha2-1}'] = b
 
+        print(a)
+        print(b)
+
         workb.save(tabela)
         workb.close
 
@@ -771,7 +774,7 @@ def rendimentoDeAplicacao(codigo,data1,data2,planilha,rowBrasilia):
     # tamanhoMaior = lambda tamanho: len(dfConsultaRendimentoAplicacao) if len(dfConsultaRendimentoAplicacao) > len(dfConsultaImposto) else len(dfConsultaImposto)
     # tamanhoMaiorParaOEstilo = tamanhoMaior(None)
     tamanhoMaiorParaOEstilo = len(merged_df)
-
+    estilo_rendimento_de_aplicacao(tabela,tamanhoMaiorParaOEstilo,rowBrasilia)
 
     workbook = openpyxl.load_workbook(tabela)
     sheet = workbook['Rendimento de Aplicação']
@@ -780,7 +783,7 @@ def rendimentoDeAplicacao(codigo,data1,data2,planilha,rowBrasilia):
     merged_df['DataPagamento'] = merged_df['data_formatada']
     merged_df = merged_df.drop('data_formatada', axis=1)
     
-    estilo_rendimento_de_aplicacao(tabela,tamanhoMaiorParaOEstilo,rowBrasilia)
+   
 
 
     for row_num, row_data in enumerate(merged_df.itertuples(index=False), start=15):#inicio linha

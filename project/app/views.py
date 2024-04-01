@@ -16,6 +16,7 @@ from django.views.generic import TemplateView
 from .models import Template, Employee
 # from .oracle_cruds import consultaPorID
 from .new_dev import preenche_planilha,extrair,pegar_caminho
+from .preencherFinep import preencheFinep
 from .preencheFundep import preenche_fundep
 from .preencheFap import preencheFap
 from .preencheFub import consultaID,preencheFub
@@ -180,9 +181,9 @@ def projeto_legacy(request):
     if nome.nome_template == "fap":
         testeCaminhoFap = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"modeloFap.xlsx")
         preenche_planilha(testeCaminhoFap,dict_final,codigo,template_id,consultaInicial,consultaFinal,stringNomeFinanciador='FAP')
-        print("foiaqui")
+        
     if nome.nome_template == "finep":
-        testeCaminhoFap = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"modeloFap.xlsx")
+        testeCaminhoFap = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"modeloFinep.xlsx")
         preenche_planilha(testeCaminhoFap,dict_final,codigo,template_id,consultaInicial,consultaFinal,stringNomeFinanciador='FINEP')
 
 
@@ -204,14 +205,15 @@ def projeto_legacy(request):
         #file_path = pegar_caminho('/home/ubuntu/Desktop/05_PipelineFinatec/planilhas_preenchidas/planilhaPreenchidaModeloFUNDEP.xlsx')
         preenche_fundep(codigo,convert_datetime_to_string(consultaInicio),convert_datetime_to_string(consultaFim),keys,file_path)
 
-    elif template_id == '3':
-
+    elif template_id == '5':
+        print("foiaqui")
         file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"PC - FINEP - {codigo} - {consultaInicial} a {consultaFinal}.xlsx")
         #file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"PC - FAP - {codigo} - {consultaInicial} a {consultaFinal}.xlsx")
-        inserir_round_retangulo(file_path,consultaInicio,consultaFim,db_fin)
+        preencheFinep(codigo,convert_datetime_to_string(consultaInicio),convert_datetime_to_string(consultaFim),file_path)
+        inserir_round_retanguloGeral(file_path,consultaInicio,consultaFim,db_fin)
 
     elif template_id == '4':
-        print("foiaqui")
+        
         file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"PC - FAP - {codigo} - {consultaInicial} a {consultaFinal}.xlsx")
         preencheFap(codigo,convert_datetime_to_string(consultaInicio),convert_datetime_to_string(consultaFim),file_path)
         inserir_round_retanguloGeral(file_path,consultaInicio,consultaFim,db_fin)
