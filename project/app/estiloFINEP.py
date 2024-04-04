@@ -44,7 +44,7 @@ def estiloRelatorioExecFinanceiroA1(tabela,tamanho,stringTamanho):
     sheet = workbook['Relatório de Exec Financ A.1']
 
     #tamanho recebido para alocar o tamanho das linha que e correspondetente ao que vai ser preenchido da consulta do database mais o tamanho do cabecario que e 16 e cores
-    size = tamanho + 12;
+    size = tamanho + 12
     size2 = size + 1
   
 
@@ -163,13 +163,15 @@ def estiloRelatorioExecFinanceiroA1(tabela,tamanho,stringTamanho):
     sheet['I10'].fill = PatternFill(start_color=azul, end_color=azul,fill_type = "solid")
 
  
-
-    #4.DESPESAS DE CAPITAL
+      #4.DESPESAS DE CAPITAL
     sheet[f'A{size2}'] = '4.DESPESAS DE CAPITAL'
     sheet[f'A{size2}'].font = Font(name="Arial", size=12, color="000000",bold=True)
     sheet[f'A{size2}'].alignment = Alignment(horizontal="left",vertical="center")
     sheet[f'A{size2}'].border = Border(top=Side(border_style="double") ,left = Side(border_style="hair") 
-                                ,right =Side(border_style="hair") ,bottom=Side(border_style="hair") )          
+                                ,right =Side(border_style="hair") ,bottom=Side(border_style="hair") )       
+     
+
+
 
     sheet.column_dimensions['a'].width = 55
     sheet.column_dimensions['b'].width = 20
@@ -321,7 +323,19 @@ def estiloRelatorioExecFinanceiroA1(tabela,tamanho,stringTamanho):
                       cell.border =  Border(left =Side(border_style="thin",color='9e9e9e') ) 
     
 
-   
+
+    #mascaramoneytodatabela
+    for rows in sheet.iter_rows(min_row=1, max_row=size2+7, min_col=1, max_col=9):
+            for cell in rows:
+                cell.number_format = 'R$ #,##0.00'
+
+
+    #somadespesas correntes
+
+    #soma despesas de capital
+
+    #soma TOTAL
+
                       
 
     #aumentar o tamanho da celula total
@@ -392,8 +406,6 @@ def estiloRelatorioExecFinanceiroA1(tabela,tamanho,stringTamanho):
     top_left_coordenadora_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
     top_left_coordenadora_cell_cpf_formula.font= Font(name="Arial", size=12, color="000000")
 
-    
-  
     #adicionar borda fo nim do arquivo
     for row in sheet.iter_rows(min_row=size2 + 8, max_row=coordenadora_cpf_row,min_col=9,max_col=9):
         for cell in row:
@@ -410,10 +422,14 @@ def estiloRelatorioExecFinanceiroA1(tabela,tamanho,stringTamanho):
 
    
 
+
+
+
     workbook.save(tabela)
     workbook.close()
 
-    return 0
+    #retorna a localizaçãao do despesas de capital
+    return size2
 
 def estiloDEMOSTRRECEITEDESPESAA2(tabela,tamanho):
     '''Estilo da Pagina do Relatorio Receita e Despesa.
@@ -884,6 +900,23 @@ def estiloDEMOSTRRECEITEDESPESAA2(tabela,tamanho):
                       cell.value =  f"=SUM(B{cell.row}:C{cell.row})"  
 
 
+    #FORMULA DESPESAS DE CAPITAL
+    sheet[f'B{size+1}'] = f"=SUM(B{size+2}:B{size+7})"
+    sheet[f'B{size+1}'].font = Font(name="Arial", size=12, color="000000",bold=True)
+    sheet[f'B{size+1}'].alignment = Alignment(horizontal="right",vertical="center")
+      
+    #FORMULA DESPESAS DE CAPITAL
+    sheet[f'C{size+1}'] = f"=SUM(C{size+2}:C{size+7})"
+    sheet[f'C{size+1}'].font = Font(name="Arial", size=12, color="000000",bold=True)
+    sheet[f'C{size+1}'].alignment = Alignment(horizontal="right",vertical="center")
+ 
+    #FORMULA DESPESAS DE CAPITAL
+    sheet[f'E{size+1}'] = f"=SUM(E{size+2}:E{size+7})"
+    sheet[f'E{size+1}'].font = Font(name="Arial", size=12, color="000000",bold=True)
+    sheet[f'E{size+1}'].alignment = Alignment(horizontal="right",vertical="center")
+
+
+
 
      #brasilia
     brasilia_row = size2 + 16
@@ -978,7 +1011,7 @@ def estiloDEMOSTRRECEITEDESPESAA2(tabela,tamanho):
     workbook.close()
 
   
-    #retorna tamanho de brasilia e de equipamentos
+    #retorna tamanho de brasilia 
     return size2 + 16
 
 def estiloG(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho,tamanhoestorno):

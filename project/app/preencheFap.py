@@ -5,103 +5,104 @@ from openpyxl.styles import Font
 import os
 from collections import defaultdict
 from .estiloFap import *
+from .preencheFub import consultaID,convert_datetime_to_string,convert_datetime_to_stringdt,formatar_data,formatarDataSemDia,formatar_cpf,check_format,pegar_caminho,pegar_pass
 import pandas as pd
 from sqlalchemy import create_engine
 from sqlalchemy.engine import URL
 import numpy as np  
 
-def convert_datetime_to_string(value):
-    if isinstance(value, datetime):
-        return value.strftime('%d/%m/%Y')
-    return value
+# def convert_datetime_to_string(value):
+#     if isinstance(value, datetime):
+#         return value.strftime('%d/%m/%Y')
+#     return value
 
-def convert_datetime_to_stringdt(dt):
-    # Check if the value is a pandas Timestamp
-    if isinstance(dt, pd.Timestamp):
-        # Convert the Timestamp to a string using strftime
-        return dt.strftime('%d/%m/%Y')  # You can customize the format as needed
-    else:
-        # If it's not a Timestamp, return the original value
-        return dt
+# def convert_datetime_to_stringdt(dt):
+#     # Check if the value is a pandas Timestamp
+#     if isinstance(dt, pd.Timestamp):
+#         # Convert the Timestamp to a string using strftime
+#         return dt.strftime('%d/%m/%Y')  # You can customize the format as needed
+#     else:
+#         # If it's not a Timestamp, return the original value
+#         return dt
 
-def formatar_data(row):
-    """ Formata a data com o mes abreviado transformando 01 em jan por exemplo
-    """
-    dia = row.day
-    mes = row.month
-    ano = row.year
+# def formatar_data(row):
+#     """ Formata a data com o mes abreviado transformando 01 em jan por exemplo
+#     """
+#     dia = row.day
+#     mes = row.month
+#     ano = row.year
 
-    # Mapear o número do mês para o nome abreviado
-    meses = {1: 'jan', 2: 'fev', 3: 'mar', 4: 'abr', 5: 'mai', 6: 'jun', 7: 'jul', 8: 'ago', 9: 'set', 10: 'out', 11: 'nov', 12: 'dez'}
+#     # Mapear o número do mês para o nome abreviado
+#     meses = {1: 'jan', 2: 'fev', 3: 'mar', 4: 'abr', 5: 'mai', 6: 'jun', 7: 'jul', 8: 'ago', 9: 'set', 10: 'out', 11: 'nov', 12: 'dez'}
 
-    # Obter o nome abreviado do mês
-    mes_abreviado = meses.get(mes, mes)
+#     # Obter o nome abreviado do mês
+#     mes_abreviado = meses.get(mes, mes)
 
-    # Criar a string formatada
-    data_formatada = f'{dia}-{mes_abreviado}-{ano}'
+#     # Criar a string formatada
+#     data_formatada = f'{dia}-{mes_abreviado}-{ano}'
     
-    return data_formatada
+#     return data_formatada
 
-def formatarDataSemDia(row):
-    """ Formata a data com o mes abreviado transformando 01 em jan por exemplo
-    """
-    dia = row.day
-    mes = row.month
-    ano = row.year
+# def formatarDataSemDia(row):
+#     """ Formata a data com o mes abreviado transformando 01 em jan por exemplo
+#     """
+#     dia = row.day
+#     mes = row.month
+#     ano = row.year
 
-    # Mapear o número do mês para o nome abreviado
-    meses = {1: 'jan', 2: 'fev', 3: 'mar', 4: 'abr', 5: 'mai', 6: 'jun', 7: 'jul', 8: 'ago', 9: 'set', 10: 'out', 11: 'nov', 12: 'dez'}
+#     # Mapear o número do mês para o nome abreviado
+#     meses = {1: 'jan', 2: 'fev', 3: 'mar', 4: 'abr', 5: 'mai', 6: 'jun', 7: 'jul', 8: 'ago', 9: 'set', 10: 'out', 11: 'nov', 12: 'dez'}
 
-    # Obter o nome abreviado do mês
-    mes_abreviado = meses.get(mes, mes)
+#     # Obter o nome abreviado do mês
+#     mes_abreviado = meses.get(mes, mes)
 
-    # Criar a string formatada
-    data_formatada = f'{mes_abreviado}-{ano}'
+#     # Criar a string formatada
+#     data_formatada = f'{mes_abreviado}-{ano}'
     
-    return data_formatada
+#     return data_formatada
 
-def formatar_cpf(cpf):
-    cpf_formatado = f'{cpf[:3]}.{cpf[3:6]}.{cpf[6:9]}-{cpf[9:]}'
-    return cpf_formatado
+# def formatar_cpf(cpf):
+#     cpf_formatado = f'{cpf[:3]}.{cpf[3:6]}.{cpf[6:9]}-{cpf[9:]}'
+#     return cpf_formatado
 
-def check_format(time_data, format='%Y-%m-%d'):
-    try:
-        # Try to parse the time_data using the specified format
-        datetime.strptime(time_data, format)
-        return True  # The time_data matches the format
-    except ValueError:
-        return False  # The time_data does not match the format
+# def check_format(time_data, format='%Y-%m-%d'):
+#     try:
+#         # Try to parse the time_data using the specified format
+#         datetime.strptime(time_data, format)
+#         return True  # The time_data matches the format
+#     except ValueError:
+#         return False  # The time_data does not match the format
     
-def pegar_caminho(subdiretorio):
-    # Obtém o caminho do script atual
-    arq_atual = os.path.abspath(__file__)
+# def pegar_caminho(subdiretorio):
+#     # Obtém o caminho do script atual
+#     arq_atual = os.path.abspath(__file__)
     
-    # Obtém o diretório do script
-    app = os.path.dirname(arq_atual)
+#     # Obtém o diretório do script
+#     app = os.path.dirname(arq_atual)
     
-    # Obtém o diretório pai do script
-    project = os.path.dirname(app)
+#     # Obtém o diretório pai do script
+#     project = os.path.dirname(app)
     
-    # Obtém o diretório pai do projeto
-    pipeline = os.path.dirname(project)
+#     # Obtém o diretório pai do projeto
+#     pipeline = os.path.dirname(project)
     
-    # Junta o diretório pai do projeto com o subdiretório desejado
-    caminho_pipeline = os.path.join(pipeline, subdiretorio)
+#     # Junta o diretório pai do projeto com o subdiretório desejado
+#     caminho_pipeline = os.path.join(pipeline, subdiretorio)
     
-    return caminho_pipeline
+#     return caminho_pipeline
 
-def pegar_pass(chave):
-    arq_atual = os.path.abspath(__file__)
-    app = os.path.dirname(arq_atual)
-    project = os.path.dirname(app)
-    pipeline = os.path.dirname(project)
-    desktop = os.path.dirname(pipeline)
-    caminho_pipeline = os.path.join(desktop, chave)
+# def pegar_pass(chave):
+#     arq_atual = os.path.abspath(__file__)
+#     app = os.path.dirname(arq_atual)
+#     project = os.path.dirname(app)
+#     pipeline = os.path.dirname(project)
+#     desktop = os.path.dirname(pipeline)
+#     caminho_pipeline = os.path.join(desktop, chave)
     
-    return caminho_pipeline
+#     return caminho_pipeline
 
 
-    # return records
+#     # return records
 
 #todas as consultas em sql
 def consultaCabecarioAnexoDois(IDPROJETO,DATA1,DATA2):

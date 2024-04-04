@@ -206,7 +206,7 @@ def projeto_legacy(request):
         preenche_fundep(codigo,convert_datetime_to_string(consultaInicio),convert_datetime_to_string(consultaFim),keys,file_path)
 
     elif template_id == '5':
-        print("foiaqui")
+        
         file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"PC - FINEP - {codigo} - {consultaInicial} a {consultaFinal}.xlsx")
         #file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"PC - FAP - {codigo} - {consultaInicial} a {consultaFinal}.xlsx")
         preencheFinep(codigo,convert_datetime_to_string(consultaInicio),convert_datetime_to_string(consultaFim),file_path)

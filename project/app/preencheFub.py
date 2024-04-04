@@ -103,6 +103,7 @@ def pegar_pass(chave):
 
     # return records
 
+
 #todas as consultas em sql
 def consultaRendimentosTodosAteOPeriodo(IDPROJETO,DATA2):
     file_path = pegar_pass("passs.txt")
@@ -697,8 +698,7 @@ def conciliacaoBancaria(codigo,data1,data2,planilha,stringTamanho):
         worksheet333['B16'] = a
         worksheet333[f'B{linha2-1}'] = b
 
-        print(a)
-        print(b)
+       
 
         workb.save(tabela)
         workb.close
@@ -1256,6 +1256,7 @@ def ExeReceitaDespesa(planilha,codigo,data1,data2,stringTamanho):
     merged_df = pd.merge(dfPrevisto, dfComPeriodo, on='NomeRubrica', how='outer')
     dfMerged = pd.merge(merged_df,dfAteAData, on = 'NomeRubrica', how = 'outer')
     tamanho = len(dfMerged)#tamanho para deixar dinamico para imprimir sa rubricas
+    #tamanho rubrica dinamicas
     string_exists = dfMerged['NomeRubrica'].isin(["Material Permanente e Equipamento Importado"]).any()
     if string_exists:
          tamanho = tamanho - 1
@@ -1268,8 +1269,16 @@ def ExeReceitaDespesa(planilha,codigo,data1,data2,stringTamanho):
     string_exists = dfMerged['NomeRubrica'].isin(["Material Permanente e Equipamento Nacional"]).any()
     if string_exists:
          tamanho = tamanho - 1
+    string_exists = dfMerged['NomeRubrica'].isin(["Receitas"]).any()
+    if string_exists:
+         tamanho = tamanho - 1
+    string_exists = dfMerged['NomeRubrica'].isin(["Rendimentos de Aplicações Financeiras"]).any()
+    if string_exists:
+         tamanho = tamanho - 1
+    string_exists = dfMerged['NomeRubrica'].isin(["Despesas Financeiras"]).any()
+    if string_exists:
+         tamanho = tamanho - 1
     
-    tamanho = tamanho - 3
 
     stringTamanho = tamanho + 16
     estiloExecReceitaDespesa(tabela,tamanho,stringTamanho)
@@ -1376,7 +1385,7 @@ def ExeReceitaDespesa(planilha,codigo,data1,data2,stringTamanho):
         sheet[stringObras] = dfMerged.loc[dfMerged['NomeRubrica'] == 'Equipamentos e Material Permanente', 'VALOR_TOTAL_PERIODO'].values[0]
         #Ate o momento
         stringObras = f'G{stringTamanho + 3}'
-        #sheet[stringObras] = dfMerged.loc[dfMerged['NomeRubrica'] == 'Obras e Instalações', 'VALOR_TOTAL_DATA'].values[0]
+        sheet[stringObras] = dfMerged.loc[dfMerged['NomeRubrica'] == 'Equipamentos e Material Permanente', 'VALOR_TOTAL_DATA'].values[0]
 
     #Materiais Equipamentos e Material nACIONAL
     string_exists = dfMerged['NomeRubrica'].isin(["Material Permanente e Equipamento Nacional"]).any()
@@ -1429,9 +1438,10 @@ def ExeReceitaDespesa(planilha,codigo,data1,data2,stringTamanho):
 
    
 
-
     #remover essas linhas da tabela
     values_to_remove = ["Receitas", "Rendimentos de Aplicações Financeiras", "Despesas Financeiras",'Material Permanente e Equipamento Nacional','Material Permanente e Equipamento Importado','Devolução de Recursos','Obras e Instalações','Equipamentos e Material Permanente']
+
+
 
     # Use boolean indexing to drop rows based on the values in the first column
     dfMerged = dfMerged[~dfMerged['NomeRubrica'].isin(values_to_remove)]
@@ -1515,7 +1525,6 @@ def ExeReceitaDespesa(planilha,codigo,data1,data2,stringTamanho):
 
           
 
-
     for row_num, row_data in enumerate(dfMerged.itertuples(index = False), start=16):#inicio linha
         for col_num, value in enumerate(row_data, start=1):#inicio coluna
                 if col_num == 2:
@@ -1567,9 +1576,9 @@ def preencheFub(codigo,data1,data2,tabela):
     tamanho,dataframe = ExeReceitaDespesa(tabela,codigo,data1,data2,15)
     
     tamanhoPosicaoBrasilia,dfReceitas,dfDemonstrativoReceitas = Receita(tabela,codigo,data1,data2,tamanho,dataframe)
-    demonstrativo(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia,dfDemonstrativoReceitas,dfReceitas)
-    rubricaGeral(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
-    conciliacaoBancaria(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
-    rowRendimento= rendimentoDeAplicacao(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
-    relacaodeBens(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
+    # demonstrativo(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia,dfDemonstrativoReceitas,dfReceitas)
+    #rubricaGeral(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
+    # conciliacaoBancaria(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
+    # rowRendimento= rendimentoDeAplicacao(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
+    # relacaodeBens(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
     
