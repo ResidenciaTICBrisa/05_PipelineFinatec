@@ -125,6 +125,8 @@ def estiloRelatorioExecFinanceiroA1(tabela,tamanho,stringTamanho):
         sheet.cell(row=10, column=coluna, value=b)
         coluna = coluna + 1
     
+
+    sheet.merge_cells('B9:E9')
     #Executado No Periodo
     sheet['B9'] = 'EXECUTADO NO PERÍODO'
     sheet['B9'].font = Font(name="Arial", size=12, color="000000",bold=True)
@@ -133,6 +135,7 @@ def estiloRelatorioExecFinanceiroA1(tabela,tamanho,stringTamanho):
     sheet['B9'].border = Border(top=Side(border_style="double") ,left = Side(border_style="hair") ,right =Side(border_style="hair") ,bottom=Side(border_style="hair") )
     
      #EXECUTADO ATÉ O PERÍODO
+    sheet.merge_cells('F9:I9')
     sheet['F9'] = 'EXECUTADO ATÉ O PERÍODO'
     sheet['F9'].font = Font(name="Arial", size=12, color="000000",bold=True)
     sheet['F9'].alignment = Alignment(horizontal="center",vertical="center")
@@ -330,16 +333,59 @@ def estiloRelatorioExecFinanceiroA1(tabela,tamanho,stringTamanho):
                 cell.number_format = 'R$ #,##0.00'
 
 
-    #somadespesas correntes
+    #somadespesas correntes ESTILORELATORIO
+    for col_index in range(2, 10):  
+        for row in sheet.iter_rows(min_row=11 ,max_row=size2, min_col=col_index, max_col=col_index):
+            column_letter = get_column_letter(col_index)
+            cell = sheet[f'{column_letter}{11}']
+            cell.value = f"=SUM({column_letter}{12}:{column_letter}{size2-1})"
+            cell.font = Font(name="Arial", size=10, color="000000",bold = True)
 
-    #soma despesas de capital
+    #soma despesas de capital ESTILORELATORIO
+    for col_index in range(2, 10):  
+        for row in sheet.iter_rows(min_row=size2 ,max_row=size2+7, min_col=col_index, max_col=col_index):
+            column_letter = get_column_letter(col_index)
+            cell = sheet[f'{column_letter}{size2}']
+            cell.value = f"=SUM({column_letter}{size2+1}:{column_letter}{size2+6})"
+            cell.font = Font(name="Arial", size=10, color="000000",bold = True)
 
-    #soma TOTAL
-
+    #soma TOTAL ESTILORELATORIO
+    for col_index in range(2, 10):  
+        for row in sheet.iter_rows(min_row=size2 ,max_row=size2+7, min_col=col_index, max_col=col_index):
+            column_letter = get_column_letter(col_index)
+            cell = sheet[f'{column_letter}{size2+7}']
+            cell.value = f"=SUM({column_letter}{11},{column_letter}{size2})"
+            cell.font = Font(name="Arial", size=10, color="000000",bold = True)
                       
+                   
+    #formulas total coluna E
+
+    for rows in sheet.iter_rows(min_row=12 ,max_row=size2-1 ,min_col=5, max_col=5):
+            for cell in rows:
+                cell.value = f"=SUM(B{cell.row}:D{cell.row})"
+                cell.font = Font(name="Arial", size=10, color="000000")
+
+    for rows in sheet.iter_rows(min_row=size2+1,max_row=size2+6 ,min_col=5, max_col=5):
+            for cell in rows:
+                cell.value = f"=SUM(B{cell.row}:D{cell.row})"
+                cell.font = Font(name="Arial", size=10, color="000000")
+
+    #formulas total coluna i
+
+    for rows in sheet.iter_rows(min_row=12 ,max_row=size2-1 ,min_col=9, max_col=9):
+            for cell in rows:
+                cell.value = f"=SUM(F{cell.row}:H{cell.row})"
+                cell.font = Font(name="Arial", size=10, color="000000")
+
+    for rows in sheet.iter_rows(min_row=size2+1,max_row=size2+6 ,min_col=9, max_col=9):
+            for cell in rows:
+                cell.value = f"=SUM(F{cell.row}:H{cell.row})"
+                cell.font = Font(name="Arial", size=10, color="000000")
+
+
 
     #aumentar o tamanho da celula total
-    sheet.row_dimensions[size+7].height = 16
+    sheet.row_dimensions[size+8].height = 33
      #brasilia
     brasilia_row = size2 + 9
     brasilia_formula =  f"='DEMOSTR. RECEITA E DESPESA A.2'!A{stringTamanho}"
@@ -1474,7 +1520,7 @@ def estiloG(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho,tamanhoestorno)
 
     return size+4
 
-def estiloPagamentoPessoal(tabela,tamanho,nomeTabela,stringTamanho,tamanhoestorno):
+def estiloPagamentoPessoal(tabela,tamanho,stringTamanho,tamanhoestorno):
     '''Esse estilo e considerado geral por que todas as tabelas que compõe utilizam das mesma colunas.
       
         Argumentos:
@@ -1499,7 +1545,7 @@ def estiloPagamentoPessoal(tabela,tamanho,nomeTabela,stringTamanho,tamanhoestorn
     nomeVariavel = f'{nomeVariavel}{random_number}'
     caminho = pegar_caminho(tabela)
     workbook = openpyxl.load_workbook(caminho)
-    worksheet = workbook[nomeTabela]
+    worksheet = workbook['Pagamento de Pessoal']
     size = tamanho + 16
     cinza = "d9d9d9"
     cinza_escuro = "bfbfbf"
@@ -1529,7 +1575,6 @@ def estiloPagamentoPessoal(tabela,tamanho,nomeTabela,stringTamanho,tamanhoestorn
 
     #cabecario relação de pagamentos - outro servicoes de terceiros
     worksheet.merge_cells('A1:J1')
-    nomeTabela = nomeTabela.upper()
     worksheet['A1'] = f'ANEXO 4'
     worksheet['A1'].font = Font(name="Arial", size=12, color="000000",bold=True)
     worksheet['A1'].alignment = Alignment(horizontal="center",vertical="center")
@@ -1776,7 +1821,7 @@ def estiloPagamentoPessoal(tabela,tamanho,nomeTabela,stringTamanho,tamanhoestorn
     max_row = size + 4 + tamanhoestorno
 
       
-
+   
     #bordinha double           
     stringAfinarCelula = size + 6 +tamanhoestorno
     cellborda = f"J{size + 5 +tamanhoestorno}"
@@ -1828,7 +1873,7 @@ def estiloPagamentoPessoal(tabela,tamanho,nomeTabela,stringTamanho,tamanhoestorn
     worksheet[total_formula_row_celula] = total_formulaa
 
     
-
+    size = size + 1
     #brasilia
     brasilia_row = size + 8 +tamanhoestorno
     brasilia_formula =  f"='DEMOSTR. RECEITA E DESPESA A.2'!A{stringTamanho}"
@@ -1838,7 +1883,7 @@ def estiloPagamentoPessoal(tabela,tamanho,nomeTabela,stringTamanho,tamanhoestorn
     top_left_brasilia_cell = worksheet[top_left_brasilia_cell_formula]
     top_left_brasilia_cell.value = brasilia_formula
     top_left_brasilia_cell.alignment = Alignment(horizontal="center",vertical="center")
-
+    top_left_brasilia_cell.font = Font(name="Arial", size=12, color="000000")
     #DiretorFinanceiro
     diretor_row = size + 9 + tamanhoestorno
     diretor_cargo_row = size + 10 + tamanhoestorno
@@ -1917,7 +1962,7 @@ def estiloPagamentoPessoal(tabela,tamanho,nomeTabela,stringTamanho,tamanhoestorn
                 cell.border = Border(top=Side(border_style="none") ,right = Side(border_style="thin",color='9e9e9e') ,left =Side(border_style="none") ,bottom=Side(border_style="none") )
 
     #borda fim pagina
-    for row in worksheet.iter_rows(min_row=brasilia_row, max_row=coordenadora_cpf_row+1,min_col=10,max_col=10):
+    for row in worksheet.iter_rows(min_row=brasilia_row-1, max_row=coordenadora_cpf_row+1,min_col=10,max_col=10):
         for cell in row:
                 cell.border = Border(top=Side(border_style="none") ,right = Side(border_style="thin",color='9e9e9e') ,left =Side(border_style="none") ,bottom=Side(border_style="none") )
 
@@ -1935,7 +1980,7 @@ def estiloPagamentoPessoal(tabela,tamanho,nomeTabela,stringTamanho,tamanhoestorn
 
     return size+4
 
-def estiloElementoDeDespesa1415Diarias(tabela,tamanho,nomeTabela,stringTamanho,tamanhoestorno):
+def estiloElementoDeDespesa1415Diarias(tabela,tamanho,stringTamanho,tamanhoestorno):
     '''Esse estilo e considerado geral por que todas as tabelas que compõe utilizam das mesma colunas.
       
         Argumentos:
@@ -1960,7 +2005,7 @@ def estiloElementoDeDespesa1415Diarias(tabela,tamanho,nomeTabela,stringTamanho,t
     nomeVariavel = f'{nomeVariavel}{random_number}'
     caminho = pegar_caminho(tabela)
     workbook = openpyxl.load_workbook(caminho)
-    worksheet = workbook[nomeTabela]
+    worksheet = workbook['Elemento de Despesa 14.15']
     size = tamanho + 16
     cinza = "d9d9d9"
     cinza_escuro = "bfbfbf"
@@ -1992,7 +2037,6 @@ def estiloElementoDeDespesa1415Diarias(tabela,tamanho,nomeTabela,stringTamanho,t
 
     #cabecario relação de pagamentos - outro servicoes de terceiros
     worksheet.merge_cells('A1:L1')
-    nomeTabela = nomeTabela.upper()
     worksheet['A1'] = f'ANEXO 4'
     worksheet['A1'].font = Font(name="Arial", size=12, color="000000",bold=True)
     worksheet['A1'].alignment = Alignment(horizontal="center",vertical="center")
@@ -2291,7 +2335,7 @@ def estiloElementoDeDespesa1415Diarias(tabela,tamanho,nomeTabela,stringTamanho,t
     worksheet[total_formula_row_celula] = total_formulaa
 
     
-
+    size = size + 1
     #brasilia
     brasilia_row = size + 8 +tamanhoestorno
     brasilia_formula =  f"='DEMOSTR. RECEITA E DESPESA A.2'!A{stringTamanho}"
@@ -2301,6 +2345,7 @@ def estiloElementoDeDespesa1415Diarias(tabela,tamanho,nomeTabela,stringTamanho,t
     top_left_brasilia_cell = worksheet[top_left_brasilia_cell_formula]
     top_left_brasilia_cell.value = brasilia_formula
     top_left_brasilia_cell.alignment = Alignment(horizontal="center",vertical="center")
+    top_left_brasilia_cell.font = Font(name="Arial", size=12, color="000000")
 
     #DiretorFinanceiro
     diretor_row = size + 9 + tamanhoestorno
@@ -2380,7 +2425,7 @@ def estiloElementoDeDespesa1415Diarias(tabela,tamanho,nomeTabela,stringTamanho,t
                 cell.border = Border(top=Side(border_style="none") ,right = Side(border_style="thin",color='9e9e9e') ,left =Side(border_style="none") ,bottom=Side(border_style="none") )
 
     #borda fim pagina
-    for row in worksheet.iter_rows(min_row=brasilia_row, max_row=coordenadora_cpf_row+1,min_col=12,max_col=12):
+    for row in worksheet.iter_rows(min_row=brasilia_row-1, max_row=coordenadora_cpf_row+1,min_col=12,max_col=12):
         for cell in row:
                 cell.border = Border(top=Side(border_style="none") ,right = Side(border_style="thin",color='9e9e9e') ,left =Side(border_style="none") ,bottom=Side(border_style="none") )
 
@@ -2398,7 +2443,7 @@ def estiloElementoDeDespesa1415Diarias(tabela,tamanho,nomeTabela,stringTamanho,t
 
     return size+4
 
-def estiloElementoDeDespesa33PassagensEDespesa(tabela,tamanho,nomeTabela,stringTamanho,tamanhoestorno):
+def estiloElementoDeDespesa33PassagensEDespesa(tabela,tamanho,stringTamanho,tamanhoestorno):
     '''Esse estilo e considerado geral por que todas as tabelas que compõe utilizam das mesma colunas.
       
         Argumentos:
@@ -2422,7 +2467,7 @@ def estiloElementoDeDespesa33PassagensEDespesa(tabela,tamanho,nomeTabela,stringT
     nomeVariavel = f'{nomeVariavel}{random_number}'
     caminho = pegar_caminho(tabela)
     workbook = openpyxl.load_workbook(caminho)
-    worksheet = workbook[nomeTabela]
+    worksheet = workbook['Elemento de Despesa 33']
     size = tamanho + 16
     cinza = "d9d9d9"
     cinza_escuro = "bfbfbf"
@@ -2454,7 +2499,6 @@ def estiloElementoDeDespesa33PassagensEDespesa(tabela,tamanho,nomeTabela,stringT
 
     #cabecario relação de pagamentos - outro servicoes de terceiros
     worksheet.merge_cells('A1:L1')
-    nomeTabela = nomeTabela.upper()
     worksheet['A1'] = f'ANEXO 4'
     worksheet['A1'].font = Font(name="Arial", size=12, color="000000",bold=True)
     worksheet['A1'].alignment = Alignment(horizontal="center",vertical="center")
@@ -2754,7 +2798,7 @@ def estiloElementoDeDespesa33PassagensEDespesa(tabela,tamanho,nomeTabela,stringT
     worksheet[total_formula_row_celula] = total_formulaa
 
     
-
+    size = size + 1
     #brasilia
     brasilia_row = size + 8 +tamanhoestorno
     brasilia_formula =  f"='DEMOSTR. RECEITA E DESPESA A.2'!A{stringTamanho}"
@@ -2764,6 +2808,7 @@ def estiloElementoDeDespesa33PassagensEDespesa(tabela,tamanho,nomeTabela,stringT
     top_left_brasilia_cell = worksheet[top_left_brasilia_cell_formula]
     top_left_brasilia_cell.value = brasilia_formula
     top_left_brasilia_cell.alignment = Alignment(horizontal="center",vertical="center")
+    top_left_brasilia_cell.font = Font(name="Arial", size=12, color="000000")
 
     #DiretorFinanceiro
     diretor_row = size + 9 + tamanhoestorno
@@ -2843,7 +2888,7 @@ def estiloElementoDeDespesa33PassagensEDespesa(tabela,tamanho,nomeTabela,stringT
                 cell.border = Border(top=Side(border_style="none") ,right = Side(border_style="thin",color='9e9e9e') ,left =Side(border_style="none") ,bottom=Side(border_style="none") )
 
     #borda fim pagina
-    for row in worksheet.iter_rows(min_row=brasilia_row, max_row=coordenadora_cpf_row+1,min_col=12,max_col=12):
+    for row in worksheet.iter_rows(min_row=brasilia_row -1, max_row=coordenadora_cpf_row+1,min_col=12,max_col=12):
         for cell in row:
                 cell.border = Border(top=Side(border_style="none") ,right = Side(border_style="thin",color='9e9e9e') ,left =Side(border_style="none") ,bottom=Side(border_style="none") )
 
@@ -2941,8 +2986,8 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2,stringTamanho):
     
     worksheet['B5'] = "='DEMOSTR. RECEITA E DESPESA A.2'!C5"
     worksheet['B5'].font = Font(name="Arial", size=12, color="000000")
-    worksheet['B5'].alignment = Alignment(horizontal="left",vertical="center")
-    
+    worksheet['B5'].alignment = Alignment(horizontal="left",vertical="center",wrap_text=True)
+    worksheet.merge_cells('B5:C5')
     worksheet['B6'] = "='DEMOSTR. RECEITA E DESPESA A.2'!C6"
     worksheet['B6'].font = Font(name="Arial", size=12, color="000000")
     worksheet['B6'].alignment = Alignment(horizontal="left",vertical="center")
@@ -2953,11 +2998,11 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2,stringTamanho):
     
     worksheet['B8'] = "='DEMOSTR. RECEITA E DESPESA A.2'!C8"
     worksheet['B8'].font = Font(name="Arial", size=12, color="000000")
-    worksheet['B8'].alignment = Alignment(horizontal="left",vertical="center")
+    worksheet['B8'].alignment = Alignment(horizontal="left",vertical="center",wrap_text=True)
    
     worksheet['B9'] = "='DEMOSTR. RECEITA E DESPESA A.2'!C9"
     worksheet['B9'].font = Font(name="Arial", size=12, color="000000")
-    worksheet['B9'].alignment = Alignment(horizontal="left",vertical="center")
+    worksheet['B9'].alignment = Alignment(horizontal="left",vertical="center",wrap_text=True)
 
 
     
@@ -3206,6 +3251,7 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2,stringTamanho):
     top_left_brasilia_cell = worksheet[top_left_brasilia_cell_formula]
     top_left_brasilia_cell.value = brasilia_formula
     top_left_brasilia_cell.alignment = Alignment(horizontal="center",vertical="center")
+    top_left_brasilia_cell.font = Font(name="Arial", size=12, color="000000")
 
     # #DiretorFinanceiro
     diretor_row = size + 10 + tamanho2
@@ -3292,7 +3338,7 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2,stringTamanho):
         for cell in rows:
                 cell.font = Font(name="Arial", size=12, color="000000",bold=True)
 
-
+    worksheet['B5'].alignment = Alignment(horizontal="left",vertical="center",wrap_text=True)
     workbook.save(tabela)
     workbook.close()
 
@@ -3336,7 +3382,7 @@ def estilo_rendimento_de_aplicacao(tabela,tamanho,stringTamanho):
     # List to hold Image objects
     images = []
 
-    nomePasta = "imagemFinep"
+    nomePasta = "../../imagemFinep"
     diretorio = os.path.dirname(__file__)
 
     # Loop through the list of image names and create Image objects
@@ -3377,30 +3423,54 @@ def estilo_rendimento_de_aplicacao(tabela,tamanho,stringTamanho):
     worksheet['A3'].fill = openpyxl.styles.PatternFill(start_color=cinza_escuro, end_color=cinza_escuro, fill_type='solid')
     worksheet['A3'].border = Border(top=Side(border_style="double"))
     worksheet.merge_cells('A3:F3')
+
+    worksheet['A4'] = "FINATEC - Fundação de Empreendimentos Científicos e Tecnológicos"
+    worksheet['A4'].font = Font(name="Arial", size=12, color="000000",bold=True)
+    worksheet['A4'].alignment = Alignment(horizontal="left",vertical="center")
+    worksheet['A4'].fill = openpyxl.styles.PatternFill(start_color=cinza_escuro, end_color=cinza_escuro, fill_type='solid')
+   
+
     
     #convenio
-    worksheet['G3'] = "='DEMOSTR. RECEITA E DESPESA A.2'!A4"
+    worksheet['G3'] = "Convênio Nº: "
     worksheet['G3'].font = Font(name="Arial", size=12, color="000000")
     worksheet['G3'].alignment = Alignment(horizontal="left",vertical="center")
     worksheet['G3'].fill = openpyxl.styles.PatternFill(start_color=cinza_escuro, end_color=cinza_escuro, fill_type='solid')
     worksheet['G3'].border = Border(right=Side(border_style="double"),top=Side(border_style="double"))
     worksheet.merge_cells('G3:H3')
+    #convenio
+    worksheet['G4'] = "='Capa Finatec'!E17"
+    worksheet['G4'].font = Font(name="Arial", size=12, color="000000")
+    worksheet['G4'].alignment = Alignment(horizontal="left",vertical="center")
+    worksheet['G4'].fill = openpyxl.styles.PatternFill(start_color=cinza_escuro, end_color=cinza_escuro, fill_type='solid')
+    worksheet['G4'].border = Border(right=Side(border_style="double"),top=Side(border_style="double"))
+    worksheet.merge_cells('G4:H4')
 
     #projeto
-    worksheet['A5'] = "Projeto"
+    worksheet['A5'] = "Projeto:"
     worksheet['A5'].font = Font(name="Arial", size=12, color="000000")
     worksheet['A5'].alignment = Alignment(horizontal="left",vertical="center")
     worksheet['A5'].fill = openpyxl.styles.PatternFill(start_color=cinza_escuro, end_color=cinza_escuro, fill_type='solid')
     worksheet.merge_cells('A5:F5')
 
+    worksheet['A6'] = "='Capa Finatec'!E9"
+    worksheet['A6'].font = Font(name="Arial", size=12, color="000000",bold=True)
+    worksheet['A6'].alignment = Alignment(horizontal="left",vertical="center",wrap_text=True)
+    worksheet['A6'].fill = openpyxl.styles.PatternFill(start_color=cinza_escuro, end_color=cinza_escuro, fill_type='solid')
+
     #Período de Execução do Convênio:
-    worksheet['G5'] = "Período de Execução do Convênio"
+    worksheet['G5'] = "Período de Execução do Convênio:"
     worksheet['G5'].font = Font(name="Arial", size=12, color="000000")
     worksheet['G5'].alignment = Alignment(horizontal="left",vertical="center")
     worksheet['G5'].fill = openpyxl.styles.PatternFill(start_color=cinza_escuro, end_color=cinza_escuro, fill_type='solid')
     worksheet['G5'].border = Border(right=Side(border_style="double"))
     worksheet.merge_cells('G5:H5')
 
+    worksheet['G6'] = "='DEMOSTR. RECEITA E DESPESA A.2'!C6"
+    worksheet['G6'].font = Font(name="Arial", size=12, color="000000")
+    worksheet['G6'].alignment = Alignment(horizontal="left",vertical="center")
+    worksheet['G6'].fill = openpyxl.styles.PatternFill(start_color=cinza_escuro, end_color=cinza_escuro, fill_type='solid')
+   
     #linha 4
     worksheet['A4'].fill = openpyxl.styles.PatternFill(start_color=cinza_escuro, end_color=cinza_escuro, fill_type='solid')
     worksheet.merge_cells('A4:F4')
@@ -3414,14 +3484,14 @@ def estilo_rendimento_de_aplicacao(tabela,tamanho,stringTamanho):
 
     #vaireceberinputnopreencher
     worksheet['A6'].font = Font(name="Arial", size=12, color="000000")
-    worksheet['A6'].alignment = Alignment(horizontal="left",vertical="center")
+    worksheet['A6'].alignment = Alignment(horizontal="left",vertical="center",wrap_text=True)
     worksheet['A6'].fill = openpyxl.styles.PatternFill(start_color=cinza_escuro, end_color=cinza_escuro, fill_type='solid')
     worksheet.merge_cells('A6:F7')
 
     #Período Abrangido por este Relatório:
-    worksheet['G7'] = "Período Abrangido por este Relatório"
+    worksheet['G7'] = "Período Abrangido por este Relatório:"
     worksheet['G7'].font = Font(name="Arial", size=12, color="000000")
-    worksheet['G7'].alignment = Alignment(horizontal="left",vertical="center")
+    worksheet['G7'].alignment = Alignment(horizontal="left",vertical="center",wrap_text=True)
     worksheet['G7'].fill = openpyxl.styles.PatternFill(start_color=cinza_escuro, end_color=cinza_escuro, fill_type='solid')
     worksheet['G7'].border = Border(right=Side(border_style="double"))
     worksheet.merge_cells('G7:H7')
@@ -3434,7 +3504,7 @@ def estilo_rendimento_de_aplicacao(tabela,tamanho,stringTamanho):
     worksheet['A8'].border = Border(bottom=Side(border_style="double"))
     worksheet.merge_cells('A8:F8')
      #Período Abrangido por este Relatório:
-    
+    worksheet['G8'] = "='DEMOSTR. RECEITA E DESPESA A.2'!C7"
     worksheet['G8'].font = Font(name="Arial", size=12, color="000000")
     worksheet['G8'].alignment = Alignment(horizontal="left",vertical="center")
     worksheet['G8'].fill = openpyxl.styles.PatternFill(start_color=cinza_escuro, end_color=cinza_escuro, fill_type='solid')
@@ -3605,6 +3675,7 @@ def estilo_rendimento_de_aplicacao(tabela,tamanho,stringTamanho):
     top_left_brasilia_cell = worksheet[top_left_brasilia_cell_formula]
     top_left_brasilia_cell.value = brasilia_formula
     top_left_brasilia_cell.alignment = Alignment(horizontal="center",vertical="center")
+    top_left_brasilia_cell.font = Font(name="Arial", size=12, color="000000")
 
     # #DiretorFinanceiro
     diretor_row = size + 6 
@@ -3748,6 +3819,10 @@ def estiloRelacaoBens(tabela,tamanho,stringTamanho):
     
         #cabecario que recebe de referencia as celulas A da planilha DEMOSTR. RECEITA E DESPESA A.2
     
+    worksheet['A4'] = "='DEMOSTR. RECEITA E DESPESA A.2'!A4"
+    worksheet['A4'].font = Font(name="Arial", size=12, color="000000")
+    worksheet['A4'].alignment = Alignment(horizontal="left",vertical="center")
+
 
     worksheet['A5'] = "='DEMOSTR. RECEITA E DESPESA A.2'!A5"
     worksheet['A5'].font = Font(name="Arial", size=12, color="000000")
@@ -3770,6 +3845,25 @@ def estiloRelacaoBens(tabela,tamanho,stringTamanho):
     worksheet['A9'].alignment = Alignment(horizontal="left",vertical="center")
 
 
+    worksheet['C5'] = "='DEMOSTR. RECEITA E DESPESA A.2'!C5"
+    worksheet['C5'].font = Font(name="Arial", size=12, color="000000")
+    worksheet['C5'].alignment = Alignment(horizontal="left",vertical="center")
+    
+    worksheet['C6'] = "='DEMOSTR. RECEITA E DESPESA A.2'!C6"
+    worksheet['C6'].font = Font(name="Arial", size=12, color="000000")
+    worksheet['C6'].alignment = Alignment(horizontal="left",vertical="center")
+
+    worksheet['C7'] = "='DEMOSTR. RECEITA E DESPESA A.2'!C7"
+    worksheet['C7'].font = Font(name="Arial", size=12, color="000000")
+    worksheet['C7'].alignment = Alignment(horizontal="left",vertical="center")
+    
+    worksheet['C8'] = "='DEMOSTR. RECEITA E DESPESA A.2'!C8"
+    worksheet['C8'].font = Font(name="Arial", size=12, color="000000")
+    worksheet['C8'].alignment = Alignment(horizontal="left",vertical="center")
+   
+    worksheet['C9'] = "='DEMOSTR. RECEITA E DESPESA A.2'!C9"
+    worksheet['C9'].font = Font(name="Arial", size=12, color="000000")
+    worksheet['C9'].alignment = Alignment(horizontal="left",vertical="center")
 
     #declaração
    
@@ -3950,6 +4044,7 @@ def estiloRelacaoBens(tabela,tamanho,stringTamanho):
     top_left_brasilia_cell = worksheet[top_left_brasilia_cell_formula]
     top_left_brasilia_cell.value = brasilia_formula
     top_left_brasilia_cell.alignment = Alignment(horizontal="center",vertical="center")
+    top_left_brasilia_cell.font = Font(name="Arial", size=12, color="000000")
 
     #DiretorFinanceiro
     diretor_row = size + 8
@@ -4271,6 +4366,7 @@ def estilo_demonstrativoDeReceita(tabela,tamanho,stringTamanho):
     top_left_brasilia_cell = worksheet[top_left_brasilia_cell_formula]
     top_left_brasilia_cell.value = brasilia_formula
     top_left_brasilia_cell.alignment = Alignment(horizontal="center",vertical="center")
+    top_left_brasilia_cell.font = Font(name="Arial", size=12, color="000000")
 
     #DiretorFinanceiro
     diretor_row = size + 8

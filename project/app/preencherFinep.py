@@ -715,7 +715,7 @@ def demostrativereceitaedepesaA2(codigo,data1,data2,planilha):
     stringTamanhoCPF = f'C{tamanho_row_coordenador+2}' # retorna lugar do coordanor
     sheet[stringCoordenador] = consulta_coordenador['NomePessoaResponsavel']
     sheet[stringTamanhoCPF] = formatar_cpf(consulta_coordenador['CPFCoordenador'])
-    string_convenio = f"Convênio nº: {consulta_coordenador['NomeConvenio']}"
+    string_convenio = f"Convênio nº: {consulta_coordenador['SubProcesso']}"
     string_convenente= f"Fundação de Empreendimentos Científicos e Tecnológicos - FINATEC" 
     string_convenente_convenente= f"Convenente: "
     string_fonte_recursos = f"Fonte de Recursos:"
@@ -741,8 +741,8 @@ def demostrativereceitaedepesaA2(codigo,data1,data2,planilha):
     sheet['A9'] = string_participe
 
     sheet['C5'] = string_convenente
-    sheet['C6'] = string_periodo
-    sheet['C7'] = string_periodo_convenio
+    sheet['C6'] = string_periodo_convenio
+    sheet['C7'] = string_periodo
     sheet['C8'] = f'RECURSOS FINEP/RECURSOS CONTRAPARTIDA'
     sheet['C9'] = F'XXX'
     
@@ -1071,26 +1071,84 @@ def relatorioExecFinanceiraA1(codigo,data1,data2,planilha,rowBrasilia):
                 dfMerged = dfMerged[dfMerged['NomeRubrica'] != 'Despesas Operacionais e Administrativas - Finatec']   
                 
             
-
-          
     
-    print('dfmerges')
     print(dfMerged)
 
     for row_num, row_data in enumerate(dfMerged.itertuples(index = False), start=12):#inicio linha
         for col_num, value in enumerate(row_data, start=1):#inicio coluna
               
-                if col_num == 3:
-                    col_num = 2
-                    sheet.cell(row=row_num, column=col_num, value=convert_datetime_to_string(value)).alignment=Alignment(horizontal="right",vertical="center",wrap_text=True)
+           
                 if col_num == 1:
                     sheet.cell(row=row_num, column=col_num, value=convert_datetime_to_string(value)).alignment=Alignment(horizontal="left",vertical="center",wrap_text=True)
                 if col_num == 2:
                     col_num = 6
                     sheet.cell(row=row_num, column=col_num, value=convert_datetime_to_string(value)).alignment=Alignment(horizontal="right",vertical="center",wrap_text=True)
                     #sheet.cell(row=row_num, column=col_num, value=convert_datetime_to_string(value))
+                if col_num == 3:
+                    col_num = 2
+                    sheet.cell(row=row_num, column=col_num, value=convert_datetime_to_string(value)).alignment=Alignment(horizontal="right",vertical="center",wrap_text=True)
                
-              
+
+
+
+    #PREENCHER CABECARIO
+    input_date = []
+    output_date_str = []
+    input_date2  = []
+    output_date_str2 = []
+    if check_format(data1):
+        input_date = datetime.strptime(data1, "%Y-%m-%d")
+    # Format the datetime object to a string in dd/mm/yyyy format
+        output_date_str = input_date.strftime("%d/%m/%Y")
+    else :
+         return None
+    if check_format(data2):
+        input_date2 = datetime.strptime(data2, "%Y-%m-%d")
+    # Format the datetime object to a string in dd/mm/yyyy format
+        output_date_str2 = input_date2.strftime("%d/%m/%Y")
+    else :
+         return None
+    
+    string_periodo = f"de {output_date_str} a {output_date_str2}"
+
+
+    consulta_coordenador = consultaID(codigo)
+
+    # o quarenta significa pra achar o lugar do coordenador dinamicamente mais o valor do tamanho da quantidade de rubricas
+    tamanho_row_coordenador = tamanho + 40
+    stringCoordenador= f'C{tamanho_row_coordenador}' # retorna lugar do coordanor
+    stringTamanhoCPF = f'C{tamanho_row_coordenador+2}' # retorna lugar do coordanor
+    sheet[stringCoordenador] = consulta_coordenador['NomePessoaResponsavel']
+    sheet[stringTamanhoCPF] = formatar_cpf(consulta_coordenador['CPFCoordenador'])
+    string_convenio = f"Convênio nº: {consulta_coordenador['NomeConvenio']}"
+    string_convenente= f"Fundação de Empreendimentos Científicos e Tecnológicos - FINATEC" 
+    string_convenente_convenente= f"Convenente: "
+    string_fonte_recursos = f"Fonte de Recursos:"
+    string_participe = f"Partícipe (no caso de contrapartida):"
+    string_periodo_relatorio = f"Período Abrangido por este Relatório: "
+    stringPeriodoExececucao = f'Período de Execução do Convênio:'
+   # Convert 'DataAssinatura' to "dd/mm/YYYY" format
+    datetime_obj1 = consulta_coordenador['DataAssinatura']
+    formatted_date1 = datetime_obj1.strftime("%d/%m/%Y")
+
+    # Convert 'DataVigencia' to "dd/mm/YYYY" format
+    datetime_obj2 = consulta_coordenador['DataVigencia']
+    formatted_date2 = datetime_obj2.strftime("%d/%m/%Y")
+
+# Create the string representing the period of execution
+   
+    string_periodo_convenio = f"de {formatted_date1} a {formatted_date2}"
+    sheet['A4'] = string_convenio
+    sheet['A5'] = string_convenente_convenente
+    sheet['A6'] = stringPeriodoExececucao
+    sheet['A7'] = string_periodo_relatorio
+ 
+
+    sheet['C5'] = string_convenente
+    sheet['C6'] = string_periodo_convenio
+    sheet['C7'] = string_periodo
+   
+           
 
 
     workbook.save(planilha)
@@ -1101,6 +1159,93 @@ def relatorioExecFinanceiraA1(codigo,data1,data2,planilha,rowBrasilia):
   
     return 0
 
+def PagamentoDePessoal(codigo,data1,data2,planilha,rowBrasilia):
+    tabela = pegar_caminho(planilha)
+    workbook = openpyxl.load_workbook(tabela)
+    sheet2 = workbook.create_sheet(title="Pagamento de Pessoal")
+    workbook.save(tabela)
+    workbook.close()
+
+    #recebeOsDataFrames
+    dfconsultaDadosPorRubrica,dfconsultaDadosPorRubricaComEstorno = consultaPagamentoPessoal(codigo,data1,data2)
+     
+    tamanho = len(dfconsultaDadosPorRubrica)
+    tamanhoestorno = len(dfconsultaDadosPorRubricaComEstorno)
+
+
+    estiloPagamentoPessoal(tabela,tamanho,rowBrasilia,tamanhoestorno)
+
+    return 0
+
+def ElementoDeDespesa1415Diarias(codigo,data1,data2,planilha,rowBrasilia):
+    tabela = pegar_caminho(planilha)
+    workbook = openpyxl.load_workbook(tabela)
+    sheet2 = workbook.create_sheet(title="Elemento de Despesa 14.15")
+    workbook.save(tabela)
+    workbook.close()
+
+    dfconsultaDadosPorRubrica,dfconsultaDadosPorRubricaComEstorno = consultaPagamentoPessoal(codigo,data1,data2)
+     
+    tamanho = len(dfconsultaDadosPorRubrica)
+    tamanhoestorno = len(dfconsultaDadosPorRubricaComEstorno)
+
+
+    estiloElementoDeDespesa1415Diarias(tabela,tamanho,rowBrasilia,tamanhoestorno)
+
+
+
+    return 0
+
+
+def geral30(codigo,data1,data2,planilha,rowBrasilia):
+
+     dfconsultaDadosPorRubrica,dfconsultaDadosPorRubricaComEstorno = consultaGeral30(codigo,data1,data2)
+
+def PassagensEDespesa33(codigo,data1,data2,planilha,rowBrasilia):
+    tabela = pegar_caminho(planilha)
+    workbook = openpyxl.load_workbook(tabela)
+    sheet2 = workbook.create_sheet(title="Elemento de Despesa 33")
+    workbook.save(tabela)
+    workbook.close()
+    dfconsultaDadosPorRubrica,dfconsultaDadosPorRubricaComEstorno = consultaestiloElementoDeDespesa33PassagemEDespesa(codigo,data1,data2)
+    tamanho = len(dfconsultaDadosPorRubrica)
+    tamanhoestorno = len(dfconsultaDadosPorRubricaComEstorno)
+    estiloElementoDeDespesa33PassagensEDespesa(tabela,tamanho,rowBrasilia,tamanhoestorno)
+     
+    return 0
+
+def relacaoBensAdquiridosA5(codigo,data1,data2,planilha,rowBrasilia):
+    tabela = pegar_caminho(planilha)
+    workbook = openpyxl.load_workbook(tabela)
+    sheet2 = workbook.create_sheet(title="Relação Bens Adquiridos A.5")
+    workbook.save(tabela)
+    workbook.close()
+    dfConsultaBens = consultaBens(codigo,data1,data2)
+    estiloRelacaoBens(tabela,len(dfConsultaBens),rowBrasilia)
+    return 0
+
+def rendimentoAplicacao(codigo,data1,data2,planilha,rowBrasilia):
+    tabela = pegar_caminho(planilha)
+    workbook = openpyxl.load_workbook(tabela)
+    sheet2 = workbook.create_sheet(title="Rendimento de Aplicação")
+    workbook.save(tabela)
+    workbook.close()
+
+    dfConsultaRendimentoAplicacao,dfConsultaImposto,dfConsultaRendimentoEImposto = consultaRendimentosAplicacao(codigo,data1,data2)
+    merged_df = pd.merge(dfConsultaRendimentoAplicacao, dfConsultaImposto, on='DataPagamento')
+    estilo_rendimento_de_aplicacao(tabela,len(merged_df),rowBrasilia)
+    
+    return 0
+
+def conciliacaoBancaria(codigo,data1,data2,planilha,rowBrasilia):
+    tabela = pegar_caminho(planilha)
+    workbook = openpyxl.load_workbook(tabela)
+    sheet2 = workbook.create_sheet(title="Conciliação Bancária A.3")
+    workbook.save(tabela)
+    workbook.close()
+    dfSemEstorno,dfComEstorno = consultaConciliacaoBancaria(codigo,data1,data2)
+    estilo_conciliacoes_bancaria(tabela,len(dfComEstorno),len(dfSemEstorno),rowBrasilia)
+    return 0
 
 def preencheFinep(codigo,data1,data2,tabela):
     '''Preenche a planilha fap
@@ -1113,10 +1258,10 @@ def preencheFinep(codigo,data1,data2,tabela):
    '''
     rowBrasilia = demostrativereceitaedepesaA2(codigo,data1,data2,tabela)
     relatorioExecFinanceiraA1(codigo,data1,data2,tabela,rowBrasilia)
-    # consultaPagamentoPessoal(codigo,data1,data2)
-    # # consultaestiloElementoDeDespesa1415Diarias(codigo,data1,data2)
-    # # consultaGeral30(codigo,data1,data2,87)
-    # # consultaestiloElementoDeDespesa33Diarias(codigo,data1,data2)
-    # consultaBens(codigo,data1,data2)
-    # consultaConciliacaoBancaria(codigo,data1,data2)
-    # consultaRendimentosAplicacao(codigo,data1,data2)
+    PagamentoDePessoal(codigo,data1,data2,tabela,rowBrasilia)
+    ElementoDeDespesa1415Diarias(codigo,data1,data2,tabela,rowBrasilia)
+    PassagensEDespesa33(codigo,data1,data2,tabela,rowBrasilia)
+    relacaoBensAdquiridosA5(codigo,data1,data2,tabela,rowBrasilia)
+    rendimentoAplicacao(codigo,data1,data2,tabela,rowBrasilia)
+    conciliacaoBancaria(codigo,data1,data2,tabela,rowBrasilia)
+    
