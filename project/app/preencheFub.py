@@ -9,6 +9,7 @@ import pandas as pd
 from sqlalchemy import create_engine
 from sqlalchemy.engine import URL
 import numpy as np  
+import re
 
 def convert_datetime_to_string(value):
     if isinstance(value, datetime):
@@ -619,12 +620,51 @@ def consultaBens(IDPROJETO,DATA1,DATA2):
     idprojetoComZero = f"0{IDPROJETO}"
     parametros = [(IDPROJETO,idprojetoComZero, DATA1, DATA2)]
     
-    queryConsultaComRubrica = f"SELECT [Descrição][descri],[Patrimônio][patri],[Data de Aquisição][dataAqui],[Nº Nota][nota],[Localização][localiza],[telefone],[Valor de Aquisição][valorAqui],[Valor de Aquisição][valorAqui2],[Responsável][responsavel] FROM [SBO_FINATEC].[dbo].[VW_BENS_ADQUIRIDOS] WHERE ([Cod Projeto] = ? or [Cod Projeto] = ? ) AND [Status] = 'Imobilizado' AND [Data de Aquisição] BETWEEN ? AND ? Order by [Data de Aquisição]"
+    queryConsultaComRubrica = f"SELECT [Descrição][descri],[Patrimônio][patri],CONVERT(varchar, [Data de Aquisição], 103) AS dataAqui,[Nº Nota][nota],[Localização][localiza],[telefone],[Valor de Aquisição][valorAqui],[Valor de Aquisição][valorAqui2],[Responsável][responsavel] FROM [SBO_FINATEC].[dbo].[VW_BENS_ADQUIRIDOS] WHERE ([Cod Projeto] = ? or [Cod Projeto] = ? ) AND [Status] = 'Imobilizado' AND [Data de Aquisição] BETWEEN ? AND ? Order by [Data de Aquisição]"
     dfConsultaBens = pd.read_sql(queryConsultaComRubrica, engine, params=parametros)
 
 
     return dfConsultaBens   
-    
+
+def consultaTabelaGigante(IDPROJETO,DATA1,DATA2):
+    file_path = pegar_pass("passs.txt")
+    conStr = ''
+    with open(file_path, 'r') as file:
+            conStr = file.readline().strip()
+
+    connection_url = URL.create("mssql+pyodbc", query={"odbc_connect": conStr})
+    engine = create_engine(connection_url)
+    parametros = [(IDPROJETO,DATA1,DATA2)]
+    queryAnexoDois = f"""
+    SELECT
+        NumDocFinConvenio,
+		NomeTipoPedido,
+		HisLancamento,
+		NomeRubrica,
+		ValorLancamento,
+		NomeTipoCreditoDebito,
+		DataCriacao,
+		DataVencimento,
+		DataPagamento,
+		ValorPago,
+		NumChequeDeposito,
+		NumDocBancario,
+		DataEmissao,
+		NumDocPago,
+        CodConvenio,
+        NomeConvenio,
+        AgenciaBancaria,
+        ContaBancaria,
+		NomeFavorecido,
+		FavorecidoCPFCNPJ,
+		NomePessoaGestor,
+		NomeTipoPedido,
+		NomeStatus
+        FROM [Conveniar].[dbo].[LisLancamentoConvenio]
+     WHERE [LisLancamentoConvenio].CodConvenio = ? AND [LisLancamentoConvenio].CodStatus = 27
+     AND [LisLancamentoConvenio].DataPagamento BETWEEN ? AND ? and [LisLancamentoConvenio].CodRubrica not in (2,0) order by DataPagamento"""
+    dfConvenioAnexoDois = pd.read_sql(queryAnexoDois, engine, params=parametros)
+    return dfConvenioAnexoDois
 #preenche planilha 
 
 def conciliacaoBancaria(codigo,data1,data2,planilha,stringTamanho):
@@ -752,6 +792,7 @@ def relacaodeBens(codigo,data1,data2,planilha,rowBrasilia):
     sheet = workbook['Relação de Bens']
     for row_num, row_data in enumerate(dfBens.itertuples(), start=13):#inicio linha
         for col_num, value in enumerate(row_data, start=1):#inicio coluna
+            value = re.sub("[^a-zA-ZÀ-ÿ0-9º+-//]", " ", str(value))
             value = convert_datetime_to_stringdt(value)
             if col_num == 7:
                   value = 1
@@ -818,7 +859,7 @@ def rubricaGeral(codigo,data1,data2,planilha,rowBrasilia):
         if values['NomeRubrica'] == "Obrigações Tributárias e contributivas":
             values['NomeRubrica'] = "Obrigações Tributárias"
         if values['NomeRubrica'] == "Material Permanente e Equipamento Nacional":
-            values['NomeRubrica'] = "Equipamento Material Permanente"
+            values['NomeRubrica'] = "Equipamento Material Nacional"
         if values['NomeRubrica'] == "Serviços de Terceiros Pessoa Física":
             values['NomeRubrica'] = "Serviços de Terceiros PF"
         if values['NomeRubrica'] == f"Obrigações Tributárias e Contributivas - 20% de OST " :
@@ -839,6 +880,8 @@ def rubricaGeral(codigo,data1,data2,planilha,rowBrasilia):
             values['NomeRubrica'] = f"AuxFinanceiro Pesquisador"
         if values['NomeRubrica'] == f"Equipamentos e Material Permanente" :
             values['NomeRubrica'] = f"Equip e Mat Permanente"
+        if values['NomeRubrica'] == f"Material Permanente e Equipamento Importado" :
+            values['NomeRubrica'] = f"Equipamento Material Importado"
 
 
     
@@ -1546,6 +1589,90 @@ def ExeReceitaDespesa(planilha,codigo,data1,data2,stringTamanho):
     workbook.close()
     return tamanho,dfComPeriodo
 
+def planilhaGeral(planilha,codigo,data1,data2):
+    tabela = pegar_caminho(planilha)
+    workbook = openpyxl.load_workbook(tabela)
+    sheet2 = workbook.create_sheet(title="PlanilhaGeral")
+    workbook.save(tabela)
+    workbook.close()
+
+    dfconsultaDadosPorRubrica = consultaTabelaGigante(codigo,data1,data2)
+     
+    tamanho = len(dfconsultaDadosPorRubrica)
+
+
+    
+    tabela = pegar_caminho(planilha)
+    workbook = openpyxl.load_workbook(tabela)
+    sheet2 = workbook['PlanilhaGeral']
+
+    #print(dfconsultaDadosPorRubrica.columns.values.tolist())
+
+
+    linha = [
+    "Nº Pedido", 
+    "Tipo do Pedido", 
+    "Histórico", 
+    "Rubrica", 
+    "Valor", 
+    "Tipo", 
+    "Data Lançamento", 
+    "Data Vencimento", 
+    "Data Pagamento", 
+    "Valor Pago", 
+    "Nº Autenticação Bancária", 
+    "Nº Documento Bancário", 
+    "Data Emissao NF", 
+    "Doc. Pago", 
+    "Cód. Projeto", 
+    "Projeto", 
+    "Agência", 
+    "Conta", 
+    "Empresa / Pessoa / Projeto", 
+    "CPF/CNPJ", 
+    "Gestor", 
+    "Tipo do Lançamento", 
+    "Situação"
+    ]
+    
+    sheet2.append(linha)
+    #formatar as linhas
+    cinza = "f1f1f1"
+
+    for column in range(ord('A'), ord('Z')+1):
+        column_letter = chr(column)
+        sheet2.column_dimensions[column_letter].width = 25
+
+    for row in sheet2.iter_rows(min_row=1, max_row=len(dfconsultaDadosPorRubrica), min_col=1, max_col= 26):
+        for cell in row:
+            if cell.row == 1:
+                cell.fill = PatternFill(start_color=cinza, end_color=cinza,
+                                            fill_type = "solid")
+                cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+                cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
+                sheet2.row_dimensions[cell.row].height = 60
+            else:
+                cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+                cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
+                sheet2.row_dimensions[cell.row].height = 60
+            
+   #printar resultados
+    for row_num, row_data in enumerate(dfconsultaDadosPorRubrica.itertuples(index=False), start=2):#inicio linha
+        for col_num, value in enumerate(row_data, start=1):#inicio coluna
+                value = convert_datetime_to_stringdt(value)
+                sheet2.cell(row=row_num, column=col_num, value=value)
+                    
+                 # dfconsultaDadosPorRubricaComEstorno.index = dfconsultaDadosPorRubricaComEstorno.index + 1
+    
+    
+    
+    
+   
+                    
+    workbook.save(tabela)
+    workbook.close()
+
+
 def preencheFub(codigo,data1,data2,tabela):
     '''Preencher fub legado
         dadoRubrica = transforma em dicionario a consulta feita por sql e separa por rubricas.
@@ -1573,12 +1700,14 @@ def preencheFub(codigo,data1,data2,tabela):
 
 
     '''
+    planilhaGeral(tabela,codigo,data1,data2)
     tamanho,dataframe = ExeReceitaDespesa(tabela,codigo,data1,data2,15)
-    
     tamanhoPosicaoBrasilia,dfReceitas,dfDemonstrativoReceitas = Receita(tabela,codigo,data1,data2,tamanho,dataframe)
-    # demonstrativo(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia,dfDemonstrativoReceitas,dfReceitas)
-    #rubricaGeral(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
-    # conciliacaoBancaria(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
-    # rowRendimento= rendimentoDeAplicacao(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
-    # relacaodeBens(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
+    demonstrativo(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia,dfDemonstrativoReceitas,dfReceitas)
+    rubricaGeral(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
+    conciliacaoBancaria(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
+    rowRendimento= rendimentoDeAplicacao(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
+    relacaodeBens(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
+
+   
     

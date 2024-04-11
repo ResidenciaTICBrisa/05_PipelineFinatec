@@ -1323,7 +1323,7 @@ def estiloG(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho,tamanhoestorno)
 
 
 
-    values = ["Nº DE ORDEM","Restituidor","CNPJ/CPF",'Equivalência na Relação de Itens Apoiados',"Cheque equivalente","Data do Cheque",'Nº do Depósito','DATA DO DEPÓSITO','VALOR']
+    values = ["Nº DE ORDEM","Restituidor","CNPJ/CPF" ,'Equivalência na Relação de Itens Apoiados',"Cheque equivalente","Data do Cheque",'Nº do Depósito','DATA DO DEPÓSITO','VALOR']
     coluna = 1
     for a,b in enumerate(values):
         worksheet.cell(row=row_number, column=coluna, value=b)
@@ -1339,17 +1339,25 @@ def estiloG(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho,tamanhoestorno)
             if cell.row % 2:
                     cell.fill = PatternFill(start_color=cinza, end_color=cinza,
                                             fill_type = "solid")
+                    cell.font = Font(name="Arial", size=12, color="000000")
+                    cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
                     
             cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="hair") ,bottom=Side(border_style="hair"))
+            cell.font = Font(name="Arial", size=12, color="000000")
+            cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
             if cell.row == size+4+tamanhoestorno:
                     cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="hair") ,bottom=Side(border_style="hair"))
-
+                    cell.font = Font(name="Arial", size=12, color="000000")
+                    cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
             if cell.column == 9:        
                 cell.number_format = 'R$ #,##0.00'
                 cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="double") ,bottom=Side(border_style="hair"))
+                cell.font = Font(name="Arial", size=12, color="000000")
+                cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
                 if cell.row == size+4+tamanhoestorno:
                     cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="double") ,bottom=Side(border_style="hair"))
-           
+                    cell.font = Font(name="Arial", size=12, color="000000")
+                    cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
            
             
     #bordas,corsimcornao,money
@@ -1518,7 +1526,7 @@ def estiloG(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho,tamanhoestorno)
     workbook.save(tabela)
     workbook.close()
 
-    return size+4
+    return size+5
 
 def estiloPagamentoPessoal(tabela,tamanho,stringTamanho,tamanhoestorno):
     '''Esse estilo e considerado geral por que todas as tabelas que compõe utilizam das mesma colunas.
@@ -1799,17 +1807,26 @@ def estiloPagamentoPessoal(tabela,tamanho,stringTamanho,tamanhoestorno):
             if cell.row % 2:
                     cell.fill = PatternFill(start_color=cinza, end_color=cinza,
                                             fill_type = "solid")
-                    
+                    cell.font = Font(name="Arial", size=12, color="000000")
+                    cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
+
+            cell.font = Font(name="Arial", size=12, color="000000")
+            cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)        
             cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="hair") ,bottom=Side(border_style="hair"))
             if cell.row == size+4+tamanhoestorno:
                     cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="hair") ,bottom=Side(border_style="hair"))
+                    cell.font = Font(name="Arial", size=12, color="000000")
+                    cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
 
             if cell.column == 10:        
                 cell.number_format = 'R$ #,##0.00'
                 cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="double") ,bottom=Side(border_style="hair"))
+                cell.font = Font(name="Arial", size=12, color="000000")
+                cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
                 if cell.row == size+4+tamanhoestorno:
                     cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="double") ,bottom=Side(border_style="hair"))
-           
+                    cell.font = Font(name="Arial", size=12, color="000000")
+                    cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
            
             
     #bordas,corsimcornao,money
@@ -2261,17 +2278,26 @@ def estiloElementoDeDespesa1415Diarias(tabela,tamanho,stringTamanho,tamanhoestor
             if cell.row % 2:
                     cell.fill = PatternFill(start_color=cinza, end_color=cinza,
                                             fill_type = "solid")
-                    
+                    cell.font = Font(name="Arial", size=12, color="000000")
+                    cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)    
+
+
+            cell.font = Font(name="Arial", size=12, color="000000")
+            cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)        
             cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="hair") ,bottom=Side(border_style="hair"))
             if cell.row == size+4+tamanhoestorno:
                     cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="hair") ,bottom=Side(border_style="hair"))
-
+                    cell.font = Font(name="Arial", size=12, color="000000")
+                    cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)    
             if cell.column == 12:        
                 cell.number_format = 'R$ #,##0.00'
                 cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="double") ,bottom=Side(border_style="hair"))
+                cell.font = Font(name="Arial", size=12, color="000000")
+                cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)    
                 if cell.row == size+4+tamanhoestorno:
                     cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="double") ,bottom=Side(border_style="hair"))
-           
+                    cell.font = Font(name="Arial", size=12, color="000000")
+                    cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)    
            
             
     #bordas,corsimcornao,money
@@ -3342,6 +3368,8 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2,stringTamanho):
     workbook.save(tabela)
     workbook.close()
 
+    return size +4
+
 def estilo_rendimento_de_aplicacao(tabela,tamanho,stringTamanho):
     """Estilo da rendimento de aplicação, tabela com as colunas periodo, saldo anterior,valor aplicado no período,valor resgatado no período,rendimento bruto,imposto,rendimento luiquido,saldo.
     
@@ -3532,8 +3560,8 @@ def estilo_rendimento_de_aplicacao(tabela,tamanho,stringTamanho):
    
 
 
-    worksheet.row_dimensions[13].height = 20
-    worksheet.row_dimensions[14].height = 20
+    worksheet.row_dimensions[13].height = 25
+    worksheet.row_dimensions[14].height = 25
 
     # #stylecinza
     start_row = 11
@@ -3619,48 +3647,63 @@ def estilo_rendimento_de_aplicacao(tabela,tamanho,stringTamanho):
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
+    worksheet[celula].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
      #C
     formula = f"=SUM(C{testeRow}:C{size-1})"
     celula = f'C{size}'
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
+    worksheet[celula].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
+
     #D
     formula = f"=SUM(D{testeRow}:D{size-1})"
     celula = f'D{size}'
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
+    worksheet[celula].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
+
     #E
     formula = f"=SUM(E{testeRow}:E{size-1})"
     celula = f'E{size}'
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
+    worksheet[celula].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
+
     #F
     formula = f"=SUM(F{testeRow}:F{size-1})"
     celula = f'F{size}'
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
+    worksheet[celula].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
+
     #G
     formula = f"=SUM(G{testeRow}:G{size-1})"
     celula = f'G{size}'
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
+    worksheet[celula].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
+
     #H
     formula = f"=SUM(H{testeRow}:H{size-1})"
     celula = f'H{size}'
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
+    worksheet[celula].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
+
 
     #Total
     celula_total = F'A{size}'
     worksheet[celula_total] = f'TOTAL'
     worksheet[celula_total].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
-    worksheet[celula_total].font = Font(name="Arial", size=12, color="000000",bold=True)    
+    worksheet[celula_total].font = Font(name="Arial", size=12, color="000000",bold=True)
+    worksheet[celula].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
+    
     #borda total
 
 
@@ -3731,6 +3774,10 @@ def estilo_rendimento_de_aplicacao(tabela,tamanho,stringTamanho):
     top_left_coordenadora_cell_cargo_formula.font = Font(name="Arial", size=12, color="000000")
     top_left_coordenadora_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
     top_left_coordenadora_cell_cpf_formula.font= Font(name="Arial", size=12, color="000000")
+
+    for row in worksheet.iter_rows(min_row=15, max_row=brasilia_row-2,min_col=2,max_col=8):
+        for cell in row:
+                cell.number_format = 'R$ #,##0.00'
 
  #borda cabeçario
     for row in worksheet.iter_rows(min_row=13, max_row=brasilia_row-2,min_col=8,max_col=8):
@@ -3961,7 +4008,7 @@ def estiloRelacaoBens(tabela,tamanho,stringTamanho):
 
     #Aumentar  a altura das celulas 
     for row in worksheet.iter_rows(min_row=13, max_row=size, min_col=1, max_col=11):
-        worksheet.row_dimensions[row[0].row].height = 35
+        worksheet.row_dimensions[row[0].row].height = 45
     input3 = f'customNumber{nomeVariavel}'
     
     # MASCARA R$
@@ -3996,6 +4043,8 @@ def estiloRelacaoBens(tabela,tamanho,stringTamanho):
 
                 if cell.row == size+1:
                     cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="hair") ,bottom=Side(border_style="double") )
+                    cell.font = Font(name="Arial", size=12, color="000000")
+                    cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
 
                 if cell.column == 11:
                     cell.font = Font(name="Arial", size=12, color="000000")
@@ -4026,7 +4075,7 @@ def estiloRelacaoBens(tabela,tamanho,stringTamanho):
     worksheet.row_dimensions[size+2].height = 56.25
 
      # FORMULATOTAL
-    formula = f"=SUM(J13:J{size})"
+    formula = f"=SUM(J13:J{size+1})"
     celula = f'J{size+2}'
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
@@ -4101,7 +4150,10 @@ def estiloRelacaoBens(tabela,tamanho,stringTamanho):
     top_left_coordenadora_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
     top_left_coordenadora_cell_cpf_formula.font= Font(name="Arial", size=12, color="000000")
 
-    
+
+    for row in worksheet.iter_rows(min_row=1, max_row=coordenadora_cpf_row-1,min_col=9,max_col=10):
+        for cell in row:
+           cell.number_format = 'R$ #,##0.00'
 
     #borda cabeçario
     for row in worksheet.iter_rows(min_row=1, max_row=12,min_col=11,max_col=11):
@@ -4121,8 +4173,10 @@ def estiloRelacaoBens(tabela,tamanho,stringTamanho):
                 cell.border = Border(top=Side(border_style="none") ,left = Side(border_style="none") ,right =Side(border_style="thin",color='9e9e9e') ,bottom=Side(border_style="thin",color='9e9e9e') )
             else:
                 cell.border = Border(top=Side(border_style="none") ,left = Side(border_style="none") ,right =Side(border_style="none") ,bottom=Side(border_style="thin",color='9e9e9e') )
-
     
+  
+
+
 
 
     workbook.save(tabela)

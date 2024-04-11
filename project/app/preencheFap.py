@@ -5,12 +5,12 @@ from openpyxl.styles import Font
 import os
 from collections import defaultdict
 from .estiloFap import *
-from .preencheFub import consultaID,convert_datetime_to_string,convert_datetime_to_stringdt,formatar_data,formatarDataSemDia,formatar_cpf,check_format,pegar_caminho,pegar_pass
+from .preencheFub import planilhaGeral,consultaID,convert_datetime_to_string,convert_datetime_to_stringdt,formatar_data,formatarDataSemDia,formatar_cpf,check_format,pegar_caminho,pegar_pass
 import pandas as pd
 from sqlalchemy import create_engine
 from sqlalchemy.engine import URL
 import numpy as np  
-
+import re
 # def convert_datetime_to_string(value):
 #     if isinstance(value, datetime):
 #         return value.strftime('%d/%m/%Y')
@@ -211,8 +211,8 @@ def consultaAnexoDois(IDPROJETO,DATA1,DATA2):
 		,NumDocPago
 		,[NomeFavorecido]
 		,HisLancamento
-		,ValorPago
-        ,ValorPago
+		,CASE WHEN NomeTipoCreditoDebito = 'C' THEN -1 * ValorPago ELSE ValorPago END AS ValorPago,
+        CASE WHEN NomeTipoCreditoDebito = 'C' THEN -1 * ValorPago ELSE ValorPago END AS ValorPago
         FROM [Conveniar].[dbo].[LisLancamentoConvenio]
      WHERE [LisLancamentoConvenio].CodConvenio = ? AND [LisLancamentoConvenio].CodStatus = 27
      AND [LisLancamentoConvenio].DataPagamento BETWEEN ? AND ? and [LisLancamentoConvenio].CodRubrica not in (2,3,9,67,88,0) order by DataPagamento"""
@@ -234,7 +234,7 @@ def consultaAnexoTres(IDPROJETO,DATA1,DATA2):
     parametros = [(IDPROJETO,idprojetoComZero, DATA1, DATA2)]
     
     queryConsultaComRubrica = f"""SELECT 
-    [Data de Aquisição][dataAqui],
+    CONVERT(varchar, [Data de Aquisição], 103) AS dataAqui,
 	[Nº Nota][nota],
     [Descrição][descri],
 	[Valor de Aquisição][valorAqui],
@@ -627,6 +627,7 @@ def anexoTres(tabela,codigo,data1,data2,rowBrasilia):
     for row_num, row_data in enumerate(dfAnexoTres.itertuples(), start=11): #inicio linha
         for col_num, value in enumerate(row_data, start=1): #inicio coluna
                     value = convert_datetime_to_stringdt(value)
+                    value = re.sub("[^a-zA-ZÀ-ÿ0-9º+-//]", " ", str(value))
                     sheet.cell(row=row_num, column=col_num, value=value)  
 
 
@@ -785,7 +786,7 @@ def preencheFap(codigo,data1,data2,tabela):
 
 
    '''
-
+    planilhaGeral(tabela,codigo,data1,data2)
     rowBrasilia = anexoDois(tabela,codigo,data1,data2)
     anexoUm(tabela,codigo,data1,data2)
     anexoTres(tabela,codigo,data1,data2,rowBrasilia)

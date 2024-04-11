@@ -1185,7 +1185,7 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho,tamanhoesto
 
     #Aumentar  a altura das celulas 
     for row in worksheet.iter_rows(min_row=10, max_row=size, min_col=1, max_col=10):
-        worksheet.row_dimensions[row[0].row].height = 60
+        worksheet.row_dimensions[row[0].row].height = 75
     input3 = f'customNumber{nomeVariavel}'
     
     # MASCARA R$
@@ -1305,7 +1305,7 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho,tamanhoesto
     #bordas,corsimcornao,money
     # Set the height of each row to 60
     for row in worksheet.iter_rows(min_row=size+4, max_row=size+4+tamanhoestorno):
-        worksheet.row_dimensions[row[0].row].height = 60
+        worksheet.row_dimensions[row[0].row].height = 75
 
     min_row = size + 4
     max_row = size + 4 + tamanhoestorno

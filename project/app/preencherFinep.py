@@ -5,105 +5,13 @@ from openpyxl.styles import Font
 import os
 from collections import defaultdict
 from .estiloFINEP import *
-from .preencheFub import consultaID,convert_datetime_to_string,convert_datetime_to_stringdt,formatar_data,formatarDataSemDia,formatar_cpf,check_format,pegar_caminho,pegar_pass
+from .preencheFub import planilhaGeral,consultaNomeRubricaCodRubrica,consultaID,convert_datetime_to_string,convert_datetime_to_stringdt,formatar_data,formatarDataSemDia,formatar_cpf,check_format,pegar_caminho,pegar_pass
 import pandas as pd
 from sqlalchemy import create_engine
 from sqlalchemy.engine import URL
 import numpy as np  
-
-# def convert_datetime_to_string(value):
-#     if isinstance(value, datetime):
-#         return value.strftime('%d/%m/%Y')
-#     return value
-
-# def convert_datetime_to_stringdt(dt):
-#     # Check if the value is a pandas Timestamp
-#     if isinstance(dt, pd.Timestamp):
-#         # Convert the Timestamp to a string using strftime
-#         return dt.strftime('%d/%m/%Y')  # You can customize the format as needed
-#     else:
-#         # If it's not a Timestamp, return the original value
-#         return dt
-
-# def formatar_data(row):
-#     """ Formata a data com o mes abreviado transformando 01 em jan por exemplo
-#     """
-#     dia = row.day
-#     mes = row.month
-#     ano = row.year
-
-#     # Mapear o número do mês para o nome abreviado
-#     meses = {1: 'jan', 2: 'fev', 3: 'mar', 4: 'abr', 5: 'mai', 6: 'jun', 7: 'jul', 8: 'ago', 9: 'set', 10: 'out', 11: 'nov', 12: 'dez'}
-
-#     # Obter o nome abreviado do mês
-#     mes_abreviado = meses.get(mes, mes)
-
-#     # Criar a string formatada
-#     data_formatada = f'{dia}-{mes_abreviado}-{ano}'
-    
-#     return data_formatada
-
-# def formatarDataSemDia(row):
-#     """ Formata a data com o mes abreviado transformando 01 em jan por exemplo
-#     """
-#     dia = row.day
-#     mes = row.month
-#     ano = row.year
-
-#     # Mapear o número do mês para o nome abreviado
-#     meses = {1: 'jan', 2: 'fev', 3: 'mar', 4: 'abr', 5: 'mai', 6: 'jun', 7: 'jul', 8: 'ago', 9: 'set', 10: 'out', 11: 'nov', 12: 'dez'}
-
-#     # Obter o nome abreviado do mês
-#     mes_abreviado = meses.get(mes, mes)
-
-#     # Criar a string formatada
-#     data_formatada = f'{mes_abreviado}-{ano}'
-    
-#     return data_formatada
-
-# def formatar_cpf(cpf):
-#     cpf_formatado = f'{cpf[:3]}.{cpf[3:6]}.{cpf[6:9]}-{cpf[9:]}'
-#     return cpf_formatado
-
-# def check_format(time_data, format='%Y-%m-%d'):
-#     try:
-#         # Try to parse the time_data using the specified format
-#         datetime.strptime(time_data, format)
-#         return True  # The time_data matches the format
-#     except ValueError:
-#         return False  # The time_data does not match the format
-    
-# def pegar_caminho(subdiretorio):
-#     # Obtém o caminho do script atual
-#     arq_atual = os.path.abspath(__file__)
-    
-#     # Obtém o diretório do script
-#     app = os.path.dirname(arq_atual)
-    
-#     # Obtém o diretório pai do script
-#     project = os.path.dirname(app)
-    
-#     # Obtém o diretório pai do projeto
-#     pipeline = os.path.dirname(project)
-    
-#     # Junta o diretório pai do projeto com o subdiretório desejado
-#     caminho_pipeline = os.path.join(pipeline, subdiretorio)
-    
-#     return caminho_pipeline
-
-# def pegar_pass(chave):
-#     arq_atual = os.path.abspath(__file__)
-#     app = os.path.dirname(arq_atual)
-#     project = os.path.dirname(app)
-#     pipeline = os.path.dirname(project)
-#     desktop = os.path.dirname(pipeline)
-#     caminho_pipeline = os.path.join(desktop, chave)
-    
-#     return caminho_pipeline
-
-
-#     # return records
-
+from openpyxl.cell.cell import ILLEGAL_CHARACTERS_RE
+import re
 
 
 
@@ -272,7 +180,7 @@ def consultaestiloElementoDeDespesa1415Diarias(IDPROJETO,DATA1,DATA2):
             DATA1 = Data Inicial Selecinado pelo Usuario
             DATA2 = Data Final Selecionado pelo Usuario
     '''
-    file_path = pegar_pass("passss.txt")
+    file_path = pegar_pass("passs.txt")
     conStr = ''
     with open(file_path, 'r') as file:
             conStr = file.readline().strip()
@@ -281,11 +189,10 @@ def consultaestiloElementoDeDespesa1415Diarias(IDPROJETO,DATA1,DATA2):
     engine = create_engine(connection_url)
 
     parametros = [(IDPROJETO, DATA1, DATA2)]
+    parametros2 = [(IDPROJETO, DATA1, DATA2,IDPROJETO, DATA1, DATA2)]
     
     queryConsultaSemEstorno = f"""
-    SELECT
-     [LisPessoa].[NomePessoa]
-	  ,
+        SELECT [LisPessoa].[NomePessoa],
 
 	    CASE WHEN LEN([LisPessoa].CPFCNPJ) > 11 THEN STUFF(STUFF(STUFF(STUFF([LisPessoa].CPFCNPJ, 3, 0, '.'), 7, 0, '.'), 11, 0, '/'), 16, 0, '-') 
         WHEN LEN([LisPessoa].CPFCNPJ) = 11 THEN STUFF(STUFF(STUFF([LisPessoa].CPFCNPJ, 4, 0, '.'), 8, 0, '.'), 12, 0, '-') ELSE [LisPessoa].CPFCNPJ END AS FormattedFavorecidoCPFCNPJ,
@@ -309,23 +216,25 @@ def consultaestiloElementoDeDespesa1415Diarias(IDPROJETO,DATA1,DATA2):
 		AND [NomeTipoDestino] = 'Chegada') AS Destino
 
 
-      ,[LisPagamentoDiaria].[QuantDiaria]
-      ,[LisPagamentoDiaria].[ObsPedido]
-      ,[LisConvenioItemAprovado].[DescConvenioItemAprovado]
-	  ,[LisLancamentoConvenio].NumChequeDeposito
-	  ,LisLancamentoConvenio.DataPagamento
+        ,[LisPagamentoDiaria].[QuantDiaria]
+        ,[LisPagamentoDiaria].[ObsPedido]
+        ,[LisConvenioItemAprovado].[DescConvenioItemAprovado]
+        ,[LisLancamentoConvenio]. NumDocPago
+        ,[LisLancamentoConvenio]. DataEmissao
+	    ,[LisLancamentoConvenio].NumChequeDeposito
+	    ,[LisLancamentoConvenio].DataPagamento
         ,[LisLancamentoConvenio].ValorPago
-    FROM [Conveniar].[dbo].[LisLancamentoConvenio]
-    INNER JOIN [Conveniar].[dbo].[LisPagamentoDiaria] ON [LisLancamentoConvenio].[NumDocFinConvenio] = [LisPagamentoDiaria].[NumPedido]
-    INNER JOIN [Conveniar].[dbo].[LisPessoa] ON [LisPagamentoDiaria].[CodPessoaFavorecida] = [LisPessoa].[CodPessoa]
-    LEFT JOIN [Conveniar].[dbo].[PlanoTrabalhoLancamento] ON [LisLancamentoConvenio].[CodLancamento] = [PlanoTrabalhoLancamento].[CodLancamentoGerado] 
-    LEFT JOIN [Conveniar].[dbo].[LisConvenioItemAprovado] ON [PlanoTrabalhoLancamento].[CodConvenioItemAprovado] = [LisConvenioItemAprovado].[CodConvenioItemAprovado] 
+        FROM [Conveniar].[dbo].[LisLancamentoConvenio]
+        INNER JOIN [Conveniar].[dbo].[LisPagamentoDiaria] ON [LisLancamentoConvenio].[NumDocFinConvenio] = [LisPagamentoDiaria].[NumPedido]
+        INNER JOIN [Conveniar].[dbo].[LisPessoa] ON [LisPagamentoDiaria].[CodPessoaFavorecida] = [LisPessoa].[CodPessoa]
+        LEFT JOIN [Conveniar].[dbo].[PlanoTrabalhoLancamento] ON [LisLancamentoConvenio].[CodLancamento] = [PlanoTrabalhoLancamento].[CodLancamentoGerado] 
+        LEFT JOIN [Conveniar].[dbo].[LisConvenioItemAprovado] ON [PlanoTrabalhoLancamento].[CodConvenioItemAprovado] = [LisConvenioItemAprovado].[CodConvenioItemAprovado] 
 
 
-    WHERE [Cod Projeto] = ? 
-    AND [CodStatus] = 27
-    AND LisLancamentoConvenio.DataPagamento BETWEEN ? AND ? 
-    Order by LisLancamentoConvenio.DataPagamento"""
+        WHERE LisLancamentoConvenio.CodConvenio = ? 
+        AND LisLancamentoConvenio.CodStatus = 27
+        AND LisLancamentoConvenio.DataPagamento BETWEEN ? AND ? 
+        """
 
     queryConsultaComEstorno = f"""
     SELECT
@@ -354,11 +263,14 @@ def consultaestiloElementoDeDespesa1415Diarias(IDPROJETO,DATA1,DATA2):
 		AND [NomeTipoDestino] = 'Chegada') AS Destino
 
 
-      ,[LisPagamentoDiaria].[QuantDiaria]
-      ,[LisPagamentoDiaria].[ObsPedido]
-      ,[LisConvenioItemAprovado].[DescConvenioItemAprovado]
-	  ,[LisLancamentoConvenio].NumChequeDeposito
-	  ,LisLancamentoConvenio.DataPagamento
+    ,[LisPagamentoDiaria].[QuantDiaria]
+    ,[LisPagamentoDiaria].[ObsPedido]
+    ,[LisConvenioItemAprovado].[DescConvenioItemAprovado]
+	,[LisLancamentoConvenio].NumChequeDeposito
+	,[LisLancamentoConvenio]. NumDocPago
+    ,[LisLancamentoConvenio]. DataEmissao
+	,[LisLancamentoConvenio].NumChequeDeposito
+	,[LisLancamentoConvenio].DataPagamento
     ,[LisLancamentoConvenio].ValorPago
     FROM [Conveniar].[dbo].[LisLancamentoConvenio]
     INNER JOIN [Conveniar].[dbo].[LisPagamentoDiaria] ON [LisLancamentoConvenio].[NumDocFinConvenio] = [LisPagamentoDiaria].[NumPedido]
@@ -378,14 +290,14 @@ def consultaestiloElementoDeDespesa1415Diarias(IDPROJETO,DATA1,DATA2):
     AND LisLancamentoConvenio.DataPagamento BETWEEN ? AND ? 
 
 
-
     Order by LisLancamentoConvenio.DataPagamento"""
 
 
-    dfConsultaBens = pd.read_sql(queryConsultaSemEstorno, engine, params=parametros)
+    dfConsultaDiaria = pd.read_sql(queryConsultaSemEstorno, engine, params=parametros)
+    dfConsultaDiariaEstorno = pd.read_sql(queryConsultaComEstorno, engine, params=parametros2)
 
 
-    return dfConsultaBens   
+    return dfConsultaDiaria ,dfConsultaDiariaEstorno
 #ok    
 def consultaGeral30(IDPROJETO,DATA1,DATA2,codigoRubrica):
 
@@ -405,6 +317,8 @@ def consultaGeral30(IDPROJETO,DATA1,DATA2,codigoRubrica):
     engine = create_engine(connection_url)
     parametros = [(IDPROJETO, DATA1, DATA2,codigoRubrica)]
     parametrosComRubricaEstorno  = [(IDPROJETO, DATA1, DATA2,codigoRubrica,IDPROJETO,DATA1, DATA2,codigoRubrica,)]
+    parametrosPJ=[(IDPROJETO, DATA1, DATA2)]
+    parametrosPJestorno=[(IDPROJETO, DATA1, DATA2,IDPROJETO, DATA1, DATA2)]
 
     queryConsultaComRubrica = f"""SELECT NomeFavorecido,
      CASE WHEN LEN(FavorecidoCPFCNPJ) > 11 THEN STUFF(STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 3, 0, '.'), 7, 0, '.'), 11, 0, '/'), 16, 0, '-') 
@@ -448,12 +362,56 @@ def consultaGeral30(IDPROJETO,DATA1,DATA2,codigoRubrica):
      AND [LisLancamentoConvenio].CodRubrica = ? 
      
      order by DataPagamento """
+    
+    queryConsultaPJDOA = f"""SELECT NomeFavorecido,
+     CASE WHEN LEN(FavorecidoCPFCNPJ) > 11 THEN STUFF(STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 3, 0, '.'), 7, 0, '.'), 11, 0, '/'), 16, 0, '-') 
+     WHEN LEN(FavorecidoCPFCNPJ) = 11 THEN STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 4, 0, '.'), 8, 0, '.'), 12, 0, '-') ELSE FavorecidoCPFCNPJ END AS FormattedFavorecidoCPFCNPJ,
+     [LisConvenioItemAprovado].[DescConvenioItemAprovado],
+     
+     NumDocPago,
+     DataEmissao,
+     NumChequeDeposito,
+     DataPagamento,
+     ValorPago 
+     FROM [Conveniar].[dbo].[LisLancamentoConvenio] 
+     LEFT JOIN [Conveniar].[dbo].[PlanoTrabalhoLancamento] ON [LisLancamentoConvenio].[CodLancamento] = [PlanoTrabalhoLancamento].[CodLancamentoGerado] 
+     LEFT JOIN [Conveniar].[dbo].[LisConvenioItemAprovado] ON [PlanoTrabalhoLancamento].[CodConvenioItemAprovado] = [LisConvenioItemAprovado].[CodConvenioItemAprovado] 
+     WHERE [LisLancamentoConvenio].CodConvenio = ? 
+     AND [LisLancamentoConvenio].CodStatus = 27
+     AND [LisLancamentoConvenio].DataPagamento BETWEEN ? AND ? 
+     AND LOWER([LisLancamentoConvenio].HisLancamento) NOT LIKE '%estorno%' 
+     and [LisLancamentoConvenio].CodRubrica IN (57,75,26) order by DataPagamento"""
+    
+    queryConsultaPJDOAEstorno = f"""SELECT NomeFavorecido
+    ,CASE WHEN LEN(FavorecidoCPFCNPJ) > 11 THEN STUFF(STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 3, 0, '.'), 7, 0, '.'), 11, 0, '/'), 16, 0, '-')
+     WHEN LEN(FavorecidoCPFCNPJ) = 11 THEN STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 4, 0, '.'), 8, 0, '.'), 12, 0, '-') ELSE FavorecidoCPFCNPJ END AS FormattedFavorecidoCPFCNPJ,
+     HisLancamento,
+     NumChequeDeposito,
+     DataPagamento, 
+     ValorPago FROM [Conveniar].[dbo].[LisLancamentoConvenio]
+     LEFT JOIN [Conveniar].[dbo].[PlanoTrabalhoLancamento] ON [LisLancamentoConvenio].[CodLancamento] = [PlanoTrabalhoLancamento].[CodLancamentoGerado]
+     LEFT JOIN [Conveniar].[dbo].[LisConvenioItemAprovado] ON [PlanoTrabalhoLancamento].[CodConvenioItemAprovado] = [LisConvenioItemAprovado].[CodConvenioItemAprovado]
+     WHERE 
+     [LisLancamentoConvenio].CodConvenio = ? 
+     AND CodStatus = 27 
+     AND NomeTipoCreditoDebito = 'C' 
+     AND DataPagamento BETWEEN ? AND ? 
+     and [LisLancamentoConvenio].CodRubrica IN (57,75,26) 
+     OR 
+     CodStatus = 27
+     AND [LisLancamentoConvenio].CodConvenio = ?  
+     AND DataPagamento BETWEEN ? AND ? 
+     AND LOWER(HisLancamento)  LIKE '%estorno%'
+     AND [LisLancamentoConvenio].CodRubrica IN (57,75,26)
+     
+     order by DataPagamento """
 
     dfconsultaDadosPorRubrica = pd.read_sql(queryConsultaComRubrica, engine, params=parametros)
     dfconsultaDadosPorRubricaComEstorno = pd.read_sql(queryConsultaComRubricaEstorno,engine, params=parametrosComRubricaEstorno)
-  
+    dfPJDOA = pd.read_sql(queryConsultaPJDOA, engine, params=parametrosPJ)
+    dfPJDOAESTORNO = pd.read_sql(queryConsultaPJDOAEstorno,engine, params=parametrosPJestorno)
     
-    return dfconsultaDadosPorRubrica,dfconsultaDadosPorRubricaComEstorno
+    return dfPJDOA,dfPJDOAESTORNO,dfconsultaDadosPorRubrica,dfconsultaDadosPorRubricaComEstorno
 #ok
 def consultaestiloElementoDeDespesa33PassagemEDespesa(IDPROJETO,DATA1,DATA2):
      
@@ -496,10 +454,11 @@ def consultaestiloElementoDeDespesa33PassagemEDespesa(IDPROJETO,DATA1,DATA2):
     queryConsultaComRubricaEstorno = f"""SELECT NomeFavorecido
     ,CASE WHEN LEN(FavorecidoCPFCNPJ) > 11 THEN STUFF(STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 3, 0, '.'), 7, 0, '.'), 11, 0, '/'), 16, 0, '-')
      WHEN LEN(FavorecidoCPFCNPJ) = 11 THEN STUFF(STUFF(STUFF(FavorecidoCPFCNPJ, 4, 0, '.'), 8, 0, '.'), 12, 0, '-') ELSE FavorecidoCPFCNPJ END AS FormattedFavorecidoCPFCNPJ,
-     HisLancamento,
+    [LisConvenioItemAprovado].[DescConvenioItemAprovado],
      NumChequeDeposito,
      DataPagamento, 
-     ValorPago FROM [Conveniar].[dbo].[LisLancamentoConvenio]
+     ValorPago 
+     FROM [Conveniar].[dbo].[LisLancamentoConvenio]
      LEFT JOIN [Conveniar].[dbo].[PlanoTrabalhoLancamento] ON [LisLancamentoConvenio].[CodLancamento] = [PlanoTrabalhoLancamento].[CodLancamentoGerado]
      LEFT JOIN [Conveniar].[dbo].[LisConvenioItemAprovado] ON [PlanoTrabalhoLancamento].[CodConvenioItemAprovado] = [LisConvenioItemAprovado].[CodConvenioItemAprovado]
      WHERE 
@@ -544,7 +503,7 @@ def consultaBens(IDPROJETO,DATA1,DATA2):
     queryConsultaComRubrica = f"""
     SELECT [Descrição][descri],
     [Patrimônio][patri],
-    [Data de Aquisição][dataAqui],
+    CONVERT(varchar, [Data de Aquisição], 103) AS dataAqui,
     [Nº Nota][nota],
     [Localização][localiza]
    ,[Descrição],
@@ -593,8 +552,12 @@ def consultaConciliacaoBancaria(IDPROJETO, DATA1, DATA2):
     INNER JOIN  [Conveniar].[dbo].[LisPagamentoDespesaConvenio] ON [DocFinConvPagDespesa].[CodPedido] = [LisPagamentoDespesaConvenio].[CodPedido]
     INNER JOIN  [Conveniar].[dbo].[LisPagamentoDespesaConvenioAdministrativa] ON [LisPagamentoDespesaConvenio].CodDespesaConvenio = [LisPagamentoDespesaConvenioAdministrativa].CodDespesaConvenio
     AND [LisPagamentoDespesaConvenio].CodConvenio = [LisPagamentoDespesaConvenioAdministrativa].CodConvenio
-    WHERE [LisLancamentoConvenio].CodConvenio = ? AND [LisLancamentoConvenio].CodStatus = 27 AND [LisLancamentoConvenio].CodRubrica = 9 AND [LisLancamentoConvenio].DataPagamento BETWEEN ? AND ?
-    AND LOWER([LisLancamentoConvenio].HisLancamento) NOT LIKE '%estorno%' order by [LisLancamentoConvenio].DataPagamento"""
+    WHERE [LisLancamentoConvenio].CodConvenio = ? 
+    AND [LisLancamentoConvenio].CodStatus = 27 
+    AND [LisLancamentoConvenio].CodRubrica = 9 
+    AND [LisLancamentoConvenio].DataPagamento BETWEEN ? AND ?
+    AND LOWER([LisLancamentoConvenio].HisLancamento) NOT LIKE '%estorno%' 
+    order by [LisLancamentoConvenio].DataPagamento"""
 
     consultaComEstorno = f"""SELECT 
     HisLancamento ,
@@ -646,6 +609,7 @@ def consultaRendimentosAplicacao(IDPROJETO,DATA1,DATA2):
 
 
 #preencher
+#ok
 def demostrativereceitaedepesaA2(codigo,data1,data2,planilha):
     #carrega planilha e colocca o estilo e retorna a localização da row brasilia
     tabela = pegar_caminho(planilha)
@@ -926,7 +890,7 @@ def demostrativereceitaedepesaA2(codigo,data1,data2,planilha):
 
 
     return rowBrasilia
-
+#ok
 def relatorioExecFinanceiraA1(codigo,data1,data2,planilha,rowBrasilia):
     tabela = pegar_caminho(planilha)
     workbook = openpyxl.load_workbook(tabela)
@@ -1072,7 +1036,7 @@ def relatorioExecFinanceiraA1(codigo,data1,data2,planilha,rowBrasilia):
                 
             
     
-    print(dfMerged)
+
 
     for row_num, row_data in enumerate(dfMerged.itertuples(index = False), start=12):#inicio linha
         for col_num, value in enumerate(row_data, start=1):#inicio coluna
@@ -1158,7 +1122,7 @@ def relatorioExecFinanceiraA1(codigo,data1,data2,planilha,rowBrasilia):
     
   
     return 0
-
+#ok
 def PagamentoDePessoal(codigo,data1,data2,planilha,rowBrasilia):
     tabela = pegar_caminho(planilha)
     workbook = openpyxl.load_workbook(tabela)
@@ -1173,10 +1137,43 @@ def PagamentoDePessoal(codigo,data1,data2,planilha,rowBrasilia):
     tamanhoestorno = len(dfconsultaDadosPorRubricaComEstorno)
 
 
-    estiloPagamentoPessoal(tabela,tamanho,rowBrasilia,tamanhoestorno)
+    rowEstorno = estiloPagamentoPessoal(tabela,tamanho,rowBrasilia,tamanhoestorno)
+
+    tabela = pegar_caminho(planilha)
+    workbook = openpyxl.load_workbook(tabela)
+    sheet2 = workbook['Pagamento de Pessoal']
+
+    dfconsultaDadosPorRubrica.index = dfconsultaDadosPorRubrica.index + 1
+    for row_num, row_data in enumerate(dfconsultaDadosPorRubrica.itertuples(), start=16):#inicio linha
+        for col_num, value in enumerate(row_data, start=1):#inicio coluna
+                value = convert_datetime_to_stringdt(value)
+                sheet2.cell(row=row_num, column=col_num, value=value)
+                    
+                 # dfconsultaDadosPorRubricaComEstorno.index = dfconsultaDadosPorRubricaComEstorno.index + 1
+    
+    
+    
+    
+                    #
+    dfconsultaDadosPorRubricaComEstorno.insert(0, "col1", None)
+    dfconsultaDadosPorRubricaComEstorno.insert(5, 'Col2', None)
+    dfconsultaDadosPorRubricaComEstorno.insert(6, 'Col3', None)
+    
+     
+    for row_num, row_data in enumerate(dfconsultaDadosPorRubricaComEstorno.itertuples(index=False), start=rowEstorno): #inicio linha
+        for col_num, value in enumerate(row_data, start=1): #inicio coluna
+                        
+           
+            value = convert_datetime_to_stringdt(value)
+            sheet2.cell(row=row_num, column=col_num, value=value)    
+                    
+    workbook.save(tabela)
+    workbook.close()
+
+
 
     return 0
-
+#ok
 def ElementoDeDespesa1415Diarias(codigo,data1,data2,planilha,rowBrasilia):
     tabela = pegar_caminho(planilha)
     workbook = openpyxl.load_workbook(tabela)
@@ -1184,23 +1181,195 @@ def ElementoDeDespesa1415Diarias(codigo,data1,data2,planilha,rowBrasilia):
     workbook.save(tabela)
     workbook.close()
 
-    dfconsultaDadosPorRubrica,dfconsultaDadosPorRubricaComEstorno = consultaPagamentoPessoal(codigo,data1,data2)
+    dfconsultaDadosPorRubrica,dfconsultaDadosPorRubricaComEstorno = consultaestiloElementoDeDespesa1415Diarias(codigo,data1,data2)
      
     tamanho = len(dfconsultaDadosPorRubrica)
     tamanhoestorno = len(dfconsultaDadosPorRubricaComEstorno)
 
 
-    estiloElementoDeDespesa1415Diarias(tabela,tamanho,rowBrasilia,tamanhoestorno)
+    rowEstorno = estiloElementoDeDespesa1415Diarias(tabela,tamanho,rowBrasilia,tamanhoestorno)
+
+
+    
+    tabela = pegar_caminho(planilha)
+    workbook = openpyxl.load_workbook(tabela)
+    sheet2 = workbook['Elemento de Despesa 14.15']
+
+    #print(dfconsultaDadosPorRubrica.columns.values.tolist())
+
+    dfconsultaDadosPorRubrica.index = dfconsultaDadosPorRubrica.index + 1
+    for row_num, row_data in enumerate(dfconsultaDadosPorRubrica.itertuples(), start=16):#inicio linha
+        for col_num, value in enumerate(row_data, start=1):#inicio coluna
+                value = convert_datetime_to_stringdt(value)
+                sheet2.cell(row=row_num, column=col_num, value=value)
+                    
+                 # dfconsultaDadosPorRubricaComEstorno.index = dfconsultaDadosPorRubricaComEstorno.index + 1
+    
+    
+    
+    
+                    #
+    dfconsultaDadosPorRubricaComEstorno.insert(0, "col1", None)
+    dfconsultaDadosPorRubricaComEstorno.insert(5, 'Col2', None)
+    dfconsultaDadosPorRubricaComEstorno.insert(6, 'Col3', None)
+    
+     
+    for row_num, row_data in enumerate(dfconsultaDadosPorRubricaComEstorno.itertuples(index=False), start=rowEstorno): #inicio linha
+        for col_num, value in enumerate(row_data, start=1): #inicio coluna
+                        
+           
+            value = convert_datetime_to_stringdt(value)
+            sheet2.cell(row=row_num, column=col_num, value=value)    
+                    
+    workbook.save(tabela)
+    workbook.close()
+
 
 
 
     return 0
-
-
+#ok
 def geral30(codigo,data1,data2,planilha,rowBrasilia):
+    tabela = pegar_caminho(planilha)
+    dfNomeRubricaCodigoRubrica = consultaNomeRubricaCodRubrica(codigo, data1, data2)
+    for index, values in dfNomeRubricaCodigoRubrica.iterrows():
+        dfPJDOA,dfPJDOAESTORNO,dfConsultaProjeto ,dfconsultaDadosPorRubricaComEstorno= consultaGeral30(codigo,data1,data2,values['CodRubrica'])
 
-     dfconsultaDadosPorRubrica,dfconsultaDadosPorRubricaComEstorno = consultaGeral30(codigo,data1,data2)
+        if values['NomeRubrica'] == "Obrigações Tributárias e contributivas":
+            values['NomeRubrica'] = "Obrigações Tributárias"
+        if values['NomeRubrica'] == "Material Permanente e Equipamento Nacional":
+            values['NomeRubrica'] = "Equipamento Material Nacional"
+        if values['NomeRubrica'] == "Serviços de Terceiros Pessoa Física":
+            values['NomeRubrica'] = "Serviços de Terceiros PF"
+        if values['NomeRubrica'] == f"Obrigações Tributárias e Contributivas - 20% de OST " :
+            values['NomeRubrica'] = f"Obrigações Trib. - Encargos 20%"
+        if values['NomeRubrica'] == f"Obrigações Tributárias e contributivas " :
+            values['NomeRubrica'] = f"Obrigações Tributárias"
+        if values['NomeRubrica'] == f"Outros Serviços de Terceiros - Pessoa Física" :
+            values['NomeRubrica'] = f"Outros Serviços Terceiros - PF"
+        if values['NomeRubrica'] == f"Outros Serviços de Terceiros - Pessoa Jurídica " :
+            values['NomeRubrica'] = f"Outros Serviços Terceiros - PJ"
+        if values['NomeRubrica'] == f"Passagens e Despesas com Locomoção" :
+            values['NomeRubrica'] = f"Passagens e Desp. Locomoção"
+        if values['NomeRubrica'] == f"Despesas Operacionais e Administrativas - Finatec" :
+            values['NomeRubrica'] = f"Despesas Operacionais"
+        if values['NomeRubrica'] == f"Despesas Operacionais e Administrativas - Finatec" :
+            values['NomeRubrica'] = f"Despesas Operacionais"
+        if values['NomeRubrica'] == f"Auxílio Financeiro a Pesquisador" :
+            values['NomeRubrica'] = f"AuxFinanceiro Pesquisador"
+        if values['NomeRubrica'] == f"Equipamentos e Material Permanente" :
+            values['NomeRubrica'] = f"Equip e Mat Permanente"
+        if values['NomeRubrica'] == f"Material Permanente e Equipamento Importado" :
+            values['NomeRubrica'] = f"Equipamento Material Importado"
 
+        
+
+    
+
+        if values['NomeRubrica'] == "Outros Serviços Terceiros - PJ" or values['NomeRubrica'] == "Serviços de Terceiros Pessoa Jurídica":
+            values['NomeRubrica'] = "Outros Serviços Terceiros -PJ"
+            nomeTabela = values['NomeRubrica']
+            tituloStyle = values['NomeRubrica']
+            workbook = openpyxl.load_workbook(tabela)
+            sheet2 = workbook.create_sheet(title=f"{values['NomeRubrica']}")
+            workbook.save(tabela)
+            workbook.close()
+
+            
+            tamanho = len(dfPJDOA)
+            tamanhoRetorno = len(dfPJDOAESTORNO)
+            
+            rownovo = estiloG(tabela,tamanho,tituloStyle,nomeTabela,rowBrasilia,tamanhoRetorno)
+            workbook = openpyxl.load_workbook(tabela)
+            sheet2 = workbook[values['NomeRubrica']]
+            dfPJDOA.index = dfPJDOA.index + 1
+            for row_num, row_data in enumerate(dfPJDOA.itertuples(), start=16):#inicio linha
+                for col_num, value in enumerate(row_data, start=1):#inicio coluna
+                    value = convert_datetime_to_stringdt(value)
+                    sheet2.cell(row=row_num, column=col_num, value=value)
+            
+            dfPJDOAESTORNO.insert(0, "col1", None)
+            dfPJDOAESTORNO.insert(4, 'Col2', None)
+            dfPJDOAESTORNO.insert(4, 'Col3', None)
+            
+
+            
+            rownovo = rownovo 
+            for row_num, row_data in enumerate(dfPJDOAESTORNO.itertuples(index=False), start=rownovo): #inicio linha
+                for col_num, value in enumerate(row_data, start=1): #inicio coluna
+                    if col_num == 5:
+                        continue
+                    value = convert_datetime_to_stringdt(value)
+                    sheet2.cell(row=row_num, column=col_num, value=value)    
+            
+            workbook.save(tabela)
+            workbook.close()
+             
+     
+        else:
+            excluded_values = ["Rendimentos de Aplicações Financeiras", 
+                  "Despesas Financeiras", 
+                  "Receitas", 
+                  "Devolução de Recursos", 
+                  "Outros Serviços Terceiros - PJ", 
+                  "Despesas Operacionais",
+                  'Passagens e Despesas com Locomoção',
+                  "Diárias",
+                  "Diárias - Celetistas",
+                  "Diárias - Colaborador Eventual no País",
+                  "Diárias - Pesquisadores",
+                  "Diárias - Servidores Públicos",
+                  "Diárias Internacional",
+                  "Passagens e Desp. Locomoção",
+                  'Pagamento de Pessoal',
+                  "Diárias Nacionais"]
+            
+            if values['NomeRubrica'] not in excluded_values:
+
+                    nomeTabela = values['NomeRubrica']
+                    tituloStyle = values['NomeRubrica']
+                    workbook = openpyxl.load_workbook(tabela)
+                    sheet2 = workbook.create_sheet(title=f"{values['NomeRubrica']}")
+                    workbook.save(tabela)
+                    workbook.close()
+
+                    tamanho = len(dfConsultaProjeto)
+                    tamanhoRetorno = len(dfconsultaDadosPorRubricaComEstorno)
+                    
+                  
+                    
+                    rowEstorno = estiloG(tabela,tamanho,tituloStyle,nomeTabela,rowBrasilia,tamanhoRetorno)
+                    workbook = openpyxl.load_workbook(tabela)
+                    sheet2 = workbook[values['NomeRubrica']]
+                    dfConsultaProjeto.index = dfConsultaProjeto.index + 1
+                    for row_num, row_data in enumerate(dfConsultaProjeto.itertuples(), start=16):#inicio linha
+                        for col_num, value in enumerate(row_data, start=1):#inicio coluna
+                            value = convert_datetime_to_stringdt(value)
+                            sheet2.cell(row=row_num, column=col_num, value=value)
+                    
+                    # dfconsultaDadosPorRubricaComEstorno.index = dfconsultaDadosPorRubricaComEstorno.index + 1
+                    rowEstorno = rowEstorno 
+                    #
+                    tamanhoDf = len(dfconsultaDadosPorRubricaComEstorno)
+                    dfconsultaDadosPorRubricaComEstorno.insert(0, "col1", None)
+                    dfconsultaDadosPorRubricaComEstorno.insert(4, 'Col2', None)
+                    dfconsultaDadosPorRubricaComEstorno.insert(4, 'Col3', None)
+                    
+                    
+                    
+                    
+                    
+                    for row_num, row_data in enumerate(dfconsultaDadosPorRubricaComEstorno.itertuples(index=False), start=rowEstorno): #inicio linha
+                        for col_num, value in enumerate(row_data, start=1): #inicio coluna
+                        
+                            if col_num == 5:
+                                continue
+                            value = convert_datetime_to_stringdt(value)
+                            sheet2.cell(row=row_num, column=col_num, value=value)    
+                    
+                    workbook.save(tabela)
+                    workbook.close()
+#ok
 def PassagensEDespesa33(codigo,data1,data2,planilha,rowBrasilia):
     tabela = pegar_caminho(planilha)
     workbook = openpyxl.load_workbook(tabela)
@@ -1210,11 +1379,52 @@ def PassagensEDespesa33(codigo,data1,data2,planilha,rowBrasilia):
     dfconsultaDadosPorRubrica,dfconsultaDadosPorRubricaComEstorno = consultaestiloElementoDeDespesa33PassagemEDespesa(codigo,data1,data2)
     tamanho = len(dfconsultaDadosPorRubrica)
     tamanhoestorno = len(dfconsultaDadosPorRubricaComEstorno)
-    estiloElementoDeDespesa33PassagensEDespesa(tabela,tamanho,rowBrasilia,tamanhoestorno)
+    rowEstorno = estiloElementoDeDespesa33PassagensEDespesa(tabela,tamanho,rowBrasilia,tamanhoestorno)
      
-    return 0
+    
+    tabela = pegar_caminho(planilha)
+    workbook = openpyxl.load_workbook(tabela)
+    sheet2 = workbook['Elemento de Despesa 33']
 
+    dfconsultaDadosPorRubrica.index = dfconsultaDadosPorRubrica.index + 1
+    dfconsultaDadosPorRubrica.insert(2, "col1", None)
+    dfconsultaDadosPorRubrica.insert(3, 'Col2', None)
+    dfconsultaDadosPorRubrica.insert(4, 'Col3', None)
+    for row_num, row_data in enumerate(dfconsultaDadosPorRubrica.itertuples(), start=16):#inicio linha
+        for col_num, value in enumerate(row_data, start=1):#inicio coluna
+                value = convert_datetime_to_stringdt(value)
+                sheet2.cell(row=row_num, column=col_num, value=value)
+                    
+                 # dfconsultaDadosPorRubricaComEstorno.index = dfconsultaDadosPorRubricaComEstorno.index + 1
+    
+    
+    
+    
+                    #
+    dfconsultaDadosPorRubricaComEstorno.insert(0, "col0", None)
+    dfconsultaDadosPorRubricaComEstorno.insert(3, "col1", None)
+    dfconsultaDadosPorRubricaComEstorno.insert(4, 'Col2', None)
+    dfconsultaDadosPorRubricaComEstorno.insert(5, 'Col3', None)
+    dfconsultaDadosPorRubricaComEstorno.insert(7, 'Col4', None)
+    dfconsultaDadosPorRubricaComEstorno.insert(8, 'Col5', None)
+     
+
+    for row_num, row_data in enumerate(dfconsultaDadosPorRubricaComEstorno.itertuples(index=False), start=rowEstorno): #inicio linha
+        for col_num, value in enumerate(row_data, start=1): #inicio coluna
+                        
+           
+            value = convert_datetime_to_stringdt(value)
+            sheet2.cell(row=row_num, column=col_num, value=value)    
+                    
+    workbook.save(tabela)
+    workbook.close()
+
+
+
+    return 0
+#ok
 def relacaoBensAdquiridosA5(codigo,data1,data2,planilha,rowBrasilia):
+    #consult aprojeto 07318 monte de bens imobilizaos, 6995,7311
     tabela = pegar_caminho(planilha)
     workbook = openpyxl.load_workbook(tabela)
     sheet2 = workbook.create_sheet(title="Relação Bens Adquiridos A.5")
@@ -1222,8 +1432,33 @@ def relacaoBensAdquiridosA5(codigo,data1,data2,planilha,rowBrasilia):
     workbook.close()
     dfConsultaBens = consultaBens(codigo,data1,data2)
     estiloRelacaoBens(tabela,len(dfConsultaBens),rowBrasilia)
-    return 0
+    
+    
+    
+    dfConsultaBens.insert(6, "col1", 1)
 
+   
+
+   
+
+    workbook = openpyxl.load_workbook(tabela)
+    sheet = workbook['Relação Bens Adquiridos A.5']
+    for row_num, row_data in enumerate(dfConsultaBens.itertuples(), start=15):#inicio linha
+         for col_num, value in enumerate(row_data, start=1):#inicio coluna
+            value = re.sub("[^a-zA-ZÀ-ÿ0-9º+-//]", " ", str(value))
+            value = convert_datetime_to_stringdt(value)
+            
+            sheet.cell(row=row_num, column=col_num, value=value)
+
+
+    
+    
+
+    workbook.save(tabela)
+    workbook.close()
+
+    return 0
+#ok
 def rendimentoAplicacao(codigo,data1,data2,planilha,rowBrasilia):
     tabela = pegar_caminho(planilha)
     workbook = openpyxl.load_workbook(tabela)
@@ -1235,8 +1470,27 @@ def rendimentoAplicacao(codigo,data1,data2,planilha,rowBrasilia):
     merged_df = pd.merge(dfConsultaRendimentoAplicacao, dfConsultaImposto, on='DataPagamento')
     estilo_rendimento_de_aplicacao(tabela,len(merged_df),rowBrasilia)
     
-    return 0
+    workbook = openpyxl.load_workbook(tabela)
+    sheet = workbook['Rendimento de Aplicação']
 
+    merged_df['data_formatada'] = merged_df['DataPagamento'].apply(formatarDataSemDia)
+    merged_df['DataPagamento'] = merged_df['data_formatada']
+    merged_df = merged_df.drop('data_formatada', axis=1)
+
+    for row_num, row_data in enumerate(merged_df.itertuples(index=False), start=15):#inicio linha
+        for col_num, value in enumerate(row_data, start=1):#inicio coluna 
+            if col_num == 2:
+                col_num = 5
+            if col_num == 3:
+                col_num = 6
+            sheet.cell(row=row_num, column=col_num, value=value).number_format = 'R$ #,##0.00'
+
+
+    workbook.save(tabela)
+    workbook.close()
+        
+    return 0
+#ok
 def conciliacaoBancaria(codigo,data1,data2,planilha,rowBrasilia):
     tabela = pegar_caminho(planilha)
     workbook = openpyxl.load_workbook(tabela)
@@ -1244,11 +1498,25 @@ def conciliacaoBancaria(codigo,data1,data2,planilha,rowBrasilia):
     workbook.save(tabela)
     workbook.close()
     dfSemEstorno,dfComEstorno = consultaConciliacaoBancaria(codigo,data1,data2)
-    estilo_conciliacoes_bancaria(tabela,len(dfComEstorno),len(dfSemEstorno),rowBrasilia)
-    return 0
+    estorno = estilo_conciliacoes_bancaria(tabela,len(dfSemEstorno)+1,len(dfComEstorno),rowBrasilia)
+    
+    workb = openpyxl.load_workbook(tabela)
+    worksheet333 = workb["Conciliação Bancária A.3"]
 
+    for row_num, row_data in enumerate(dfSemEstorno.itertuples(index=False), start=19):#inicio linha
+        for col_num, value in enumerate(row_data, start=1):#inicio coluna
+                worksheet333.cell(row=row_num, column=col_num, value=value)
+    
+    for row_num, row_data in enumerate(dfComEstorno.itertuples(index=False), start=estorno):#inicio linha
+        for col_num, value in enumerate(row_data, start=1):#inicio coluna
+                worksheet333.cell(row=row_num, column=col_num, value=value)
+
+    workb.save(tabela)
+    workb.close            
+    return 0
+#ok
 def preencheFinep(codigo,data1,data2,tabela):
-    '''Preenche a planilha fap
+    '''Preenche a planilha finep
 
         Argumentos: 
             codigo = CodConvenio na tabela nova, corresponde ao codigo do projeto
@@ -1256,12 +1524,15 @@ def preencheFinep(codigo,data1,data2,tabela):
             DATA2 = Data Final Selecionado pelo Usuario
             tabela = tabela a ser preenchida  extensão xlsx
    '''
+    planilhaGeral(tabela,codigo,data1,data2)
     rowBrasilia = demostrativereceitaedepesaA2(codigo,data1,data2,tabela)
     relatorioExecFinanceiraA1(codigo,data1,data2,tabela,rowBrasilia)
     PagamentoDePessoal(codigo,data1,data2,tabela,rowBrasilia)
     ElementoDeDespesa1415Diarias(codigo,data1,data2,tabela,rowBrasilia)
     PassagensEDespesa33(codigo,data1,data2,tabela,rowBrasilia)
+    geral30(codigo,data1,data2,tabela,rowBrasilia)
     relacaoBensAdquiridosA5(codigo,data1,data2,tabela,rowBrasilia)
     rendimentoAplicacao(codigo,data1,data2,tabela,rowBrasilia)
     conciliacaoBancaria(codigo,data1,data2,tabela,rowBrasilia)
+    
     
