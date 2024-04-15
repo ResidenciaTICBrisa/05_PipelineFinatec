@@ -27,6 +27,7 @@ from django.contrib.admin.models import LogEntry
 from .models import UserActivity
 from django.core.paginator import Paginator
 from django.contrib import messages
+from .testeDelete import deletar_arquivos_em_pasta
 # from backend.consultas_oracledb import getlimitedRows,getallRows
 from backend.consultaSQLServer import consultaCodConvenio, consultaTudo
 import pandas as pd
@@ -164,7 +165,10 @@ def projeto_legacy(request):
     # Obtém o diretório atual do script
     diretorio_atual = os.path.dirname(os.path.abspath(__file__))
 
-    # Combina o diretório atual com o caminho para a pasta "planilhas_preenchidas" e o nome do arquivo
+    #deletar planilhas preendhidas
+    testeCaminho = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas)
+    deletar_arquivos_em_pasta(testeCaminho)
+
 
     #corrigindo datas
     consultaInicial = convert_datetime_to_string2(consultaInicio)
@@ -173,6 +177,7 @@ def projeto_legacy(request):
     print(consultaFinal)
 
     if nome.nome_template == "fundep":
+    # Combina o diretório atual com o caminho para a pasta "planilhas_preenchidas" e o nome do arquivo
         testeCaminhoFundep = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"ModeloFUNDEP.xlsx")
         preenche_planilha(testeCaminhoFundep,dict_final,codigo,template_id,consultaInicial,consultaFinal,stringNomeFinanciador='FUNDEP')
     if nome.nome_template == "fub":
@@ -241,6 +246,11 @@ def projeto_legacy(request):
     # return render(request,'projeto.html',{
     #     "templates":Template.objects.all(),
     # })
+
+    #delete the files
+    
+  
+
 
 def custom_logout(request):
     logout(request)

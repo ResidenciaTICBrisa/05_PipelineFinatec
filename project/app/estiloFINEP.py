@@ -1130,6 +1130,7 @@ def estiloG(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho,tamanhoestorno)
     worksheet['A11'] = f'Elemento de Despesa'
     worksheet['A11'].font = Font(name="Arial", size=12, color="000000",bold=True)
     worksheet['A11'].alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
+
     
     #ElementosdeDespesa
     
@@ -1215,7 +1216,7 @@ def estiloG(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho,tamanhoestorno)
 
   
     
-    valores = ["Nº DE ORDEM","CREDOR","CNPJ/CPF",'Equivalência na Relação de Itens Apoiados','CHEQUE OU EQUIVALENTE ESTORNADO',"DATA DO CHEQUE",'Nº DO DEPÓSITO','DATA DO DEPÓSITO','VALOR']
+    valores = ["Nº DE ORDEM","CREDOR","CNPJ/CPF",'Equivalência na Relação de Itens Apoiados','Nº DA NOTA FISCAL OU EQUIVALENTE',"DATA DA NOTA FISCAL",'Nº DO CHEQUE OU EQUIVALENTE','DATA DA COMPENSAÇÃO DO CHEQUE','VALOR']
     col = 1
     for a,b in enumerate(valores):
         worksheet.cell(row=linha_number, column=col, value=b)
@@ -1323,7 +1324,7 @@ def estiloG(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho,tamanhoestorno)
 
 
 
-    values = ["Nº DE ORDEM","Restituidor","CNPJ/CPF" ,'Equivalência na Relação de Itens Apoiados',"Cheque equivalente","Data do Cheque",'Nº do Depósito','DATA DO DEPÓSITO','VALOR']
+    values = ["Nº DE ORDEM","RESTITUIDOR","CNPJ/CPF" ,'Equivalência na Relação de Itens Apoiados',"CHEQUE OU EQUIVALENTE ESTORNADO","DATA DO CHEQUE",'Nº DO DEPÓSITO','DATA DO DEPÓSITO','VALOR']
     coluna = 1
     for a,b in enumerate(values):
         worksheet.cell(row=row_number, column=coluna, value=b)

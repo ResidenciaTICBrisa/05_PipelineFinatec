@@ -1127,6 +1127,8 @@ def PagamentoDePessoal(codigo,data1,data2,planilha,rowBrasilia):
     tabela = pegar_caminho(planilha)
     workbook = openpyxl.load_workbook(tabela)
     sheet2 = workbook.create_sheet(title="Pagamento de Pessoal")
+    sheet2['B11'] = f'Pagamento de Pessoal (Vencimentos e Vantagens Fixas, Obrigações Patronais e Benefícios)'
+    sheet2['B11'].font = Font(name="Arial", size=12, color="000000",bold=True)
     workbook.save(tabela)
     workbook.close()
 
@@ -1178,6 +1180,8 @@ def ElementoDeDespesa1415Diarias(codigo,data1,data2,planilha,rowBrasilia):
     tabela = pegar_caminho(planilha)
     workbook = openpyxl.load_workbook(tabela)
     sheet2 = workbook.create_sheet(title="Elemento de Despesa 14.15")
+    sheet2['B11'] = f'14/15 - Diárias (Pessoal Civil/Militar)'
+    sheet2['B11'].font = Font(name="Arial", size=12, color="000000",bold=True)
     workbook.save(tabela)
     workbook.close()
 
@@ -1272,6 +1276,8 @@ def geral30(codigo,data1,data2,planilha,rowBrasilia):
             tituloStyle = values['NomeRubrica']
             workbook = openpyxl.load_workbook(tabela)
             sheet2 = workbook.create_sheet(title=f"{values['NomeRubrica']}")
+            sheet2['B11'] = values['NomeRubrica']
+            sheet2['B11'].font = Font(name="Arial", size=12, color="000000",bold=True)
             workbook.save(tabela)
             workbook.close()
 
@@ -1330,6 +1336,8 @@ def geral30(codigo,data1,data2,planilha,rowBrasilia):
                     tituloStyle = values['NomeRubrica']
                     workbook = openpyxl.load_workbook(tabela)
                     sheet2 = workbook.create_sheet(title=f"{values['NomeRubrica']}")
+                    sheet2['B11'] = values['NomeRubrica']
+                    sheet2['B11'].font = Font(name="Arial", size=12, color="000000",bold=True)
                     workbook.save(tabela)
                     workbook.close()
 
@@ -1374,6 +1382,8 @@ def PassagensEDespesa33(codigo,data1,data2,planilha,rowBrasilia):
     tabela = pegar_caminho(planilha)
     workbook = openpyxl.load_workbook(tabela)
     sheet2 = workbook.create_sheet(title="Elemento de Despesa 33")
+    sheet2['B11'] = f'33 - Passagens e Despesas com Locomoção'
+    sheet2['B11'].font = Font(name="Arial", size=12, color="000000",bold=True)
     workbook.save(tabela)
     workbook.close()
     dfconsultaDadosPorRubrica,dfconsultaDadosPorRubricaComEstorno = consultaestiloElementoDeDespesa33PassagemEDespesa(codigo,data1,data2)
