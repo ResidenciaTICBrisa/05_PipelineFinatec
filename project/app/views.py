@@ -1,5 +1,6 @@
 import os
 import datetime
+
 import re
 from django.shortcuts import render
 from django.contrib.auth.decorators import user_passes_test
@@ -15,14 +16,18 @@ from django.views.generic import TemplateView
 from .models import Template, Employee
 # from .oracle_cruds import consultaPorID
 from .new_dev import preenche_planilha,extrair,pegar_caminho
-from .preenche_fundep import preenche_fundep
-from .preencheFub import consultaID,preencheFub
 from .preencherFinep import preencheFinep
-from .capa import inserir_round_retangulo
+from .preencheFundep import preenche_fundep
+from .preencheFap import preencheFap
+from .preencheFub import consultaID,preencheFub
+#from .preencherFinep import preencheFinep
+from .capaFub import inserir_round_retangulo
+from .capaGeral import inserir_round_retanguloGeral
 from django.contrib.admin.models import LogEntry
 from .models import UserActivity
 from django.core.paginator import Paginator
 from django.contrib import messages
+from .testeDelete import deletar_arquivos_em_pasta
 # from backend.consultas_oracledb import getlimitedRows,getallRows
 from backend.consultaSQLServer import consultaCodConvenio, consultaTudo
 import pandas as pd
@@ -34,6 +39,14 @@ def convert_datetime_to_string(value):
     if isinstance(value, datetime.datetime):
         return value.strftime('%d/%m/%Y')
     return value
+def convert_datetime_to_string2(value):
+       # Convert string to datetime object
+    date_object = datetime.datetime.strptime(value, "%Y-%m-%d")
+    
+    # Format the datetime object to the desired format
+    formatted_date = date_object.strftime("%d.%m.%Y")
+    
+    return formatted_date
 
 def extract_strings(input_string):
     # Use regular expressions to find the text before and after '@@'
@@ -152,55 +165,64 @@ def projeto_legacy(request):
     # Obtém o diretório atual do script
     diretorio_atual = os.path.dirname(os.path.abspath(__file__))
 
-    # Combina o diretório atual com o caminho para a pasta "planilhas_preenchidas" e o nome do arquivo
+    #deletar planilhas preendhidas
+    testeCaminho = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas)
+    deletar_arquivos_em_pasta(testeCaminho)
+
+
+    #corrigindo datas
+    consultaInicial = convert_datetime_to_string2(consultaInicio)
+    consultaFinal = convert_datetime_to_string2(consultaFim)
+    
+    print(consultaFinal)
 
     if nome.nome_template == "fundep":
+    # Combina o diretório atual com o caminho para a pasta "planilhas_preenchidas" e o nome do arquivo
         testeCaminhoFundep = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"ModeloFUNDEP.xlsx")
-        preenche_planilha(testeCaminhoFundep,dict_final)
+        preenche_planilha(testeCaminhoFundep,dict_final,codigo,template_id,consultaInicial,consultaFinal,stringNomeFinanciador='FUNDEP')
     if nome.nome_template == "fub":
         testeCaminhoFub = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"Modelo_Fub.xlsx")
-        preenche_planilha(testeCaminhoFub,dict_final)
-    if nome.nome_template == "opas":
-        opas = os.path.join(caminho_pasta_planilhas, "ModeloOPAS.xlsx")
-        preenche_planilha(opas,dict_final)
+        preenche_planilha(testeCaminhoFub,dict_final,codigo,template_id,consultaInicial,consultaFinal,stringNomeFinanciador='FUB')
     if nome.nome_template == "fap":
-        fap = os.path.join(caminho_pasta_planilhas, "ModeloFAP.xlsx")
-        preenche_planilha(fap,dict_final)
+        testeCaminhoFap = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"modeloFap.xlsx")
+        preenche_planilha(testeCaminhoFap,dict_final,codigo,template_id,consultaInicial,consultaFinal,stringNomeFinanciador='FAP')
+        
     if nome.nome_template == "finep":
-        print("foi auqi")
-        finep = os.path.join(diretorio_atual, caminho_pasta_planilhas,"ModeloFINEP.xlsx")
-        preenche_planilha(finep,dict_final)
+        testeCaminhoFap = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"modeloFinep.xlsx")
+        preenche_planilha(testeCaminhoFap,dict_final,codigo,template_id,consultaInicial,consultaFinal,stringNomeFinanciador='FINEP')
 
 
     file_path = None
     print(f"download{template_id}")
     if template_id == '1':
-        keys = ['NomeFavorecido','FavorecidoCPFCNPJ','NomeTipoLancamento',
-                'HisLancamento','NumDocPago','DataEmissao','NumChequeDeposito',
-                'DataPagamento', 'ValorPago']
-        file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"planilhaPreenchidaModelo_Fub.xlsx")
 
+        # keys = ['NomeFavorecido','FavorecidoCPFCNPJ','NomeTipoLancamento',
+        #         'HisLancamento','NumDocPago','DataEmissao','NumChequeDeposito',
+        #         'DataPagamento', 'ValorPago']
+        file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"PC - FUB - {codigo} - {consultaInicial} a {consultaFinal}.xlsx")
         preencheFub(codigo,convert_datetime_to_string(consultaInicio),convert_datetime_to_string(consultaFim),file_path)
         inserir_round_retangulo(file_path,consultaInicio,consultaFim,db_fin)
+
     elif template_id == '2':
         keys = ['NomeFavorecido','FavorecidoCPFCNPJ','NomeRubrica','NumDocPago',
                 'DataEmissao','NumChequeDeposito','DataPagamento', 'ValorPago']
-        file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"planilhaPreenchidaModeloFUNDEP.xlsx")
-
+        file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas,f"PC - FUNDEP - {codigo} - {consultaInicial} a {consultaFinal}.xlsx")
         #file_path = pegar_caminho('/home/ubuntu/Desktop/05_PipelineFinatec/planilhas_preenchidas/planilhaPreenchidaModeloFUNDEP.xlsx')
         preenche_fundep(codigo,convert_datetime_to_string(consultaInicio),convert_datetime_to_string(consultaFim),keys,file_path)
-    elif template_id == '3':
-        p_opas = os.path.join(caminhoPastaPlanilhasPreenchidas, "ModeloOPAS.xlsx")
-        file_path = p_opas
-    elif template_id == '4':
-        p_fap = os.path.join(caminhoPastaPlanilhasPreenchidas, "ModeloFAP.xlsx")
-        file_path = pegar_caminho(p_fap)
+
     elif template_id == '5':
-        print("ta aqui")
-        print("TAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-        file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"planilhaPreenchidaModeloFINEP.xlsx")
+        
+        file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"PC - FINEP - {codigo} - {consultaInicial} a {consultaFinal}.xlsx")
+        #file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"PC - FAP - {codigo} - {consultaInicial} a {consultaFinal}.xlsx")
         preencheFinep(codigo,convert_datetime_to_string(consultaInicio),convert_datetime_to_string(consultaFim),file_path)
-        inserir_round_retangulo(file_path,consultaInicio,consultaFim,db_fin)
+        inserir_round_retanguloGeral(file_path,consultaInicio,consultaFim,db_fin)
+
+    elif template_id == '4':
+        
+        file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"PC - FAP - {codigo} - {consultaInicial} a {consultaFinal}.xlsx")
+        preencheFap(codigo,convert_datetime_to_string(consultaInicio),convert_datetime_to_string(consultaFim),file_path)
+        inserir_round_retanguloGeral(file_path,consultaInicio,consultaFim,db_fin)
+
     else:
         # Handle cases where 'download' doesn't match any expected values
         return HttpResponse("Invalid download request", status=400)
@@ -209,7 +231,6 @@ def projeto_legacy(request):
     if os.path.exists(file_path):
         with open(file_path, 'rb') as f:
             response = HttpResponse(f.read(), content_type='application/octet-stream')
-            #print(f'aaaa{os.path.basename(file_path)}')
             response['Content-Disposition'] = f'attachment; filename="{os.path.basename(file_path)}"'
 
             # adicionando log de consulta
@@ -225,6 +246,11 @@ def projeto_legacy(request):
     # return render(request,'projeto.html',{
     #     "templates":Template.objects.all(),
     # })
+
+    #delete the files
+    
+  
+
 
 def custom_logout(request):
     logout(request)

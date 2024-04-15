@@ -3,6 +3,7 @@ from datetime import datetime,date
 import openpyxl
 import os
 from .estilo_fundep import estilo_fundep
+from .preencheFub import planilhaGeral
 from openpyxl.styles import Font,Alignment
 def check_format(time_data, format='%Y-%m-%d'):
     try:
@@ -98,7 +99,7 @@ def getCollumNames(IDPROJETO, DATA1, DATA2):
     
 
   
-    sql = f"SELECT * FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? AND CodRubrica NOT LIKE 2  ORDER BY DataPagamento"
+    sql = f"SELECT * FROM [Conveniar].[dbo].[LisLancamentoConvenio] WHERE CodConvenio = ? AND CodStatus = 27 AND DataPagamento BETWEEN ? AND ? AND CodRubrica NOT IN(2,3,0)  ORDER BY DataPagamento"
 
 
     cursor.execute(sql, IDPROJETO, DATA1, DATA2)
@@ -134,6 +135,7 @@ def retornavalores(list_of_dicts,keys):
 
 
 def preenche_fundep(codigo,data1,data2,keys,planilha):
+    planilhaGeral(planilha,codigo,data1,data2)
     dados_db = get_values_from_dict(codigo,data1,data2)
     input_date = []
     output_date_str = []

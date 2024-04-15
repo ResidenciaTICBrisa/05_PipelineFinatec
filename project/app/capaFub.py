@@ -314,7 +314,7 @@ def inserir_round_retangulo(planilha,data1,data2,dicionariofin):
 
     worksheet.add_image(images[16], "B34")#gerengte
     worksheet.merge_cells('B34:D36')
-    worksheet['B34'] = 'COORDENADORA DE GESTÃO DE PROJETOS'
+    worksheet['B34'] = 'GERENTE DE PROJETOS'
     worksheet['B34'].font = Font(name="Tahoma", size=10, color="204c80",bold=True)
     worksheet['B34'].alignment = Alignment(horizontal="left",vertical="center",wrap_text=True,shrink_to_fit=True  )
     worksheet.add_image(images[17], "E34")#gerente

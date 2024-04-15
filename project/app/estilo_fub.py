@@ -65,27 +65,27 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
     sheet['A1'].alignment = Alignment(horizontal="center",vertical="center")
     sheet['A1'].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
     
-    sheet.merge_cells('A3:F3')
+    sheet.merge_cells('A3:I3')
     sheet['A3'] = "='Receita x Despesa'!A3:I3"
     sheet['A3'].font = Font(name="Arial", size=12, color="000000")
     sheet['A3'].alignment = Alignment(horizontal="left",vertical="center")
 
-    sheet.merge_cells('A4:F4')
+    sheet.merge_cells('A4:I4')
     sheet['A4'] = "='Receita x Despesa'!A4:I4"
     sheet['A4'].font = Font(name="Arial", size=12, color="000000")
     sheet['A4'].alignment = Alignment(horizontal="left",vertical="center")
     
-    sheet.merge_cells('A5:F5')
+    sheet.merge_cells('A5:I5')
     sheet['A5'] = "='Receita x Despesa'!A5:I5"
     sheet['A5'].font = Font(name="Arial", size=12, color="000000")
     sheet['A5'].alignment = Alignment(horizontal="left",vertical="center")
     
-    sheet.merge_cells('A6:F6')
+    sheet.merge_cells('A6:I6')
     sheet['A6'] = "='Receita x Despesa'!A6:I6"
     sheet['A6'].font = Font(name="Arial", size=12, color="000000")
     sheet['A6'].alignment = Alignment(horizontal="left",vertical="center")
     
-    sheet.merge_cells('A7:F7')
+    sheet.merge_cells('A7:I7')
     sheet['A7'] = "='Receita x Despesa'!A7:I7"
     sheet['A7'].font = Font(name="Arial", size=12, color="000000")
     sheet['A7'].alignment = Alignment(horizontal="left",vertical="center")
@@ -154,6 +154,7 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
             if cell.column == 8:
                 stringSaldo = f"=F{cell.row} - G{cell.row}"
                 cell.value = stringSaldo
+              
 
             if cell.column == 5:
                 stringPorcentagem = f"=IFERROR(C{cell.row}/B{cell.row}, 0)"
@@ -294,6 +295,7 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
     sheet[apliFinStringCelula] = apliFinString
 
 
+    #barra de total nova 22/02
     totalString = f"TOTAL"
     totalStringCelula = f'A{size2+5}'
     sheet[totalStringCelula] = totalString
@@ -302,7 +304,16 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
     cell.fill = PatternFill(start_color='9c9c9c', end_color='9c9c9c',fill_type = "solid")
     cell.alignment = Alignment(horizontal="center",vertical="center")
 
-      #total total
+    
+    totalString = f"TOTAL"
+    totalStringCelula = f'A{size2+9}'
+    sheet[totalStringCelula] = totalString
+    cell=sheet[totalStringCelula]
+    cell.font = Font(name="Arial", size=12, color="000000",bold = True)
+    cell.fill = PatternFill(start_color='9c9c9c', end_color='9c9c9c',fill_type = "solid")
+    cell.alignment = Alignment(horizontal="center",vertical="center")
+
+    #barra total nova 
 
     formula = f"=SUM(B{size2}, B15)"
     sheet[f'B{size2+5}'] = formula
@@ -323,38 +334,14 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
     sheet[f'H{size2+5}'] = formula
 
 
-    #barra de total nova 22/02
-    totalString = f"TOTAL"
-    totalStringCelula = f'A{size2+9}'
-    sheet[totalStringCelula] = totalString
-    cell=sheet[totalStringCelula]
-    cell.font = Font(name="Arial", size=12, color="000000",bold = True)
-    cell.fill = PatternFill(start_color='9c9c9c', end_color='9c9c9c',fill_type = "solid")
-    cell.alignment = Alignment(horizontal="center",vertical="center")
+    #sheet[f'H{size2+5}']
+    sheet.row_dimensions[size2 + 6].height = 1
+    
 
-    #soma barra total nova
-
-    formula = f"=SUM(B{size2+8})"
-    sheet[f'B{size2+9}'] = formula
-
-    formula = f"=SUM(C{size2+8})"
-    sheet[f'C{size2+9}'] = formula
-
-    formula = f"=SUM(D{size2+8})"
-    sheet[f'D{size2+9}'] = formula
-
-    formula = f"=SUM(F{size2+8})"
-    sheet[f'F{size2+9}'] = formula
-
-    formula = f"=SUM(G{size2+8})"
-    sheet[f'G{size2+9}'] = formula
-
-    formula = f"=SUM(H{size2+8})"
-    sheet[f'H{size2+9}'] = formula
 
     #3.UTILIZAÇÂO DE RENDIMENTOS
-    formula = f"=SUM(A{size2+8})"
-    sheet[f'A{size2+7}'] = formula
+    # formula = f"=SUM(A{size2+8})"
+    # sheet[f'A{size2+7}'] = formula
 
     formula = f"=SUM(B{size2+8})"
     sheet[f'B{size2+7}'] = formula
@@ -373,6 +360,19 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
 
     formula = f"=SUM(H{size2+8})"
     sheet[f'H{size2+7}'] = formula
+
+     ##SOMATORIO NEGATIVO C
+    Formula = f'=SUMIF(D16:D{size}, "<0")'
+    sheet[f'C{size2+8}']= Formula
+    ##############
+
+    ##SOMATORIO NEGATIVO G
+    Formula = f'=SUMIF(H16:H{size}, "<0")'
+    sheet[f'G{size2+8}'] = Formula
+    ##############
+
+
+    
  
         #totais
     #total espesas correntes linha 15
@@ -411,28 +411,33 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
     sheet[f'H{size2}'] = formula
 
 
-    #Total Utilização de rendimentos
+    #Total  abaixo de Utilização de rendimentos
 
     formula = f"=B{size2+8}"
-    sheet[f'B{size2+5}'] = formula
+    sheet[f'B{size2+9}'] = formula
 
     formula = f"=C{size2+8}"
-    sheet[f'C{size2+5}'] = formula
+    sheet[f'C{size2+9}'] = formula
 
     formula = f"=D{size2+8}"
-    sheet[f'D{size2+5}'] = formula
+    sheet[f'D{size2+9}'] = formula
 
     formula = f"=F{size2+8}"
-    sheet[f'F{size2+5}'] = formula
+    sheet[f'F{size2+9}'] = formula
 
     formula = f"=G{size2+8}"
-    sheet[f'G{size2+5}'] = formula
+    sheet[f'G{size2+9}'] = formula
 
     formula = f"=H{size2+8}"
-    sheet[f'H{size2+5}'] = formula
+    sheet[f'H{size2+9}'] = formula
 
+   
 
-
+    #somasaldo h
+    stringSaldo = f"=SUM(F{size2+8}+G{size2+8})"
+   
+    sheet[f"H{size2+8}"] = stringSaldo
+    
 
      #brasilia
     brasilia_row = size2 + 11
@@ -516,7 +521,66 @@ def estiloExecReceitaDespesa(tabela,tamanho,stringTamanho):
                 cell.border = Border(top=Side(border_style="none") ,left = Side(border_style="none") ,right =Side(border_style="none") ,bottom=Side(border_style="medium") )
 
 
-   
+    
+     #bordinha branca
+
+    for row in sheet.iter_rows(min_row=1,max_row=coordenadora_cpf_row,min_col=1,max_col=10):
+        for cell in row:
+           
+                if cell.row == 15:
+                    cell.border = Border(left=Side(border_style='thin', color='FFFFFF'),  # white
+                    right=Side(border_style='thin', color='FFFFFF'),
+                    top=Side(border_style='thin', color='FFFFFF'),
+                    bottom=Side(border_style='thin', color='FFFFFF'))
+                    if cell.column == 9:
+                        cell.border = Border(left=Side(border_style='thin', color='FFFFFF'),  # white
+                        right=Side(border_style='medium', color='000000'),
+                        top=Side(border_style='thin', color='FFFFFF'),
+                        bottom=Side(border_style='thin', color='FFFFFF'))
+                if cell.row == size2:
+                    cell.border = Border(left=Side(border_style='thin', color='FFFFFF'),  # white
+                    right=Side(border_style='thin', color='FFFFFF'),
+                    top=Side(border_style='thin', color='FFFFFF'),
+                    bottom=Side(border_style='thin', color='FFFFFF'))
+                    if cell.column == 9:
+                        cell.border = Border(left=Side(border_style='thin', color='FFFFFF'),  # white
+                        right=Side(border_style='medium', color='000000'),
+                        top=Side(border_style='thin', color='FFFFFF'),
+                        bottom=Side(border_style='thin', color='FFFFFF'))
+                    
+                if cell.row == size2+5:
+                    cell.border = Border(left=Side(border_style='thin', color='FFFFFF'),  # white
+                    right=Side(border_style='thin', color='FFFFFF'),
+                    top=Side(border_style='thin', color='FFFFFF'),
+                    bottom=Side(border_style='thin', color='FFFFFF'))
+                    if cell.column == 9:
+                        cell.border = Border(left=Side(border_style='thin', color='FFFFFF'),  # white
+                        right=Side(border_style='medium', color='000000'),
+                        top=Side(border_style='thin', color='FFFFFF'),
+                        bottom=Side(border_style='thin', color='FFFFFF'))
+                if cell.row == size2+7:
+                    cell.border = Border(left=Side(border_style='thin', color='FFFFFF'),  # white
+                    right=Side(border_style='thin', color='FFFFFF'),
+                    top=Side(border_style='thin', color='FFFFFF'),
+                    bottom=Side(border_style='thin', color='FFFFFF'))
+                    if cell.column == 9:
+                        cell.border = Border(left=Side(border_style='thin', color='FFFFFF'),  # white
+                        right=Side(border_style='medium', color='000000'),
+                        top=Side(border_style='thin', color='FFFFFF'),
+                        bottom=Side(border_style='thin', color='FFFFFF'))
+                if cell.row == size2+9:
+                    cell.border = Border(left=Side(border_style='thin', color='FFFFFF'),  # white
+                    right=Side(border_style='thin', color='FFFFFF'),
+                    top=Side(border_style='thin', color='FFFFFF'),
+                    bottom=Side(border_style='thin', color='FFFFFF'))
+                    if cell.column == 9:
+                        cell.border = Border(left=Side(border_style='thin', color='FFFFFF'),  # white
+                        right=Side(border_style='medium', color='000000'),
+                        top=Side(border_style='thin', color='FFFFFF'),
+                        bottom=Side(border_style='thin', color='FFFFFF'))
+
+    for row in sheet.iter_rows(min_row=1,max_row=coordenadora_cpf_row,min_col=10,max_col=10):
+        cell.border = Border(left=Side(border_style='medium', color='000000'))
 
     workbook.save(tabela)
     workbook.close()
@@ -803,7 +867,8 @@ def estiloReceitaXDespesa(tabela,stringTamanho):
     sheet[tarifaBancariaSaldoEmStringCelula] = tarifaBancariaSaldoEmString
     cell=sheet[saldoConciliadoEmStringCelula]
     cell.font = Font(name="Arial", size=12, color="000000",bold = True)
-    cell=sheet[f'J{size2+6}']
+    cell=sheet[f'I{size2+6}']
+    cell.value= f"=I{size2+7}-I{size2+8}"
     cell.font = Font(name="Arial", size=12, color="000000",bold = True)
     cell.number_format = 'R$ #,##0.00'
     
@@ -876,9 +941,6 @@ def estiloReceitaXDespesa(tabela,stringTamanho):
     cell.number_format = 'R$ #,##0.00'
 
 
-
-
-
     #Barraazul
 
     barrazulMerge = f"A{size2+14}:J{size2+14}"
@@ -890,6 +952,7 @@ def estiloReceitaXDespesa(tabela,stringTamanho):
                                             fill_type = "solid")
     cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
 
+   
 
      #brasilia
     brasilia_row = size2 + 16
@@ -1122,7 +1185,7 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho,tamanhoesto
 
     #Aumentar  a altura das celulas 
     for row in worksheet.iter_rows(min_row=10, max_row=size, min_col=1, max_col=10):
-        worksheet.row_dimensions[row[0].row].height = 60
+        worksheet.row_dimensions[row[0].row].height = 75
     input3 = f'customNumber{nomeVariavel}'
     
     # MASCARA R$
@@ -1228,16 +1291,21 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho,tamanhoesto
     for rows in worksheet.iter_rows(min_row=size+5, max_row=size+4+tamanhoestorno, min_col=1, max_col=10):
         for cell in rows:
             if cell.row % 2:
+                    cell.font = Font(name="Arial", size=12, color="000000")
                     cell.fill = PatternFill(start_color=cinza, end_color=cinza,
                                             fill_type = "solid")
             if cell.column == 10:        
                 cell.number_format = 'R$ #,##0.00'
+                cell.font = Font(name="Arial", size=12, color="000000")
+
             cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="hair") ,bottom=Side(border_style="hair"))
-            
+            cell.font = Font(name="Arial", size=12, color="000000")
+
+
     #bordas,corsimcornao,money
     # Set the height of each row to 60
     for row in worksheet.iter_rows(min_row=size+4, max_row=size+4+tamanhoestorno):
-        worksheet.row_dimensions[row[0].row].height = 60
+        worksheet.row_dimensions[row[0].row].height = 75
 
     min_row = size + 4
     max_row = size + 4 + tamanhoestorno
@@ -1278,7 +1346,7 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho,tamanhoesto
 
     #total_formula
     total_formula_row = size + 7 + tamanhoestorno
-    total_formulaa = f'=J{size+2}'
+    total_formulaa = f'=J{size+2} - J{sub_total2_row }'
     total_formula_row_celula = f'J{total_formula_row}'
     worksheet[total_formula_row_celula].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")
     worksheet[total_formula_row_celula].font = Font(name="Arial", size=12, color="000000",bold=True)
@@ -1328,9 +1396,9 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho,tamanhoesto
     top_left_diretor_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
     top_left_diretor_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
     #Coordenadora
-    coordenadora_row = size + 9 + tamanhoestorno
-    coordenadora_cargo_row = size + 10 + tamanhoestorno
-    coordenadora_cpf_row = size + 11 + tamanhoestorno
+    coordenadora_row = size + 9 + tamanhoestorno 
+    coordenadora_cargo_row = size + 10 + tamanhoestorno  
+    coordenadora_cpf_row = diretor_cpf_row
     coordenadora_nome_formula = f"='Receita x Despesa'!H{stringTamanho+3}"
     coordenadora_cargo_formula = f"='Receita x Despesa'!H{stringTamanho+4}"
     coordenadora_cpf_formula = f"='Receita x Despesa'!H{stringTamanho+5}"
@@ -1395,7 +1463,7 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2,stringTamanho):
     worksheet = workbook['Conciliação Bancária']
     
     #size e o tamanho da quantidade de arquivos recebido no argumento tamanho mais o tamanho do cabecario que no caso da fub e de 16
-    size = tamanho + 16
+    size = tamanho + 17
     cinza = "d9d9d9"
     cinza_escuro = "bfbfbf"
     azul = "336394"
@@ -1474,7 +1542,7 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2,stringTamanho):
         sttring = f"D{i}:F{i}"
         worksheet.merge_cells(sttring)
         
-    for i in range(size+3,size+4+tamanho2):
+    for i in range(size+3,size+4+tamanho2+1):
         sttring = f"D{i}:F{i}"
         worksheet.merge_cells(sttring)
 
@@ -1546,10 +1614,30 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2,stringTamanho):
     for rows in worksheet.iter_rows(min_row=row_number, max_row=row_number, min_col=1, max_col=6):
             for cell in rows:
                 cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-                
+                cell.alignment = Alignment(horizontal="center",vertical="center")
+
+    #saldo anterior restituição
+    row_restituicao = f'A{size+4}'         
+    worksheet[row_restituicao] = 'Saldo anterior'
+    worksheet[row_restituicao].font = Font(name="Arial", size=12, color="000000")
+    worksheet[row_restituicao].alignment = Alignment(horizontal="left",vertical="center")
+    row_restituicao = f'b{size+4}'         
+    worksheet[row_restituicao].font = Font(name="Arial", size=12, color="000000")
+    worksheet[row_restituicao].alignment = Alignment(horizontal="left",vertical="center")
+    row_restituicao = f'c{size+4}'         
+    worksheet[row_restituicao] = 'Diversos'
+    worksheet[row_restituicao].font = Font(name="Arial", size=12, color="000000")
+    worksheet[row_restituicao].alignment = Alignment(horizontal="left",vertical="center")
+    row_restituicao = f'd{size+4}'         
+    worksheet[row_restituicao] = 'Restituição Prestações Anteriores'
+    worksheet[row_restituicao].font = Font(name="Arial", size=12, color="000000")
+    worksheet[row_restituicao].alignment = Alignment(horizontal="left",vertical="center")
 
 
-    for row in range(size+4,size+4+tamanho2):
+
+    size = size + 1
+
+    for row in range(size+3,size+4+tamanho2):
         cell = worksheet[f'B{row}']
         cell.style = custom_number_format_conciliacoes
         
@@ -1565,7 +1653,7 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2,stringTamanho):
 
 
     # FORMULATOTALrestituição
-    formula = f"=SUM(B{size+4}:B{size+tamanho2+3})"
+    formula = f"=SUM(B{size+3}:B{size+tamanho2+3})"
     celula = f'B{size+tamanho2+5}'
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
@@ -1592,7 +1680,22 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2,stringTamanho):
     saldodiposnivelformat_conciliacoes.fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     celular = worksheet[celula_string_total]
     celular.style = saldodiposnivelformat_conciliacoes
-    celular.value = f'=F10+F11+B{size} -B{size+tamanho2+5}'
+    celular.value = f'=F10+F11+B{size-1} -B{size+tamanho2+5}'
+    #saldo anterior
+    formula = f"Saldo anterior"
+    celula = f'A16'
+    worksheet[celula] = formula
+    worksheet[celula].font = Font(name="Arial", size=12, color="000000")
+
+    formula = f"Diversos"
+    celula = f'C16'
+    worksheet[celula] = formula
+    worksheet[celula].font = Font(name="Arial", size=12, color="000000")
+
+    formula = f"Tarifas Prestações Anteriores"
+    celula = f'D16'
+    worksheet[celula] = formula
+    worksheet[celula].font = Font(name="Arial", size=12, color="000000")
 
      #brasilia
     brasilia_row = size + tamanho2+ 8
@@ -1631,9 +1734,9 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2,stringTamanho):
     top_left_diretor_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
     top_left_diretor_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
     #Coordenadora
-    coordenadora_row = size + tamanho2 + 10
-    coordenadora_cargo_row = size + 11 + tamanho2
-    coordenadora_cpf_row = size + 12+ tamanho2
+    coordenadora_row = diretor_row
+    coordenadora_cargo_row = diretor_cargo_row
+    coordenadora_cpf_row = diretor_cpf_row
     coordenadora_nome_formula = f"='Receita x Despesa'!H{stringTamanho+3}"
     coordenadora_cargo_formula = f"='Receita x Despesa'!H{stringTamanho+4}"
     coordenadora_cpf_formula = f"='Receita x Despesa'!H{stringTamanho+5}"
@@ -1687,7 +1790,7 @@ def estilo_rendimento_de_aplicacao(tabela,tamanho,stringTamanho):
     worksheet = workbook['Rendimento de Aplicação']
     
     random_number = random.randint(1, 10000)    
-    size = tamanho + 14
+    size = tamanho + 15
     worksheet.row_dimensions[10].height = 2
     worksheet.row_dimensions[9].height = 20
 
@@ -1820,48 +1923,52 @@ def estilo_rendimento_de_aplicacao(tabela,tamanho,stringTamanho):
     #             cell.font = Font(name="Arial", size=12, color="141fca",bold=True)
     #             cell.number_format ='#,##0.00'
    
-
+    #barra de totais
+    formula = f"Saldo anterior"
+    celula = f'A14'
+    worksheet[celula] = formula
+    worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
     
     #barra de totais
     # FORMULATOTAL
     #B
-    formula = f"=SUM(B14:B{size-1})"
+    formula = f"=SUM(B15:B{size-1})"
     celula = f'B{size}'
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
      #C
-    formula = f"=SUM(C14:C{size-1})"
+    formula = f"=SUM(C15:C{size-1})"
     celula = f'C{size}'
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
     #D
-    formula = f"=SUM(D14:D{size-1})"
+    formula = f"=SUM(D15:D{size-1})"
     celula = f'D{size}'
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
     #E
-    formula = f"=SUM(E14:E{size-1})"
+    formula = f"=SUM(E15:E{size-1})"
     celula = f'E{size}'
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
     #F
-    formula = f"=SUM(F14:F{size-1})"
+    formula = f"=SUM(F15:F{size-1})"
     celula = f'F{size}'
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
     #G
-    formula = f"=SUM(G14:G{size-1})"
+    formula = f"=SUM(G15:G{size-1})"
     celula = f'G{size}'
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
     #H
-    formula = f"=SUM(H14:H{size-1})"
+    formula = f"=SUM(H15:H{size-1})"
     celula = f'H{size}'
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=cinza_escuro, end_color=cinza_escuro,fill_type = "solid")
@@ -2181,9 +2288,9 @@ def estiloRelacaoBens(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
     top_left_brasilia_cell.alignment = Alignment(horizontal="center",vertical="center")
 
     #DiretorFinanceiro
-    diretor_row = size + 81
-    diretor_cargo_row = size + 91
-    diretor_cpf_row = size + 101
+    diretor_row = size + 8
+    diretor_cargo_row = size + 9
+    diretor_cpf_row = size + 10
     diretor_nome_formula = f"='Receita x Despesa'!A{stringTamanho+3}"
     diretor_cargo_formula = f"='Receita x Despesa'!A{stringTamanho+4}"
     diretor_cpf_formula = f"='Receita x Despesa'!A{stringTamanho+5}"
@@ -2207,9 +2314,9 @@ def estiloRelacaoBens(tabela,tamanho,nomeVariavel,nomeTabela,stringTamanho):
     top_left_diretor_cell_cargo_formula.alignment = Alignment(horizontal="center",vertical="center")
     top_left_diretor_cell_cpf_formula.alignment = Alignment(horizontal="center",vertical="center")
     #Coordenadora
-    coordenadora_row = size + 81
-    coordenadora_cargo_row = size + 91
-    coordenadora_cpf_row = size + 101
+    coordenadora_row = size + 8
+    coordenadora_cargo_row = size + 9
+    coordenadora_cpf_row = size + 10
     coordenadora_nome_formula = f"='Receita x Despesa'!H{stringTamanho+3}"
     coordenadora_cargo_formula = f"='Receita x Despesa'!H{stringTamanho+4}"
     coordenadora_cpf_formula = f"='Receita x Despesa'!H{stringTamanho+5}"
