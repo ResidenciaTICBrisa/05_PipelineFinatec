@@ -77,6 +77,7 @@ def estiloAnexoDois(tabela,tamanho):
     worksheet.column_dimensions['i'].width = 35 #data de emissão
     worksheet.column_dimensions['j'].width = 35 #data de emissão
     worksheet.column_dimensions['k'].width = 35 #data de emissão
+    worksheet.column_dimensions['l'].width = 35 #data de emissão
 
 
     #ANEXO II
@@ -85,7 +86,7 @@ def estiloAnexoDois(tabela,tamanho):
     worksheet['A1'] = f'ANEXO 2'
     worksheet['A1'].font = Font(name="Arial", size=12, color="000000",bold=True)
     worksheet['A1'].alignment = Alignment(horizontal="center",vertical="center")
-    worksheet.merge_cells('A1:K1')
+    worksheet.merge_cells('A1:L1')
 
     #Fapdf
     worksheet['A2'] = f'FAPDF'
@@ -109,10 +110,10 @@ def estiloAnexoDois(tabela,tamanho):
     worksheet['I2'].font = Font(name="Arial", size=12, color="000000",bold=True,italic=True)
     worksheet['I2'].alignment = Alignment(horizontal="center",vertical="center")
     worksheet['I2'].border = Border(top=Side(border_style="none")  ,bottom=Side(border_style="none"), right=Side(border_style="thin"),left=Side(border_style='thin') )
-    worksheet.merge_cells('I2:J2')
+    worksheet.merge_cells('I2:K2')
     
     worksheet['I3'].border = Border(top=Side(border_style="none")  ,bottom=Side(border_style="thin"), right=Side(border_style="thin"),left=Side(border_style='thin') )
-    worksheet.merge_cells('I3:J3')
+    worksheet.merge_cells('I3:K3')
 
 
     #outorgado
@@ -140,10 +141,10 @@ def estiloAnexoDois(tabela,tamanho):
 
 
     #merges
-    worksheet.merge_cells('A5:K5')
-    worksheet.merge_cells('A6:K6')
-    worksheet.merge_cells('A7:K7')
-    worksheet.merge_cells('A8:K8')
+    worksheet.merge_cells('A5:L5')
+    worksheet.merge_cells('A6:L6')
+    worksheet.merge_cells('A7:L7')
+    worksheet.merge_cells('A8:L8')
 
  
     
@@ -167,7 +168,7 @@ def estiloAnexoDois(tabela,tamanho):
    
                                                                                  	 
 
-    valores = ['Item','Rubrica','Nº Cheque ou F. de caixa','Data','Nº Fatura','Favorecido','Descrição do Bem ou Serviço','Qtde','Unitário','Custeio','Capital']
+    valores = ['Item','Rubrica','Nº Cheque ou F. de caixa','Data','Nº Fatura','Favorecido','Descrição do Bem ou Serviço','Qtde','Unitário','Custeio','Capital','Bolsas']
     col = 1
     for a,b in enumerate(valores):
         worksheet.cell(row=linha_number, column=col, value=b)
@@ -175,7 +176,7 @@ def estiloAnexoDois(tabela,tamanho):
 
 
     #Aumentar  a altura das celulas 
-    for row in worksheet.iter_rows(min_row=10, max_row=size, min_col=1, max_col=11):
+    for row in worksheet.iter_rows(min_row=10, max_row=size, min_col=1, max_col=12):
         worksheet.row_dimensions[row[0].row].height = 60
     input3 = f'customNumber{nomeVariavel}'
     
@@ -201,7 +202,7 @@ def estiloAnexoDois(tabela,tamanho):
         cell.style = locals()[input3]
 
    #estilocinzasimcinzanao     
-    for rows in worksheet.iter_rows(min_row=11, max_row=size, min_col=1, max_col=11):
+    for rows in worksheet.iter_rows(min_row=11, max_row=size, min_col=1, max_col=12):
             for cell in rows:
                 if cell.row % 2:
                     cell.fill = PatternFill(start_color=cinza, end_color=cinza,
@@ -217,7 +218,7 @@ def estiloAnexoDois(tabela,tamanho):
                      
                
 
-                if cell.column == 11:
+                if cell.column == 12:
                     cell.font = Font(name="Arial", size=12, color="000000")
                     cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
                     cell.border = Border(top=Side(border_style="hair") ,left = Side(border_style="hair") ,right =Side(border_style="medium") ,bottom=Side(border_style="hair") )
@@ -240,6 +241,13 @@ def estiloAnexoDois(tabela,tamanho):
      # FORMULASOMATORIOTOTAL
     formula = f"=SUM(J11:J{size})"
     celula = f'J{size+1}'
+    worksheet[celula] = formula
+    worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
+    worksheet[celula].border = Border(top=Side(border_style="medium") ,left = Side(border_style="thin") ,right =Side(border_style="thin") ,bottom=Side(border_style="medium") )
+    worksheet[celula].number_format = 'R$ #,##0.00'
+    # FORMULASOMATORIOTOTALbolsa
+    formula = f"=SUM(L11:L{size})"
+    celula = f'L{size+1}'
     worksheet[celula] = formula
     worksheet[celula].font = Font(name="Arial", size=12, color="000000",bold=True)
     worksheet[celula].border = Border(top=Side(border_style="medium") ,left = Side(border_style="thin") ,right =Side(border_style="thin") ,bottom=Side(border_style="medium") )
@@ -343,7 +351,7 @@ def estiloAnexoDois(tabela,tamanho):
    
 
     #QUADRADO CINZA
-    for row in worksheet.iter_rows(min_row=size + 2, max_row=size + 7, min_col=9, max_col=11):
+    for row in worksheet.iter_rows(min_row=size + 2, max_row=size + 7, min_col=9, max_col=12):
         for cell in row:
                 cell.fill = openpyxl.styles.PatternFill(start_color=cinza, end_color=cinza, fill_type='solid')
                 cell.font = Font(name="Arial", size=12, color="000000")
@@ -351,11 +359,11 @@ def estiloAnexoDois(tabela,tamanho):
                 if cell.column == 9:
                         cell.border = Border(left=Side(border_style="thin") )
                         cell.font = Font(name="Arial", size=12, color="000000",bold=True)
-                if cell.column == 11:
+                if cell.column == 12:
                         cell.border = Border(right=Side(border_style="thin") )
                 if cell.row == size + 7:
                     cell.border = Border(bottom=Side(border_style="thin") )
-                    if cell.row == size + 7 and cell.column == 11:
+                    if cell.row == size + 7 and cell.column == 12:
                             cell.border = Border(bottom=Side(border_style="thin"), right=Side(border_style="thin") )
                     if cell.row == size + 7 and cell.column == 9:
                             cell.border = Border(bottom=Side(border_style="thin"), left=Side(border_style="thin") )
@@ -400,16 +408,16 @@ def estiloAnexoDois(tabela,tamanho):
 
     cinzaborda = '9e9e9e'
 
-    for row in worksheet.iter_rows(min_row=linha_number, max_row=linha_number, min_col=1, max_col=11):
+    for row in worksheet.iter_rows(min_row=linha_number, max_row=linha_number, min_col=1, max_col=12):
         for cell in row:
             cell.style = locals()[input2]
-            if cell.column == 11:
+            if cell.column == 12:
                 cell.border = Border(top=Side(border_style="medium")  , right=Side(border_style="medium") )
 
 
     
     #borda cabeçario
-    for row in worksheet.iter_rows(min_row=1, max_row=9,min_col=11,max_col=11):
+    for row in worksheet.iter_rows(min_row=1, max_row=9,min_col=12,max_col=12):
         for cell in row:
                 cell.border = Border(top=Side(border_style="none") ,right = Side(border_style="thin",color='9e9e9e') ,left =Side(border_style="none") ,bottom=Side(border_style="none") )
 
@@ -422,7 +430,7 @@ def estiloAnexoDois(tabela,tamanho):
 
     for row in worksheet.iter_rows(min_row=coordenadora_cpf_row, max_row=coordenadora_cpf_row,min_col=1,max_col=8):
         for cell in row:
-            if cell.column == 11:
+            if cell.column == 12:
                 cell.border = Border(top=Side(border_style="none") ,left = Side(border_style="none") ,right =Side(border_style="thin",color='9e9e9e') ,bottom=Side(border_style="thin",color='9e9e9e') )
             else:
                 cell.border = Border(top=Side(border_style="none") ,left = Side(border_style="none") ,right =Side(border_style="none") ,bottom=Side(border_style="thin",color='9e9e9e') )

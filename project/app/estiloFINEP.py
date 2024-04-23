@@ -4076,7 +4076,7 @@ def estiloRelacaoBens(tabela,tamanho,stringTamanho):
     worksheet.row_dimensions[size+2].height = 56.25
 
      # FORMULATOTAL
-    formula = f"=SUM(J13:J{size+1})"
+    formula = f"=SUM(J15:J{size+1})"
     celula = f'J{size+2}'
     worksheet[celula] = formula
     worksheet[celula].fill = PatternFill(start_color=azul_claro, end_color=azul_claro,fill_type = "solid")

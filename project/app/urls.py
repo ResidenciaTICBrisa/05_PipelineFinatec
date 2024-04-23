@@ -12,6 +12,7 @@ urlpatterns = [
     path('projeto/', views.projeto, name='projeto'),
     path('logout/', views.custom_logout, name='logout'),
     path('perfil/', views.user_profile, name='user_profile'),
+    path('notas/<str:filename>/', views.consultaNotas, name='notas'),
     # path('base/', views.base2, name='base'),-
     
     # path('login_teste/', views.login_teste, name='login_teste'),

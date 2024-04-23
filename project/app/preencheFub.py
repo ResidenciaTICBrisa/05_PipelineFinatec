@@ -10,7 +10,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine import URL
 import numpy as np  
 import re
-
+from openpyxl.worksheet.hyperlink import Hyperlink
 def convert_datetime_to_string(value):
     if isinstance(value, datetime):
         return value.strftime('%d/%m/%Y')
@@ -659,7 +659,8 @@ def consultaTabelaGigante(IDPROJETO,DATA1,DATA2):
 		FavorecidoCPFCNPJ,
 		NomePessoaGestor,
 		NomeTipoPedido,
-		NomeStatus
+		NomeStatus,
+        NumDocFinConvenio
         FROM [Conveniar].[dbo].[LisLancamentoConvenio]
      WHERE [LisLancamentoConvenio].CodConvenio = ? AND [LisLancamentoConvenio].CodStatus = 27
      AND [LisLancamentoConvenio].DataPagamento BETWEEN ? AND ? and [LisLancamentoConvenio].CodRubrica not in (2,0) order by DataPagamento"""
@@ -1610,29 +1611,30 @@ def planilhaGeral(planilha,codigo,data1,data2):
 
 
     linha = [
-    "Nº Pedido", 
-    "Tipo do Pedido", 
-    "Histórico", 
-    "Rubrica", 
-    "Valor", 
-    "Tipo", 
-    "Data Lançamento", 
-    "Data Vencimento", 
-    "Data Pagamento", 
-    "Valor Pago", 
-    "Nº Autenticação Bancária", 
-    "Nº Documento Bancário", 
-    "Data Emissao NF", 
-    "Doc. Pago", 
-    "Cód. Projeto", 
-    "Projeto", 
-    "Agência", 
-    "Conta", 
-    "Empresa / Pessoa / Projeto", 
-    "CPF/CNPJ", 
-    "Gestor", 
-    "Tipo do Lançamento", 
-    "Situação"
+    "Nº Pedido", #1
+    "Tipo do Pedido",#2 
+    "Histórico", #3
+    "Rubrica", #4
+    "Valor", #5
+    "Tipo", #6
+    "Data Lançamento",#7 
+    "Data Vencimento", #8
+    "Data Pagamento", #9
+    "Valor Pago", #10
+    "Nº Autenticação Bancária", #11
+    "Nº Documento Bancário", #12
+    "Data Emissao NF", #13
+    "Doc. Pago", #14
+    "Cód. Projeto", #15
+    "Projeto", #16
+    "Agência", #17
+    "Conta", #18
+    "Empresa / Pessoa / Projeto",#19 
+    "CPF/CNPJ", #20
+    "Gestor", #21
+    "Tipo do Lançamento", #22
+    "Situação",#23
+    "Nota"#24
     ]
     
     sheet2.append(linha)
@@ -1643,7 +1645,7 @@ def planilhaGeral(planilha,codigo,data1,data2):
         column_letter = chr(column)
         sheet2.column_dimensions[column_letter].width = 25
 
-    for row in sheet2.iter_rows(min_row=1, max_row=len(dfconsultaDadosPorRubrica), min_col=1, max_col= 26):
+    for row in sheet2.iter_rows(min_row=1, max_row=len(dfconsultaDadosPorRubrica), min_col=1, max_col= 24):
         for cell in row:
             if cell.row == 1:
                 cell.fill = PatternFill(start_color=cinza, end_color=cinza,
@@ -1660,8 +1662,12 @@ def planilhaGeral(planilha,codigo,data1,data2):
     for row_num, row_data in enumerate(dfconsultaDadosPorRubrica.itertuples(index=False), start=2):#inicio linha
         for col_num, value in enumerate(row_data, start=1):#inicio coluna
                 value = convert_datetime_to_stringdt(value)
-                sheet2.cell(row=row_num, column=col_num, value=value)
-                    
+                if col_num  == 24:
+                    hyperlink_url = f'http://127.0.0.1:2777/notas/{value}/'
+                    sheet2.cell(row=row_num, column=col_num, value=value)
+                    sheet2.cell(row=row_num, column=col_num).hyperlink = hyperlink_url
+                else:
+                    sheet2.cell(row=row_num, column=col_num, value=value)
                  # dfconsultaDadosPorRubricaComEstorno.index = dfconsultaDadosPorRubricaComEstorno.index + 1
     
     
@@ -1701,13 +1707,13 @@ def preencheFub(codigo,data1,data2,tabela):
 
     '''
     planilhaGeral(tabela,codigo,data1,data2)
-    tamanho,dataframe = ExeReceitaDespesa(tabela,codigo,data1,data2,15)
-    tamanhoPosicaoBrasilia,dfReceitas,dfDemonstrativoReceitas = Receita(tabela,codigo,data1,data2,tamanho,dataframe)
-    demonstrativo(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia,dfDemonstrativoReceitas,dfReceitas)
-    rubricaGeral(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
-    conciliacaoBancaria(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
-    rowRendimento= rendimentoDeAplicacao(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
-    relacaodeBens(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
+    # tamanho,dataframe = ExeReceitaDespesa(tabela,codigo,data1,data2,15)
+    # tamanhoPosicaoBrasilia,dfReceitas,dfDemonstrativoReceitas = Receita(tabela,codigo,data1,data2,tamanho,dataframe)
+    # demonstrativo(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia,dfDemonstrativoReceitas,dfReceitas)
+    # rubricaGeral(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
+    # conciliacaoBancaria(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
+    # rowRendimento= rendimentoDeAplicacao(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
+    # relacaodeBens(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
 
    
     

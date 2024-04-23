@@ -1,7 +1,12 @@
 import os
+import pyodbc
 import datetime
-
+import io
 import re
+import tempfile
+import os
+from PyPDF2 import PdfMerger
+import zipfile
 from django.shortcuts import render
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.models import User
@@ -31,6 +36,38 @@ from .testeDelete import deletar_arquivos_em_pasta
 # from backend.consultas_oracledb import getlimitedRows,getallRows
 from backend.consultaSQLServer import consultaCodConvenio, consultaTudo
 import pandas as pd
+from django.urls import reverse
+from sqlalchemy import create_engine
+from sqlalchemy.engine import URL
+def pegar_caminho(subdiretorio):
+    # Obtém o caminho do script atual
+    arq_atual = os.path.abspath(__file__)
+    
+    # Obtém o diretório do script
+    app = os.path.dirname(arq_atual)
+    
+    # Obtém o diretório pai do script
+    project = os.path.dirname(app)
+    
+    # Obtém o diretório pai do projeto
+    pipeline = os.path.dirname(project)
+    
+    # Junta o diretório pai do projeto com o subdiretório desejado
+    caminho_pipeline = os.path.join(pipeline, subdiretorio)
+    
+    return caminho_pipeline
+
+def pegar_pass(chave):
+    arq_atual = os.path.abspath(__file__)
+    app = os.path.dirname(arq_atual)
+    project = os.path.dirname(app)
+    pipeline = os.path.dirname(project)
+    desktop = os.path.dirname(pipeline)
+    caminho_pipeline = os.path.join(desktop, chave)
+    
+    return caminho_pipeline
+
+
 
 def log_user_activity(user_id, tag, activity):
     UserActivity.objects.create(user_id=user_id, tag=tag, activity=activity)
@@ -287,3 +324,300 @@ def user_activity_logs(request):
     return render(request, 'user_activity_logs.html', {'logs': logs})
 
 
+
+def consultaNotas(request, filename):
+    '''
+    Merges and displays all items related to a specific NumPedido
+    '''
+    try:
+        file_path = pegar_pass("passs.txt")
+        conStr = ''
+        with open(file_path, 'r') as file:
+            conStr = file.readline().strip()
+        conn = pyodbc.connect(conStr)
+        cursor = conn.cursor()
+        
+        # queryConsult = f"""
+        #     SELECT [Pedido].[CodPedido],
+        #            [Pedido].[NumPedido],
+        #            [ArquivoBinario].[ArquivoBinario],
+        #            [Arquivo].*
+        #     FROM [Conveniar].[dbo].[Pedido]
+        #     LEFT JOIN [Conveniar].[dbo].[Arquivo]
+        #         ON [Pedido].[CodPedido] = [Arquivo].[CodSolicitacao]
+        #     LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoReferencia]
+        #         ON [Arquivo].[CodArquivoReferencia] = [ArquivoReferencia].CodArquivoReferencia
+        #     LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoBinario]
+        #         ON [ArquivoReferencia].ChaveLocalArmazenamento = [ArquivoBinario].[CodArquivoBinario]
+        #     WHERE NumPedido = '{filename}'
+        # """
+        queryConsult = f"""
+             SELECT [Pedido].[CodPedido],
+                   [Pedido].[NumPedido],
+                   [ArquivoBinario].[ArquivoBinario],
+                   [Arquivo].[NomeArquivo] 
+            FROM [Conveniar].[dbo].[Pedido]
+            LEFT JOIN [Conveniar].[dbo].[Arquivo]
+                ON [Pedido].[CodPedido] = [Arquivo].[CodSolicitacao]
+            LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoReferencia]
+                ON [Arquivo].[CodArquivoReferencia] = [ArquivoReferencia].CodArquivoReferencia
+            LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoBinario]
+                ON [ArquivoReferencia].ChaveLocalArmazenamento = [ArquivoBinario].[CodArquivoBinario]
+            WHERE NumPedido = '{filename}'
+
+UNION ALL
+
+SELECT [OPCompraAF].[CodOPCompraAF],
+                   [OPCompraAF].[NumOPCompraAF],
+                   [ArquivoBinario].[ArquivoBinario],
+                   [ArquivoOpCompraAF].[NomeArquivoOpCompraAF]
+            FROM [Conveniar].[dbo].[OPCompraAF]
+            LEFT JOIN [Conveniar].[dbo].[ArquivoOpCompraAF]
+                ON [OPCompraAF].[CodOPCompraAF] = [ArquivoOpCompraAF].[CodOPCompraAF]
+            LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoReferencia]
+                ON [ArquivoOpCompraAF].[CodArquivoReferencia] = [ArquivoReferencia].CodArquivoReferencia
+            LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoBinario]
+                ON [ArquivoReferencia].ChaveLocalArmazenamento = [ArquivoBinario].[CodArquivoBinario]
+            WHERE [OPCompraAF].[NumOPCompraAF] = '{filename}'
+
+
+        """
+        
+        cursor.execute(queryConsult)
+        if cursor.rowcount == 0:
+            print("Query returned no results.")
+        else:
+            items = cursor.fetchall()
+
+        #print(f'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa{items}')
+        cwd = os.getcwd()
+        folder_name = "diretoriopdf"
+        folder_path = os.path.join(cwd, folder_name)
+
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+            print(f"Folder '{folder_name}' created successfully!")
+        else:
+             print(f"Folder '{folder_name}' already exists.")    
+
+        # Merge individual PDFs into one
+        merger = PdfMerger()
+        count = 0  
+
+        for item in items:
+            pdf_data = item[2]
+            #print(f"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa{pdf_data}")
+            if not pdf_data:
+                return HttpResponse(f"NOTA NÃO CONSTA NO CONVENIAR")
+            filename = item[1]
+            
+            
+            
+            # Write PDF data to temporary file
+            pdf_path = os.path.join(folder_name, f'{filename}{count}.pdf')
+            print(pdf_path)
+            with open(pdf_path, 'wb') as pdf_file:
+                pdf_file.write(pdf_data)
+
+            # Add PDF to merger
+            merger.append(pdf_path)
+            count += 1  # Increment count
+
+
+        merged_pdf_filename = 'merged.pdf'
+        merged_pdf_path = os.path.join(folder_path, merged_pdf_filename)
+        print(merged_pdf_path)
+        merger.write(merged_pdf_path)
+        merger.close()
+
+        with open(merged_pdf_path, 'rb') as merged_pdf_file:
+            response = HttpResponse(merged_pdf_file.read(), content_type='application/pdf')
+
+       
+
+        return response
+    except Exception as e:
+        # Handle any exceptions
+        #return HttpResponse(f"An error occurred: {str(e)} NOTA NÃO EXISTE")
+        return HttpResponse(f"NOTA NÃO CONSTA NO CONVENIAR")
+
+# def consultaLegado(request,filename):
+#     ''' Consulta dinamica do SQL relacionado a rubrica correspondente,cada pagina tem sua própria consulta correspondente a rubrica
+#         Argumentos
+#             IDPROJETO = CodConvenio na tabela nova, corresponde ao codigo do projeto
+#             DATA1 = Data Inicial Selecinado pelo Usuario
+#             DATA2 = Data Final Selecionado pelo Usuario
+#             codigoRubrica = código da rubrica 
+#     '''
+#     file_path = pegar_pass("passs.txt")
+#     conStr = ''
+#     with open(file_path, 'r') as file:
+#             conStr = file.readline().strip()
+#     conn = pyodbc.connect(conStr)
+#     cursor = conn.cursor()
+#     pedido = 2442015
+   
+#     queryConsult = f"""SELECT  [Pedido].[CodPedido]
+#         ,[Pedido].[NumPedido]
+#     ,[ArquivoBinario].[ArquivoBinario]
+#     ,[Arquivo].*
+#     ,[ArquivoBinario].*
+
+#     FROM [Conveniar].[dbo].[Pedido]
+
+#     LEFT JOIN [Conveniar].[dbo].[Arquivo] ON [Pedido].[CodPedido] = [Arquivo].[CodSolicitacao]
+#     LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoReferencia] ON [Arquivo].[CodArquivoReferencia] = [ArquivoReferencia].CodArquivoReferencia
+#     LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoBinario] ON [ArquivoReferencia].ChaveLocalArmazenamento = [ArquivoBinario].[CodArquivoBinario]
+
+#     WHERE NumPedido = '{pedido}'"""
+    
+
+
+#     cursor.execute(queryConsult)
+#     items = cursor.fetchall()
+
+   
+#   # Create a zip file to store all PDFs
+#     zip_buffer = io.BytesIO()
+#     with zipfile.ZipFile(zip_buffer, 'w') as zip_file:
+#         for item in items:
+#             pdf_data = item[2]
+#             filename = item[1]
+
+#             # Write PDF data to temporary file
+#             with io.BytesIO() as output_file:
+#                 output_file.write(pdf_data)
+#                 output_file.seek(0)
+
+#                 # Add PDF to zip file
+#                 zip_file.writestr(f'{filename}.pdf', output_file.read())
+
+#     # Set response headers for zip file download
+#     response = HttpResponse(zip_buffer.getvalue(), content_type='application/zip')
+#     response['Content-Disposition'] = f'attachment; filename={pedido}_items.zip'
+
+#     # Close the database connection
+#     cursor.close()
+#     conn.close()
+    
+#     return response
+
+
+# def consultaLegacy(request,filename):
+#     ''' Consulta dinamica do SQL relacionado a rubrica correspondente,cada pagina tem sua própria consulta correspondente a rubrica
+#         Argumentos
+#             IDPROJETO = CodConvenio na tabela nova, corresponde ao codigo do projeto
+#             DATA1 = Data Inicial Selecinado pelo Usuario
+#             DATA2 = Data Final Selecionado pelo Usuario
+#             codigoRubrica = código da rubrica 
+#     '''
+#     file_path = pegar_pass("passs.txt")
+#     conStr = ''
+#     with open(file_path, 'r') as file:
+#             conStr = file.readline().strip()
+#     conn = pyodbc.connect(conStr)
+#     cursor = conn.cursor()
+#     pedido = 2442015
+   
+#     queryConsult = f"""SELECT  [Pedido].[CodPedido]
+#         ,[Pedido].[NumPedido]
+#     ,[ArquivoBinario].[ArquivoBinario]
+#     ,[Arquivo].*
+#     ,[ArquivoBinario].*
+
+#     FROM [Conveniar].[dbo].[Pedido]
+
+#     LEFT JOIN [Conveniar].[dbo].[Arquivo] ON [Pedido].[CodPedido] = [Arquivo].[CodSolicitacao]
+#     LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoReferencia] ON [Arquivo].[CodArquivoReferencia] = [ArquivoReferencia].CodArquivoReferencia
+#     LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoBinario] ON [ArquivoReferencia].ChaveLocalArmazenamento = [ArquivoBinario].[CodArquivoBinario]
+
+#     WHERE NumPedido = '{pedido}'"""
+    
+
+
+#     cursor.execute(queryConsult)
+#     ablob = cursor.fetchone()
+#     pdf_data = ablob[2]
+
+   
+
+
+
+#      # Create a temporary file-like object
+#     with io.BytesIO() as output_file:
+#         # Write the PDF data to the temporary file
+#         output_file.write(pdf_data)
+
+#         # Reset the file position to the beginning
+#         output_file.seek(0)
+
+#         # Set filename based on retrieved data (if needed)
+#         if not filename:
+#             filename = ablob[1]  # Assuming CodPedido is in position 0
+
+#         # Construct the HttpResponse object
+#         print(filename)
+#         response = HttpResponse(output_file.read(), content_type='application/pdf')
+#         response['Content-Disposition'] = f'attachment; filename={filename}.pdf'
+
+#         # Close the database connection
+#         cursor.close()
+#         conn.close()
+#         return response
+
+
+# def serve_pdf(request,filename):
+
+
+#     file_path = pegar_pass("passs.txt")
+#     conStr = ''
+#     with open(file_path, 'r') as file:
+#                 conStr = file.readline().strip()
+
+#     conn = pyodbc.connect(conStr)
+#     cursor = conn.cursor()
+
+#     stringconsulta = """SELECT  [Pedido].[CodPedido]
+#         ,[Pedido].[NumPedido]
+#     ,[ArquivoBinario].[ArquivoBinario]
+#     ,[Arquivo].*
+#     ,[ArquivoBinario].*
+
+#     FROM [Conveniar].[dbo].[Pedido]
+
+#     LEFT JOIN [Conveniar].[dbo].[Arquivo] ON [Pedido].[CodPedido] = [Arquivo].[CodSolicitacao]
+#     LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoReferencia] ON [Arquivo].[CodArquivoReferencia] = [ArquivoReferencia].CodArquivoReferencia
+#     LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoBinario] ON [ArquivoReferencia].ChaveLocalArmazenamento = [ArquivoBinario].[CodArquivoBinario]
+
+#     WHERE NumPedido = '233412024'"""
+    
+#     cursor.execute(stringconsulta)
+#     ablob = cursor.fetchone()
+#     pdf_data = ablob[2]
+
+   
+
+
+
+#      # Create a temporary file-like object
+#     with io.BytesIO() as output_file:
+#         # Write the PDF data to the temporary file
+#         output_file.write(pdf_data)
+
+#         # Reset the file position to the beginning
+#         output_file.seek(0)
+
+#         # Set filename based on retrieved data (if needed)
+#         if not filename:
+#             filename = ablob[1]  # Assuming CodPedido is in position 0
+
+#         # Construct the HttpResponse object
+#         print(filename)
+#         response = HttpResponse(output_file.read(), content_type='application/pdf')
+#         response['Content-Disposition'] = f'attachment; filename={filename}.pdf'
+
+#         # Close the database connection
+#         cursor.close()
+#         conn.close()
+#         print(response)
+#         return response

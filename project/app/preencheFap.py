@@ -18,20 +18,7 @@ def consultaCabecarioAnexoDois(IDPROJETO,DATA1,DATA2):
         a instuição executora
         NTOA/ e processo
     
-NomeConvenio	Processo	SubProcesso	ValorAprovado
-FAP - FUB/IQ - Edital 05/2016 -Micropoluentes emergentes e o uso da água na Bacia do Paranoá: diagnóstico, identificação de fontes, efeitos tóxicos métodos de remoção e de detecção in situ	
 
-Processo
-
-0193.000714/2016
-
-SubProcesso
-
-Projeto TOA n° 503/2016 - Edital 05/2016
-
-ValorAprovado
-
-699000.0000
     
     """
     file_path = pegar_pass("passs.txt")
@@ -254,20 +241,7 @@ def consultaRendimentosAplicacao(IDPROJETO,DATA1,DATA2):
 def consultaConciliacao(IDPROJETO,DATA1,DATA2):
     """ Informa o nome do convenio,Processo,SubProcesso e Valor Aprovado do projeto
     
-NomeConvenio	Processo	SubProcesso	ValorAprovado
-FAP - FUB/IQ - Edital 05/2016 -Micropoluentes emergentes e o uso da água na Bacia do Paranoá: diagnóstico, identificação de fontes, efeitos tóxicos métodos de remoção e de detecção in situ	
 
-Processo
-
-0193.000714/2016
-
-SubProcesso
-
-Projeto TOA n° 503/2016 - Edital 05/2016
-
-ValorAprovado
-
-699000.0000
     
     """
     file_path = pegar_pass("passs.txt")
@@ -490,11 +464,24 @@ def anexoDois(tabela,codigo,data1,data2):
     
    
 
-   
+    #print(dfAnexoDois)
     for row_num, row_data in enumerate(dfAnexoDois.itertuples(), start=11): #inicio linha
         for col_num, value in enumerate(row_data, start=1): #inicio coluna
-                    value = convert_datetime_to_stringdt(value)
-                    sheet.cell(row=row_num, column=col_num, value=value)  
+            value = convert_datetime_to_stringdt(value)  # Assuming you have a function to convert datetime to string
+            if row_data.NomeRubrica in ['Material Permanente e Equipamento Nacional', 'Material Permanente e Equipamento Importado', 'Equipamentos e Material Permanente', 'Obras e Instalações']:
+                    if col_num == 10:
+                        col_num = 11  # If the condition is met, set col_num to 11
+                        sheet.cell(row=row_num, column=col_num, value=value)
+                    else :
+                         sheet.cell(row=row_num, column=col_num, value=value)
+            elif row_data.NomeRubrica in ['Bolsa de Estágio', 'Bolsa de Estímulo a Inovação', 'Bolsa de Estudo', 'Bolsa de Extensão', 'Bolsa de Iniciação Científica', 'Bolsa de Pesquisa', 'Bolsas']:
+                    if col_num == 10:
+                        col_num = 12  # If the condition is met, set col_num to 11
+                        sheet.cell(row=row_num, column=col_num, value=value)
+                    else:
+                        sheet.cell(row=row_num, column=col_num, value=value)
+            else :
+                   sheet.cell(row=row_num, column=col_num, value=value)
 
 
 
@@ -573,9 +560,9 @@ def anexoQuatro(tabela,codigo,data1,data2,rowBrasilia):
         for col_num, value in enumerate(row_data, start=1):#inicio coluna 
             
             if col_num == 2:
-                col_num = 5
-            if col_num == 3:
                 col_num = 6
+            if col_num == 3:
+                col_num = 5
             sheet.cell(row=row_num, column=col_num, value=value)
         
 
