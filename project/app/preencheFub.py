@@ -106,6 +106,76 @@ def pegar_pass(chave):
 
 
 #todas as consultas em sql
+def consultaNotasFub(filename):
+        '''
+        Merges and displays all items related to a specific NumPedido
+        '''
+
+    
+        file_path = pegar_pass("passs.txt")
+        conStr = ''
+        with open(file_path, 'r') as file:
+            conStr = file.readline().strip()
+        conn = pyodbc.connect(conStr)
+        cursor = conn.cursor()
+        
+        # queryConsult = f"""
+        #     SELECT [Pedido].[CodPedido],
+        #            [Pedido].[NumPedido],
+        #            [ArquivoBinario].[ArquivoBinario],
+        #            [Arquivo].*
+        #     FROM [Conveniar].[dbo].[Pedido]
+        #     LEFT JOIN [Conveniar].[dbo].[Arquivo]
+        #         ON [Pedido].[CodPedido] = [Arquivo].[CodSolicitacao]
+        #     LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoReferencia]
+        #         ON [Arquivo].[CodArquivoReferencia] = [ArquivoReferencia].CodArquivoReferencia
+        #     LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoBinario]
+        #         ON [ArquivoReferencia].ChaveLocalArmazenamento = [ArquivoBinario].[CodArquivoBinario]
+        #     WHERE NumPedido = '{filename}'
+        # """
+        queryConsult = f"""
+             SELECT [Pedido].[CodPedido],
+                   [Pedido].[NumPedido],
+                   [ArquivoBinario].[ArquivoBinario],
+                   [Arquivo].[NomeArquivo] 
+            FROM [Conveniar].[dbo].[Pedido]
+            LEFT JOIN [Conveniar].[dbo].[Arquivo]
+                ON [Pedido].[CodPedido] = [Arquivo].[CodSolicitacao]
+            LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoReferencia]
+                ON [Arquivo].[CodArquivoReferencia] = [ArquivoReferencia].CodArquivoReferencia
+            LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoBinario]
+                ON [ArquivoReferencia].ChaveLocalArmazenamento = [ArquivoBinario].[CodArquivoBinario]
+            WHERE NumPedido = '{filename}'
+
+UNION ALL
+
+SELECT [OPCompraAF].[CodOPCompraAF],
+                   [OPCompraAF].[NumOPCompraAF],
+                   [ArquivoBinario].[ArquivoBinario],
+                   [ArquivoOpCompraAF].[NomeArquivoOpCompraAF]
+            FROM [Conveniar].[dbo].[OPCompraAF]
+            LEFT JOIN [Conveniar].[dbo].[ArquivoOpCompraAF]
+                ON [OPCompraAF].[CodOPCompraAF] = [ArquivoOpCompraAF].[CodOPCompraAF]
+            LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoReferencia]
+                ON [ArquivoOpCompraAF].[CodArquivoReferencia] = [ArquivoReferencia].CodArquivoReferencia
+            LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoBinario]
+                ON [ArquivoReferencia].ChaveLocalArmazenamento = [ArquivoBinario].[CodArquivoBinario]
+            WHERE [OPCompraAF].[NumOPCompraAF] = '{filename}'
+
+
+        """
+        
+        cursor.execute(queryConsult)
+        if cursor.rowcount == 0:
+            print("Query returned no results.")
+            
+        else:
+            items = cursor.fetchall()
+
+        return items
+
+   
+
 def consultaRendimentosTodosAteOPeriodo(IDPROJETO,DATA2):
     file_path = pegar_pass("passs.txt")
     conStr = ''
@@ -660,10 +730,12 @@ def consultaTabelaGigante(IDPROJETO,DATA1,DATA2):
 		NomePessoaGestor,
 		NomeTipoPedido,
 		NomeStatus,
+        NumDocFinConvenio,
         NumDocFinConvenio
         FROM [Conveniar].[dbo].[LisLancamentoConvenio]
      WHERE [LisLancamentoConvenio].CodConvenio = ? AND [LisLancamentoConvenio].CodStatus = 27
-     AND [LisLancamentoConvenio].DataPagamento BETWEEN ? AND ? and [LisLancamentoConvenio].CodRubrica not in (2,0) order by DataPagamento"""
+     AND [LisLancamentoConvenio].DataPagamento BETWEEN ? AND ? and [LisLancamentoConvenio].CodRubrica not in (2,0) 
+     order by DataPagamento"""
     dfConvenioAnexoDois = pd.read_sql(queryAnexoDois, engine, params=parametros)
     return dfConvenioAnexoDois
 #preenche planilha 
@@ -1634,7 +1706,8 @@ def planilhaGeral(planilha,codigo,data1,data2):
     "Gestor", #21
     "Tipo do Lançamento", #22
     "Situação",#23
-    "Nota"#24
+    "Nota Fiscal",#24
+    "Nº Pedido",#24
     ]
     
     sheet2.append(linha)
@@ -1645,7 +1718,7 @@ def planilhaGeral(planilha,codigo,data1,data2):
         column_letter = chr(column)
         sheet2.column_dimensions[column_letter].width = 25
 
-    for row in sheet2.iter_rows(min_row=1, max_row=len(dfconsultaDadosPorRubrica), min_col=1, max_col= 24):
+    for row in sheet2.iter_rows(min_row=1, max_row=len(dfconsultaDadosPorRubrica)+1, min_col=1, max_col= 25):
         for cell in row:
             if cell.row == 1:
                 cell.fill = PatternFill(start_color=cinza, end_color=cinza,
@@ -1663,9 +1736,15 @@ def planilhaGeral(planilha,codigo,data1,data2):
         for col_num, value in enumerate(row_data, start=1):#inicio coluna
                 value = convert_datetime_to_stringdt(value)
                 if col_num  == 24:
-                    hyperlink_url = f'http://127.0.0.1:2777/notas/{value}/'
-                    sheet2.cell(row=row_num, column=col_num, value=value)
-                    sheet2.cell(row=row_num, column=col_num).hyperlink = hyperlink_url
+                    vetorConsulta = consultaNotasFub(value)
+                    third_element = vetorConsulta[0][1]  # 0 indexes the first tuple, 2 indexes the third element in the tuple
+                    # print(type(consultaNotasFub(value)))
+                    if vetorConsulta[0][2] is not None:   
+                        hyperlink_url = f'http://127.0.0.1:2778/notas/{value}/'
+                        #print(third_element)  # This will print: None
+                        value = hyperlink_url
+                        sheet2.cell(row=row_num, column=col_num, value=value).font = Font(name="Arial", size=12, color="0000EE",bold=True)
+                        sheet2.cell(row=row_num, column=col_num).hyperlink = hyperlink_url
                 else:
                     sheet2.cell(row=row_num, column=col_num, value=value)
                  # dfconsultaDadosPorRubricaComEstorno.index = dfconsultaDadosPorRubricaComEstorno.index + 1
