@@ -1,12 +1,16 @@
 import os
+import shutil
 import pyodbc
 import datetime
+import base64
 import io
 import re
 import tempfile
+import json
 import os
 from PyPDF2 import PdfMerger
 import zipfile
+from django.conf import settings
 from django.shortcuts import render
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.models import User
@@ -24,7 +28,7 @@ from .new_dev import preenche_planilha,extrair,pegar_caminho
 from .preencherFinep import preencheFinep
 from .preencheFundep import preenche_fundep
 from .preencheFap import preencheFap
-from .preencheFub import consultaID,preencheFub
+from .preencheFub import consultaID,preencheFub,split_archive_name
 #from .preencherFinep import preencheFinep
 from .capaFub import inserir_round_retangulo
 from .capaGeral import inserir_round_retanguloGeral
@@ -39,6 +43,7 @@ import pandas as pd
 from django.urls import reverse
 from sqlalchemy import create_engine
 from sqlalchemy.engine import URL
+from .recibosAutomatizados import acharRecibo, acharReciboDevagar
 def pegar_caminho(subdiretorio):
     # Obtém o caminho do script atual
     arq_atual = os.path.abspath(__file__)
@@ -327,7 +332,7 @@ def user_activity_logs(request):
 
 def consultaNotas(request, filename):
     '''
-    Merges and displays all items related to a specific NumPedido
+    CARREGA PAGINA DAS NOTAS FISCAIS
     '''
     try:
         file_path = pegar_pass("passs.txt")
@@ -384,10 +389,8 @@ SELECT [OPCompraAF].[CodOPCompraAF],
         """
         
         cursor.execute(queryConsult)
-        if cursor.rowcount == 0:
-            print("Query returned no results.")
-        else:
-            items = cursor.fetchall()
+      
+        items = cursor.fetchall()
 
         #print(f'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa{items}')
         cwd = os.getcwd()
@@ -410,9 +413,7 @@ SELECT [OPCompraAF].[CodOPCompraAF],
             if not pdf_data:
                 return HttpResponse(f"NOTA NÃO CONSTA NO CONVENIAR")
             filename = item[1]
-            
-            
-            
+
             # Write PDF data to temporary file
             pdf_path = os.path.join(folder_name, f'{filename}{count}.pdf')
             print(pdf_path)
@@ -432,12 +433,199 @@ SELECT [OPCompraAF].[CodOPCompraAF],
 
         with open(merged_pdf_path, 'rb') as merged_pdf_file:
             response = HttpResponse(merged_pdf_file.read(), content_type='application/pdf')
+            response['Content-Disposition'] = f'attachment; filename="nota-{filename}.pdf"'
 
        
-
+        if os.path.exists(folder_path):
+                # Delete the folder and its contents
+                shutil.rmtree(folder_path)
+                print(f"The folder '{folder_name}' has been successfully deleted.")
+        else:
+                print(f"The folder '{folder_name}' does not exist.")
+                
         return response
     except Exception as e:
         # Handle any exceptions
         #return HttpResponse(f"An error occurred: {str(e)} NOTA NÃO EXISTE")
         return HttpResponse(f"NOTA NÃO CONSTA NO CONVENIAR")
+    
+def download_base64_pdf(request, filename):
+    '''
+  
+    CARREGA PAGINA DOS RECIBOS
+    
+    '''
+    try:
+   
+        
+        nota = acharRecibo("selenabot","finatec@300424",filename)
+                #print(nota)
+        string_with_substring = nota
+        substring_to_remove = "data:application/pdf;base64,"
+               # Remove the substring
+        result_string = string_with_substring.replace(substring_to_remove, "")
 
+                 #print(result_string)
+
+
+                # Decode the Base64 content
+        pdf_content = base64.b64decode(result_string)
+
+                # Create an HTTP response with the PDF content
+        response = HttpResponse(pdf_content, content_type='application/pdf')
+        response['Content-Disposition'] = f'attachment; filename="recibo-{filename}.pdf"'
+        return response
+    
+    except Exception as e:
+        # Handle any exceptions
+        #return HttpResponse(f"An error occurred: {str(e)} NOTA NÃO EXISTE")
+        return HttpResponse(f"Recibo não existe")
+
+
+
+def download_todos_arquivos(request,filename):
+    '''
+    CARREGA PAGINA DAS NOTAS FISCAIS
+    '''
+    try:
+        file_path = pegar_pass("passs.txt")
+        conStr = ''
+        with open(file_path, 'r') as file:
+            conStr = file.readline().strip()
+        conn = pyodbc.connect(conStr)
+        cursor = conn.cursor()
+        name, date1, date2 = split_archive_name(filename)
+    
+        listaPedidos = f"""
+        SELECT
+            NumDocFinConvenio
+                
+                FROM [Conveniar].[dbo].[LisLancamentoConvenio]
+            WHERE [LisLancamentoConvenio].CodConvenio = {name} AND [LisLancamentoConvenio].CodStatus = 27
+            AND [LisLancamentoConvenio].DataPagamento BETWEEN '{date1}' AND '{date2}' and [LisLancamentoConvenio].CodRubrica not in (2,0) 
+            order by DataPagamento
+
+        """
+        cursor.execute(listaPedidos)
+        
+        #print(listaPedidos)
+
+        NumDocFinConvenios = cursor.fetchall()
+        merged_pdf_responses = []
+        #print(NumDocFinConvenios)
+        cwd = os.getcwd()
+        folder_name = "temp_pdfs"
+        folder_path = os.path.join(cwd, folder_name)
+
+        if not os.path.exists(folder_path):
+            os.makedirs(folder_path)
+            print(f"Folder '{folder_name}' created successfully!")
+        else:
+             print(f"Folder '{folder_name}' already exists.") 
+
+        for Doc in NumDocFinConvenios:
+            print(type(Doc))
+            row_str = str(Doc[0])
+            print(row_str)
+            queryConsult = f"""
+             SELECT [Pedido].[CodPedido],
+                   [Pedido].[NumPedido],
+                   [ArquivoBinario].[ArquivoBinario],
+                   [Arquivo].[NomeArquivo] 
+            FROM [Conveniar].[dbo].[Pedido]
+            LEFT JOIN [Conveniar].[dbo].[Arquivo]
+                ON [Pedido].[CodPedido] = [Arquivo].[CodSolicitacao]
+            LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoReferencia]
+                ON [Arquivo].[CodArquivoReferencia] = [ArquivoReferencia].CodArquivoReferencia
+            LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoBinario]
+                ON [ArquivoReferencia].ChaveLocalArmazenamento = [ArquivoBinario].[CodArquivoBinario]
+            WHERE NumPedido = '{row_str}'
+
+            UNION ALL
+
+            SELECT [OPCompraAF].[CodOPCompraAF],
+                   [OPCompraAF].[NumOPCompraAF],
+                   [ArquivoBinario].[ArquivoBinario],
+                   [ArquivoOpCompraAF].[NomeArquivoOpCompraAF]
+            FROM [Conveniar].[dbo].[OPCompraAF]
+            LEFT JOIN [Conveniar].[dbo].[ArquivoOpCompraAF]
+                ON [OPCompraAF].[CodOPCompraAF] = [ArquivoOpCompraAF].[CodOPCompraAF]
+            LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoReferencia]
+                ON [ArquivoOpCompraAF].[CodArquivoReferencia] = [ArquivoReferencia].CodArquivoReferencia
+            LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoBinario]
+                ON [ArquivoReferencia].ChaveLocalArmazenamento = [ArquivoBinario].[CodArquivoBinario]
+            WHERE [OPCompraAF].[NumOPCompraAF] = '{row_str}'
+
+
+        """ 
+            #print(queryConsult)
+            cursor.execute(queryConsult)
+            items = cursor.fetchall()
+            #print(items)
+
+            
+         
+            pdf_files = []
+              # Merge individual PDFs into one
+            merger = PdfMerger()
+            count = 0  
+            conta = 0
+            for item in items:
+                filename = item[1]
+                pdf_data = item[2]
+                #print(f"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa{pdf_data}")
+                if not pdf_data:
+                     
+                    nota = acharRecibo("selenabot","finatec@300424",filename)
+                            #print(nota)
+                    string_with_substring = nota
+                    substring_to_remove = "data:application/pdf;base64,"
+                        # Remove the substring
+                    result_string = string_with_substring.replace(substring_to_remove, "")
+
+                    pdf_content = base64.b64decode(result_string)
+                    pdf_path = os.path.join(folder_name, f'{filename}{conta}.pdf')
+                    print(pdf_path)
+                    with open(pdf_path, 'wb') as pdf_file:
+                        pdf_file.write(pdf_content)
+
+                   
+                else:
+                    # Write PDF data to temporary file
+                    pdf_path = os.path.join(folder_name, f'{filename}{count}.pdf')
+                    print(pdf_path)
+                    with open(pdf_path, 'wb') as pdf_file:
+                        pdf_file.write(pdf_data)
+
+                    # Add PDF to merger
+                    
+        
+            # Create a temporary file path for the zip file
+            zip_file_path = os.path.join(cwd, 'temp_pdfs.zip')
+
+            # Create a zip file
+            with zipfile.ZipFile(zip_file_path, 'w') as zipf:
+                for root, dirs, files in os.walk(folder_path):
+                    for file in files:
+                        file_path = os.path.join(root, file)
+                        zipf.write(file_path, os.path.relpath(file_path, folder_path))
+
+            # Open the zip file
+            with open(zip_file_path, 'rb') as f:
+                response = HttpResponse(f.read(), content_type='application/zip')
+                response['Content-Disposition'] = f'attachment; filename={name}_{date1}_{date2}.zip'
+
+            # Clean up: remove the temporary zip file
+            os.remove(zip_file_path)
+            if os.path.exists(folder_path):
+                # Delete the folder and its contents
+                shutil.rmtree(folder_path)
+                print(f"The folder '{folder_name}' has been successfully deleted.")
+            else:
+                print(f"The folder '{folder_name}' does not exist.")
+            return response
+        
+        
+    except Exception as e:
+        # Handle any exceptions
+        return HttpResponse(f"An error occurred: {str(e)}")

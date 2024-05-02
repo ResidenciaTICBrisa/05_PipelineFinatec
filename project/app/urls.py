@@ -13,6 +13,8 @@ urlpatterns = [
     path('logout/', views.custom_logout, name='logout'),
     path('perfil/', views.user_profile, name='user_profile'),
     path('notas/<str:filename>/', views.consultaNotas, name='notas'),
+    path('recibos/<str:filename>/', views.download_base64_pdf, name='download_base64_pdf'),
+    path('download-todos-arquivos/<str:filename>/', views.download_todos_arquivos, name='download_todos_arquivos'),
     # path('base/', views.base2, name='base'),-
     
     # path('login_teste/', views.login_teste, name='login_teste'),

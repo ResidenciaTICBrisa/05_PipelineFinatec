@@ -11,6 +11,21 @@ from sqlalchemy.engine import URL
 import numpy as np  
 import re
 from openpyxl.worksheet.hyperlink import Hyperlink
+from .recibosAutomatizados import acharRecibo
+
+def split_archive_name(archive_name):
+    # Using regular expressions to match the pattern
+    pattern = r'(\w+)_(\d{4}-\d{2}-\d{2})_(\d{4}-\d{2}-\d{2})'
+    match = re.match(pattern, archive_name)
+    
+    if match:
+        name = match.group(1)
+        date1 = match.group(2)
+        date2 = match.group(3)
+        return name, date1, date2
+    else:
+        return None
+
 def convert_datetime_to_string(value):
     if isinstance(value, datetime):
         return value.strftime('%d/%m/%Y')
@@ -1713,12 +1728,12 @@ def planilhaGeral(planilha,codigo,data1,data2):
     sheet2.append(linha)
     #formatar as linhas
     cinza = "f1f1f1"
-
+    variavel_site = f'http://127.0.0.1:2778/'
     for column in range(ord('A'), ord('Z')+1):
         column_letter = chr(column)
         sheet2.column_dimensions[column_letter].width = 25
-
-    for row in sheet2.iter_rows(min_row=1, max_row=len(dfconsultaDadosPorRubrica)+1, min_col=1, max_col= 25):
+    #estilo
+    for row in sheet2.iter_rows(min_row=1, max_row=len(dfconsultaDadosPorRubrica)+2, min_col=1, max_col= 25):
         for cell in row:
             if cell.row == 1:
                 cell.fill = PatternFill(start_color=cinza, end_color=cinza,
@@ -1730,9 +1745,13 @@ def planilhaGeral(planilha,codigo,data1,data2):
                 cell.font = Font(name="Arial", size=12, color="000000",bold = True)
                 cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
                 sheet2.row_dimensions[cell.row].height = 60
-            
+    #botão imprime tudo
+    sheet2['X2'] = f'{variavel_site}download-todos-arquivos/{codigo}_{data1}_{data2}/'
+    hyperlink_url = f'{variavel_site}download-todos-arquivos/{codigo}_{data1}_{data2}/'
+    sheet2['X2'].font = Font(name="Arial", size=12, color="0000EE",bold=True)
+    sheet2['X2'].hyperlink = hyperlink_url
    #printar resultados
-    for row_num, row_data in enumerate(dfconsultaDadosPorRubrica.itertuples(index=False), start=2):#inicio linha
+    for row_num, row_data in enumerate(dfconsultaDadosPorRubrica.itertuples(index=False), start=3):#inicio linha
         for col_num, value in enumerate(row_data, start=1):#inicio coluna
                 value = convert_datetime_to_stringdt(value)
                 if col_num  == 24:
@@ -1740,11 +1759,28 @@ def planilhaGeral(planilha,codigo,data1,data2):
                     third_element = vetorConsulta[0][1]  # 0 indexes the first tuple, 2 indexes the third element in the tuple
                     # print(type(consultaNotasFub(value)))
                     if vetorConsulta[0][2] is not None:   
-                        hyperlink_url = f'http://127.0.0.1:2778/notas/{value}/'
+                        hyperlink_url = f'{variavel_site}notas/{value}/'
                         #print(third_element)  # This will print: None
                         value = hyperlink_url
                         sheet2.cell(row=row_num, column=col_num, value=value).font = Font(name="Arial", size=12, color="0000EE",bold=True)
                         sheet2.cell(row=row_num, column=col_num).hyperlink = hyperlink_url
+                    else:
+                        #print(value)
+                        #value = f'{value}'
+                        # nota = acharRecibo("hemanoel.brito","z>hd]3\p*2o4",value)
+                        # string_with_substring = nota
+                        # substring_to_remove = "data:application/pdf;base64,"
+                        # # Remove the substring
+                        # result_string = string_with_substring.replace(substring_to_remove, "")
+
+                        #print(result_string)
+
+                        #print(nota)
+                        hyperlink_url = f'{variavel_site}recibos/{value}/'
+                        value = hyperlink_url
+                        sheet2.cell(row=row_num, column=col_num, value=value).font = Font(name="Arial", size=12, color="0000EE",bold=True)
+                        sheet2.cell(row=row_num, column=col_num).hyperlink = hyperlink_url
+                         
                 else:
                     sheet2.cell(row=row_num, column=col_num, value=value)
                  # dfconsultaDadosPorRubricaComEstorno.index = dfconsultaDadosPorRubricaComEstorno.index + 1
@@ -1786,13 +1822,13 @@ def preencheFub(codigo,data1,data2,tabela):
 
     '''
     planilhaGeral(tabela,codigo,data1,data2)
-    # tamanho,dataframe = ExeReceitaDespesa(tabela,codigo,data1,data2,15)
-    # tamanhoPosicaoBrasilia,dfReceitas,dfDemonstrativoReceitas = Receita(tabela,codigo,data1,data2,tamanho,dataframe)
-    # demonstrativo(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia,dfDemonstrativoReceitas,dfReceitas)
-    # rubricaGeral(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
-    # conciliacaoBancaria(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
-    # rowRendimento= rendimentoDeAplicacao(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
-    # relacaodeBens(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
+    tamanho,dataframe = ExeReceitaDespesa(tabela,codigo,data1,data2,15)
+    tamanhoPosicaoBrasilia,dfReceitas,dfDemonstrativoReceitas = Receita(tabela,codigo,data1,data2,tamanho,dataframe)
+    demonstrativo(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia,dfDemonstrativoReceitas,dfReceitas)
+    rubricaGeral(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
+    conciliacaoBancaria(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
+    rowRendimento= rendimentoDeAplicacao(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
+    relacaodeBens(codigo,data1,data2,tabela,tamanhoPosicaoBrasilia)
 
    
     
