@@ -10,6 +10,21 @@ from sqlalchemy import create_engine
 from sqlalchemy.engine import URL
 import numpy as np  
 import re
+from openpyxl.worksheet.hyperlink import Hyperlink
+from .recibosAutomatizados import acharRecibo
+
+def split_archive_name(archive_name):
+    # Using regular expressions to match the pattern
+    pattern = r'(\w+)_(\d{4}-\d{2}-\d{2})_(\d{4}-\d{2}-\d{2})'
+    match = re.match(pattern, archive_name)
+    
+    if match:
+        name = match.group(1)
+        date1 = match.group(2)
+        date2 = match.group(3)
+        return name, date1, date2
+    else:
+        return None
 
 def convert_datetime_to_string(value):
     if isinstance(value, datetime):
@@ -106,6 +121,76 @@ def pegar_pass(chave):
 
 
 #todas as consultas em sql
+def consultaNotasFub(filename):
+        '''
+        Merges and displays all items related to a specific NumPedido
+        '''
+
+    
+        file_path = pegar_pass("passs.txt")
+        conStr = ''
+        with open(file_path, 'r') as file:
+            conStr = file.readline().strip()
+        conn = pyodbc.connect(conStr)
+        cursor = conn.cursor()
+        
+        # queryConsult = f"""
+        #     SELECT [Pedido].[CodPedido],
+        #            [Pedido].[NumPedido],
+        #            [ArquivoBinario].[ArquivoBinario],
+        #            [Arquivo].*
+        #     FROM [Conveniar].[dbo].[Pedido]
+        #     LEFT JOIN [Conveniar].[dbo].[Arquivo]
+        #         ON [Pedido].[CodPedido] = [Arquivo].[CodSolicitacao]
+        #     LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoReferencia]
+        #         ON [Arquivo].[CodArquivoReferencia] = [ArquivoReferencia].CodArquivoReferencia
+        #     LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoBinario]
+        #         ON [ArquivoReferencia].ChaveLocalArmazenamento = [ArquivoBinario].[CodArquivoBinario]
+        #     WHERE NumPedido = '{filename}'
+        # """
+        queryConsult = f"""
+             SELECT [Pedido].[CodPedido],
+                   [Pedido].[NumPedido],
+                   [ArquivoBinario].[ArquivoBinario],
+                   [Arquivo].[NomeArquivo] 
+            FROM [Conveniar].[dbo].[Pedido]
+            LEFT JOIN [Conveniar].[dbo].[Arquivo]
+                ON [Pedido].[CodPedido] = [Arquivo].[CodSolicitacao]
+            LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoReferencia]
+                ON [Arquivo].[CodArquivoReferencia] = [ArquivoReferencia].CodArquivoReferencia
+            LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoBinario]
+                ON [ArquivoReferencia].ChaveLocalArmazenamento = [ArquivoBinario].[CodArquivoBinario]
+            WHERE NumPedido = '{filename}'
+
+UNION ALL
+
+SELECT [OPCompraAF].[CodOPCompraAF],
+                   [OPCompraAF].[NumOPCompraAF],
+                   [ArquivoBinario].[ArquivoBinario],
+                   [ArquivoOpCompraAF].[NomeArquivoOpCompraAF]
+            FROM [Conveniar].[dbo].[OPCompraAF]
+            LEFT JOIN [Conveniar].[dbo].[ArquivoOpCompraAF]
+                ON [OPCompraAF].[CodOPCompraAF] = [ArquivoOpCompraAF].[CodOPCompraAF]
+            LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoReferencia]
+                ON [ArquivoOpCompraAF].[CodArquivoReferencia] = [ArquivoReferencia].CodArquivoReferencia
+            LEFT JOIN [ConveniarArquivo].[dbo].[ArquivoBinario]
+                ON [ArquivoReferencia].ChaveLocalArmazenamento = [ArquivoBinario].[CodArquivoBinario]
+            WHERE [OPCompraAF].[NumOPCompraAF] = '{filename}'
+
+
+        """
+        
+        cursor.execute(queryConsult)
+        if cursor.rowcount == 0:
+            print("Query returned no results.")
+            
+        else:
+            items = cursor.fetchall()
+
+        return items
+
+   
+
 def consultaRendimentosTodosAteOPeriodo(IDPROJETO,DATA2):
     file_path = pegar_pass("passs.txt")
     conStr = ''
@@ -659,10 +744,13 @@ def consultaTabelaGigante(IDPROJETO,DATA1,DATA2):
 		FavorecidoCPFCNPJ,
 		NomePessoaGestor,
 		NomeTipoPedido,
-		NomeStatus
+		NomeStatus,
+        NumDocFinConvenio,
+        NumDocFinConvenio
         FROM [Conveniar].[dbo].[LisLancamentoConvenio]
      WHERE [LisLancamentoConvenio].CodConvenio = ? AND [LisLancamentoConvenio].CodStatus = 27
-     AND [LisLancamentoConvenio].DataPagamento BETWEEN ? AND ? and [LisLancamentoConvenio].CodRubrica not in (2,0) order by DataPagamento"""
+     AND [LisLancamentoConvenio].DataPagamento BETWEEN ? AND ? and [LisLancamentoConvenio].CodRubrica not in (2,0) 
+     order by DataPagamento"""
     dfConvenioAnexoDois = pd.read_sql(queryAnexoDois, engine, params=parametros)
     return dfConvenioAnexoDois
 #preenche planilha 
@@ -1610,40 +1698,43 @@ def planilhaGeral(planilha,codigo,data1,data2):
 
 
     linha = [
-    "Nº Pedido", 
-    "Tipo do Pedido", 
-    "Histórico", 
-    "Rubrica", 
-    "Valor", 
-    "Tipo", 
-    "Data Lançamento", 
-    "Data Vencimento", 
-    "Data Pagamento", 
-    "Valor Pago", 
-    "Nº Autenticação Bancária", 
-    "Nº Documento Bancário", 
-    "Data Emissao NF", 
-    "Doc. Pago", 
-    "Cód. Projeto", 
-    "Projeto", 
-    "Agência", 
-    "Conta", 
-    "Empresa / Pessoa / Projeto", 
-    "CPF/CNPJ", 
-    "Gestor", 
-    "Tipo do Lançamento", 
-    "Situação"
+    "Nº Pedido", #1
+    "Tipo do Pedido",#2 
+    "Histórico", #3
+    "Rubrica", #4
+    "Valor", #5
+    "Tipo", #6
+    "Data Lançamento",#7 
+    "Data Vencimento", #8
+    "Data Pagamento", #9
+    "Valor Pago", #10
+    "Nº Autenticação Bancária", #11
+    "Nº Documento Bancário", #12
+    "Data Emissao NF", #13
+    "Doc. Pago", #14
+    "Cód. Projeto", #15
+    "Projeto", #16
+    "Agência", #17
+    "Conta", #18
+    "Empresa / Pessoa / Projeto",#19 
+    "CPF/CNPJ", #20
+    "Gestor", #21
+    "Tipo do Lançamento", #22
+    "Situação",#23
+    "Nota Fiscal",#24
+    "Nº Pedido",#24
     ]
     
     sheet2.append(linha)
     #formatar as linhas
     cinza = "f1f1f1"
-
+    variavel_site = f'http://automatec.finatec.org.br/'
+    #variavel_site = f'http://127.0.0.1:2778/'
     for column in range(ord('A'), ord('Z')+1):
         column_letter = chr(column)
         sheet2.column_dimensions[column_letter].width = 25
-
-    for row in sheet2.iter_rows(min_row=1, max_row=len(dfconsultaDadosPorRubrica), min_col=1, max_col= 26):
+    #estilo
+    for row in sheet2.iter_rows(min_row=1, max_row=len(dfconsultaDadosPorRubrica)+2, min_col=1, max_col= 25):
         for cell in row:
             if cell.row == 1:
                 cell.fill = PatternFill(start_color=cinza, end_color=cinza,
@@ -1655,13 +1746,45 @@ def planilhaGeral(planilha,codigo,data1,data2):
                 cell.font = Font(name="Arial", size=12, color="000000",bold = True)
                 cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
                 sheet2.row_dimensions[cell.row].height = 60
-            
+    # #botão imprime tudo
+    # sheet2['X2'] = f'{variavel_site}download-todos-arquivos/{codigo}_{data1}_{data2}/'
+    # hyperlink_url = f'{variavel_site}download-todos-arquivos/{codigo}_{data1}_{data2}/'
+    # sheet2['X2'].font = Font(name="Arial", size=12, color="0000EE",bold=True)
+    # sheet2['X2'].hyperlink = hyperlink_url
    #printar resultados
     for row_num, row_data in enumerate(dfconsultaDadosPorRubrica.itertuples(index=False), start=2):#inicio linha
         for col_num, value in enumerate(row_data, start=1):#inicio coluna
                 value = convert_datetime_to_stringdt(value)
-                sheet2.cell(row=row_num, column=col_num, value=value)
-                    
+                if col_num  == 24:
+                    vetorConsulta = consultaNotasFub(value)
+                    third_element = vetorConsulta[0][1]  # 0 indexes the first tuple, 2 indexes the third element in the tuple
+                    # print(type(consultaNotasFub(value)))
+                    if vetorConsulta[0][2] is not None:   
+                        hyperlink_url = f'{variavel_site}notas/{value}/'
+                        #print(third_element)  # This will print: None
+                        value = hyperlink_url
+                        sheet2.cell(row=row_num, column=col_num, value=value).font = Font(name="Arial", size=12, color="0000EE",bold=True)
+                        sheet2.cell(row=row_num, column=col_num).hyperlink = hyperlink_url
+                    else:
+                        #print(value)
+                        #value = f'{value}'
+                        # nota = acharRecibo("hemanoel.brito","z>hd]3\p*2o4",value)
+                        # string_with_substring = nota
+                        # substring_to_remove = "data:application/pdf;base64,"
+                        # # Remove the substring
+                        # result_string = string_with_substring.replace(substring_to_remove, "")
+
+                        #print(result_string)
+
+                        #print(nota)
+                        # if row_data
+                        hyperlink_url = f'{variavel_site}recibos/{value}/'
+                        value = hyperlink_url
+                        sheet2.cell(row=row_num, column=col_num, value=value).font = Font(name="Arial", size=12, color="0000EE",bold=True)
+                        sheet2.cell(row=row_num, column=col_num).hyperlink = hyperlink_url
+                         
+                else:
+                    sheet2.cell(row=row_num, column=col_num, value=value)
                  # dfconsultaDadosPorRubricaComEstorno.index = dfconsultaDadosPorRubricaComEstorno.index + 1
     
     

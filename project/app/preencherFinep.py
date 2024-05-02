@@ -1265,6 +1265,8 @@ def geral30(codigo,data1,data2,planilha,rowBrasilia):
             values['NomeRubrica'] = f"Equip e Mat Permanente"
         if values['NomeRubrica'] == f"Material Permanente e Equipamento Importado" :
             values['NomeRubrica'] = f"Equipamento Material Importado"
+    
+        
 
         
 
@@ -1273,9 +1275,10 @@ def geral30(codigo,data1,data2,planilha,rowBrasilia):
         if values['NomeRubrica'] == "Outros Serviços Terceiros - PJ" or values['NomeRubrica'] == "Serviços de Terceiros Pessoa Jurídica":
             values['NomeRubrica'] = "Outros Serviços Terceiros -PJ"
             nomeTabela = values['NomeRubrica']
+            nomeTabelaElemento = f'Elemento de Despesa 39'
             tituloStyle = values['NomeRubrica']
             workbook = openpyxl.load_workbook(tabela)
-            sheet2 = workbook.create_sheet(title=f"{values['NomeRubrica']}")
+            sheet2 = workbook.create_sheet(title=nomeTabelaElemento)
             sheet2['B11'] = values['NomeRubrica']
             sheet2['B11'].font = Font(name="Arial", size=12, color="000000",bold=True)
             workbook.save(tabela)
@@ -1285,9 +1288,9 @@ def geral30(codigo,data1,data2,planilha,rowBrasilia):
             tamanho = len(dfPJDOA)
             tamanhoRetorno = len(dfPJDOAESTORNO)
             
-            rownovo = estiloG(tabela,tamanho,tituloStyle,nomeTabela,rowBrasilia,tamanhoRetorno)
+            rownovo = estiloG(tabela,tamanho,tituloStyle,nomeTabelaElemento,rowBrasilia,tamanhoRetorno)
             workbook = openpyxl.load_workbook(tabela)
-            sheet2 = workbook[values['NomeRubrica']]
+            sheet2 = workbook[nomeTabelaElemento]
             dfPJDOA.index = dfPJDOA.index + 1
             for row_num, row_data in enumerate(dfPJDOA.itertuples(), start=16):#inicio linha
                 for col_num, value in enumerate(row_data, start=1):#inicio coluna
@@ -1334,8 +1337,24 @@ def geral30(codigo,data1,data2,planilha,rowBrasilia):
 
                     nomeTabela = values['NomeRubrica']
                     tituloStyle = values['NomeRubrica']
+           
+                    #switch case
+
+                    #pessoa juridica
+                    if values['NomeRubrica'] == f"Outros Serviços Terceiros - PF" :
+                        nomeTabelaElementoGeral = f'Elemento de Despesa 36'
+                    elif values['NomeRubrica'] == f"Obras e Instalações" :
+                        nomeTabelaElementoGeral = f'Elemento de Despesa 51'
+                    elif values['NomeRubrica'] == f"Equipamentos e Material Permanente" :
+                        nomeTabelaElementoGeral = f'Elemento de Despesa 52'
+                    elif values['NomeRubrica'] == f"Material de Consumo " :
+                        nomeTabelaElementoGeral = f'Elemento de Despesa 30'
+                    
+                    else :
+                        nomeTabelaElementoGeral = values['NomeRubrica']
+
                     workbook = openpyxl.load_workbook(tabela)
-                    sheet2 = workbook.create_sheet(title=f"{values['NomeRubrica']}")
+                    sheet2 = workbook.create_sheet(title=nomeTabelaElementoGeral)
                     sheet2['B11'] = values['NomeRubrica']
                     sheet2['B11'].font = Font(name="Arial", size=12, color="000000",bold=True)
                     workbook.save(tabela)
@@ -1346,9 +1365,9 @@ def geral30(codigo,data1,data2,planilha,rowBrasilia):
                     
                   
                     
-                    rowEstorno = estiloG(tabela,tamanho,tituloStyle,nomeTabela,rowBrasilia,tamanhoRetorno)
+                    rowEstorno = estiloG(tabela,tamanho,tituloStyle,nomeTabelaElementoGeral,rowBrasilia,tamanhoRetorno)
                     workbook = openpyxl.load_workbook(tabela)
-                    sheet2 = workbook[values['NomeRubrica']]
+                    sheet2 = workbook[nomeTabelaElementoGeral]
                     dfConsultaProjeto.index = dfConsultaProjeto.index + 1
                     for row_num, row_data in enumerate(dfConsultaProjeto.itertuples(), start=16):#inicio linha
                         for col_num, value in enumerate(row_data, start=1):#inicio coluna
