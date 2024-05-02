@@ -1728,7 +1728,8 @@ def planilhaGeral(planilha,codigo,data1,data2):
     sheet2.append(linha)
     #formatar as linhas
     cinza = "f1f1f1"
-    variavel_site = f'http://127.0.0.1:2778/'
+    variavel_site = f'http://automatec.finatec.org.br/'
+    #variavel_site = f'http://127.0.0.1:2778/'
     for column in range(ord('A'), ord('Z')+1):
         column_letter = chr(column)
         sheet2.column_dimensions[column_letter].width = 25
@@ -1745,13 +1746,13 @@ def planilhaGeral(planilha,codigo,data1,data2):
                 cell.font = Font(name="Arial", size=12, color="000000",bold = True)
                 cell.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
                 sheet2.row_dimensions[cell.row].height = 60
-    #botão imprime tudo
-    sheet2['X2'] = f'{variavel_site}download-todos-arquivos/{codigo}_{data1}_{data2}/'
-    hyperlink_url = f'{variavel_site}download-todos-arquivos/{codigo}_{data1}_{data2}/'
-    sheet2['X2'].font = Font(name="Arial", size=12, color="0000EE",bold=True)
-    sheet2['X2'].hyperlink = hyperlink_url
+    # #botão imprime tudo
+    # sheet2['X2'] = f'{variavel_site}download-todos-arquivos/{codigo}_{data1}_{data2}/'
+    # hyperlink_url = f'{variavel_site}download-todos-arquivos/{codigo}_{data1}_{data2}/'
+    # sheet2['X2'].font = Font(name="Arial", size=12, color="0000EE",bold=True)
+    # sheet2['X2'].hyperlink = hyperlink_url
    #printar resultados
-    for row_num, row_data in enumerate(dfconsultaDadosPorRubrica.itertuples(index=False), start=3):#inicio linha
+    for row_num, row_data in enumerate(dfconsultaDadosPorRubrica.itertuples(index=False), start=2):#inicio linha
         for col_num, value in enumerate(row_data, start=1):#inicio coluna
                 value = convert_datetime_to_stringdt(value)
                 if col_num  == 24:
@@ -1776,6 +1777,7 @@ def planilhaGeral(planilha,codigo,data1,data2):
                         #print(result_string)
 
                         #print(nota)
+                        # if row_data
                         hyperlink_url = f'{variavel_site}recibos/{value}/'
                         value = hyperlink_url
                         sheet2.cell(row=row_num, column=col_num, value=value).font = Font(name="Arial", size=12, color="0000EE",bold=True)
