@@ -1,0 +1,2143 @@
+
+<!doctype html>
+<html lang="pt" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://raqueleucaria.github.io/05_PipelineFinatec/treinamento/estudos_individuais/fundamentosBD/">
+      
+      
+        <link rel="prev" href="../PipelinedeDados/">
+      
+      
+        <link rel="next" href="../../treinamentos/postgresql/">
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.0, mkdocs-material-9.5.20">
+    
+    
+      
+        <title>Fundamentos de Banco de Dados - AutomaTEC</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.66ac8b77.min.css">
+      
+        
+        <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce((e,_)=>(e<<5)-e+_.charCodeAt(0),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="dark-blue" data-md-color-accent="amber">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#fundamentos-de-banco-de-dados" class="md-skip">
+          Pular para conteúdo
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Cabeçalho">
+    <a href="../../.." title="AutomaTEC" class="md-header__button md-logo" aria-label="AutomaTEC" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2Z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            AutomaTEC
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Fundamentos de Banco de Dados
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="dark-blue" data-md-color-accent="amber"  aria-label="Modo Claro"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Modo Claro" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9v1Z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="blue" data-md-color-accent="yellow"  aria-label="Modo Escuro"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Modo Escuro" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5Z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var media,input,key,value,palette=__md_get("__palette");if(palette&&palette.color){"(prefers-color-scheme)"===palette.color.media&&(media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']"),palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent"));for([key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Buscar" placeholder="Buscar" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5Z"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Pesquisar">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Limpar" aria-label="Limpar" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41Z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Inicializando busca
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/ResidenciaTICBrisa/05_PipelineFinatec/" title="Ir para repositório" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Pipeline Finatec
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="Abas" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../.." class="md-tabs__link">
+        
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../planejamento/contexto/" class="md-tabs__link">
+          
+  
+  Planejamento
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+  
+  
+    
+    
+      
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../treinamentos/mkdocs/" class="md-tabs__link">
+          
+  
+  Treinamento
+
+        </a>
+      </li>
+    
+  
+
+    
+  
+
+      
+        
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../../atas/06-29/" class="md-tabs__link">
+          
+  
+  Atas
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navegação" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="AutomaTEC" class="md-nav__button md-logo" aria-label="AutomaTEC" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54Z"/></svg>
+
+    </a>
+    AutomaTEC
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/ResidenciaTICBrisa/05_PipelineFinatec/" title="Ir para repositório" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!--! Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
+  </div>
+  <div class="md-source__repository">
+    Pipeline Finatec
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Home
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Planejamento
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Planejamento
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../planejamento/contexto/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Contexto
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../planejamento/fluxograma/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Fluxograma
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Requisitos
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            Requisitos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../planejamento/requisitos/elicitacao/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Elicitação
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../planejamento/requisitos/priorizacao/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Priorização
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../planejamento/backlog/backlog/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Backlog
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../planejamento/roadmap/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    RoadMap
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  <span class="md-ellipsis">
+    Treinamento
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Treinamento
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_1" id="__nav_3_1_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Treinamentos
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_1">
+            <span class="md-nav__icon md-icon"></span>
+            Treinamentos
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../treinamentos/mkdocs/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Mkdocs
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../treinamentos/postgresql/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Instalação do PostgreSQL no Ubuntu 20.04 para Projetos Django
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Estudos Individuais
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Estudos Individuais
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../linguagem_framework/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Linguagens e frameworks
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../metodologias/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Metodologias
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../PipelinedeDados/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Pipeline de Dados
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  <span class="md-ellipsis">
+    Fundamentos de Banco de Dados
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  <span class="md-ellipsis">
+    Fundamentos de Banco de Dados
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Índice">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Índice
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introducao-a-banco-de-dados" class="md-nav__link">
+    <span class="md-ellipsis">
+      Introdução a Banco de Dados
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Introdução a Banco de Dados">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#o-que-sao-bancos-de-dados" class="md-nav__link">
+    <span class="md-ellipsis">
+      O que são bancos de dados?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sistema-de-gerenciamento-de-banco-de-dados" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sistema de Gerenciamento de Banco de Dados
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#breve-historico-de-sgbds" class="md-nav__link">
+    <span class="md-ellipsis">
+      Breve histórico de SGBDs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modelo-de-banco-de-dados-relacional" class="md-nav__link">
+    <span class="md-ellipsis">
+      Modelo de Banco de Dados Relacional
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Modelo de Banco de Dados Relacional">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#caracteristicas" class="md-nav__link">
+    <span class="md-ellipsis">
+      Características
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#usuarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      Usuários
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#storage-e-buffer" class="md-nav__link">
+    <span class="md-ellipsis">
+      Storage e Buffer
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#integracao" class="md-nav__link">
+    <span class="md-ellipsis">
+      Integração
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sgbds-mais-utilizados-pelo-mercado" class="md-nav__link">
+    <span class="md-ellipsis">
+      SGBDs mais utilizados pelo mercado
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="SGBDs mais utilizados pelo mercado">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ranking" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ranking
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#consideracoes-para-o-projeto-da-finatec" class="md-nav__link">
+    <span class="md-ellipsis">
+      Considerações para o projeto da Finatec
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sistemas-de-gerenciamento-de-banco-de-dados" class="md-nav__link">
+    <span class="md-ellipsis">
+      Sistemas de Gerenciamento de Banco de Dados
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Sistemas de Gerenciamento de Banco de Dados">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#abordagem-de-sgbds-versus-abordagem-tradicional" class="md-nav__link">
+    <span class="md-ellipsis">
+      Abordagem de SGBDs versus Abordagem Tradicional
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Abordagem de SGBDs versus Abordagem Tradicional">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#caracteristicas-principais-do-sgbd" class="md-nav__link">
+    <span class="md-ellipsis">
+      Características principais do SGBD
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#natureza-auto-descritiva-da-abordagem-de-banco-de-dados" class="md-nav__link">
+    <span class="md-ellipsis">
+      Natureza Auto-descritiva da Abordagem de Banco de Dados
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isolamento-programdata-e-abstracao" class="md-nav__link">
+    <span class="md-ellipsis">
+      Isolamento Program/data e Abstração
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#isolamento" class="md-nav__link">
+    <span class="md-ellipsis">
+      Isolamento
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#abstracao" class="md-nav__link">
+    <span class="md-ellipsis">
+      Abstração
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#suporte-a-multiplas-visoes-dos-dados" class="md-nav__link">
+    <span class="md-ellipsis">
+      Suporte à Múltiplas Visões dos Dados
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Suporte à Múltiplas Visões dos Dados">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#compartilhamento-de-dados-e-processamento-de-transacoes-multiusuarios" class="md-nav__link">
+    <span class="md-ellipsis">
+      Compartilhamento de dados e Processamento de Transações Multiusuários
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Compartilhamento de dados e Processamento de Transações Multiusuários">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#oltp" class="md-nav__link">
+    <span class="md-ellipsis">
+      OLTP
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#olap" class="md-nav__link">
+    <span class="md-ellipsis">
+      OLAP
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#atores-em-banco-de-dados" class="md-nav__link">
+    <span class="md-ellipsis">
+      Atores em Banco de Dados
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Atores em Banco de Dados">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cenario" class="md-nav__link">
+    <span class="md-ellipsis">
+      Cenário
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#atores" class="md-nav__link">
+    <span class="md-ellipsis">
+      Atores
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#categorias-de-usuarios-finais" class="md-nav__link">
+    <span class="md-ellipsis">
+      Categorias de Usuários Finais
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#workers-em-background-banco-de-dados" class="md-nav__link">
+    <span class="md-ellipsis">
+      Workers em background - Banco de Dados
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#vantagens-de-utilizar-a-abordagem-de-sgbds" class="md-nav__link">
+    <span class="md-ellipsis">
+      Vantagens de Utilizar a Abordagem de SGBDs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ganhos-em-utilizar-sgbds" class="md-nav__link">
+    <span class="md-ellipsis">
+      Ganhos em utilizar SGBDs
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#quando-nao-usar-sgbds" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quando não usar SGBDs
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#modelagem-de-dados-para-banco-de-dados" class="md-nav__link">
+    <span class="md-ellipsis">
+      Modelagem de Dados para Banco de Dados
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Modelagem de Dados para Banco de Dados">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#introducao-a-modelagem-de-dados" class="md-nav__link">
+    <span class="md-ellipsis">
+      Introdução à Modelagem de dados
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Introdução à Modelagem de dados">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#modelagem" class="md-nav__link">
+    <span class="md-ellipsis">
+      Modelagem
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#modelos-de-alto-nivel" class="md-nav__link">
+    <span class="md-ellipsis">
+      Modelos de alto nível
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Modelos de alto nível">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#entidade-relacionamento" class="md-nav__link">
+    <span class="md-ellipsis">
+      Entidade-Relacionamento
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uml-linguagem-de-modelagem-unificada" class="md-nav__link">
+    <span class="md-ellipsis">
+      UML (Linguagem de modelagem unificada)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inserindo-as-informacoes" class="md-nav__link">
+    <span class="md-ellipsis">
+      Inserindo as informações
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#como-acessar" class="md-nav__link">
+    <span class="md-ellipsis">
+      Como acessar?
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#instalando-mysql-no-ubuntu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Instalando MySQL no Ubuntu
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#qual-bd-escolher" class="md-nav__link">
+    <span class="md-ellipsis">
+      Qual BD escolher?
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#historico-de-versao" class="md-nav__link">
+    <span class="md-ellipsis">
+      Histórico de Versão
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../treinamentos/postgresql/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Instalação do PostgreSQL no Ubuntu 20.04 para Projetos Django
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Atas
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            Atas
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../atas/06-29/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    06/29 - Reunião Grupo
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../atas/07-11/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    11/07 - Reunião Grupo
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../atas/07-20/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    20/07 - Reunião 2 FINATEC
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../atas/07-27/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    27/07 - Reunião TI (cancelada)
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../atas/08-01/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    01/08 - Reunião TI
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+  
+  
+
+
+<h1 id="fundamentos-de-banco-de-dados">Fundamentos de Banco de Dados</h1>
+<h2 id="introducao-a-banco-de-dados">Introdução a Banco de Dados</h2>
+<h3 id="o-que-sao-bancos-de-dados">O que são bancos de dados?</h3>
+<p>Conjunto de dados que transmitem informação</p>
+<ul>
+<li>API - trás a informação solicitada</li>
+<li>Ações - solicitação das informações</li>
+<li>Possuem diversos tamanhos</li>
+</ul>
+<h3 id="sistema-de-gerenciamento-de-banco-de-dados">Sistema de Gerenciamento de Banco de Dados</h3>
+<ol>
+<li>
+<p><strong>Definição</strong> - Mini mundo</p>
+<ul>
+<li>Tipo de dado</li>
+<li>Estrutura</li>
+<li>Constrains</li>
+</ul>
+</li>
+<li>
+<p><strong>Construção</strong></p>
+<ul>
+<li>Inserção dos dados - persistência</li>
+<li>Mapeamento</li>
+</ul>
+</li>
+<li>
+<p><strong>Manipulação</strong></p>
+<ul>
+<li>Recuperação de informações</li>
+<li>Geração de relatórios</li>
+</ul>
+</li>
+<li>
+<p><strong>Compartilhamento</strong></p>
+<ul>
+<li>Simultaneidade</li>
+<li>Acesso<pre><code>OBS: Proteção
+  1. Persistência
+  2. Acesso
+</code></pre>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="breve-historico-de-sgbds">Breve histórico de SGBDs</h3>
+<p><strong>Linha do tempo</strong></p>
+<ul>
+<li>1960 - Conceito</li>
+<li>1970 - Modelo relacional</li>
+<li>1970 - Democratização da tecnologia</li>
+<li>1990 - Paradigma de Orientação a Objeto</li>
+<li>2000 - NoSQL</li>
+</ul>
+<p><strong>Modelo relacional</strong></p>
+<ul>
+<li>Surgiu com a ideia de diminuir custo com pessoal e garantir maior consistência dos dados </li>
+<li>Estrutura de tabela, de maneira mais generalista</li>
+<li>SQL - Linguagem de consulta (ISO/IEC 9075)</li>
+</ul>
+<p><strong>Modelo hierárquico</strong></p>
+<ul>
+<li>Sistema de gerenciamento voltado a registros  </li>
+<li>Busca em árvore</li>
+</ul>
+<p><strong>Modelo em Rede</strong></p>
+<ul>
+<li>Busca em grafo</li>
+<li>Precisa conhecer como ele funciona</li>
+</ul>
+<h3 id="modelo-de-banco-de-dados-relacional">Modelo de Banco de Dados Relacional</h3>
+<p>Tradução -&gt; mecanismos de execução -&gt; gerenciador -&gt; metadadso e schema</p>
+<h4 id="caracteristicas">Características</h4>
+<ul>
+<li>Álgebra relacional</li>
+<li>Relações</li>
+<li>TAD para armazenamento</li>
+<li>Transparência</li>
+</ul>
+<h4 id="usuarios">Usuários</h4>
+<ol>
+<li>Convencional<ul>
+<li>Altera e extrai informações</li>
+<li>LMD (<strong>linguagem de manipulação dos dados</strong>)</li>
+</ul>
+</li>
+<li>Administrador do BD (DBA)<ul>
+<li>Defini a estrutura e constrains (regras) - Determina as tabelas, as entidades, atributos e comandos</li>
+<li>Comandos traduzido pelo processador LDD (<strong>linguagem de definição de dados</strong>)</li>
+</ul>
+</li>
+</ol>
+<h4 id="storage-e-buffer">Storage e Buffer</h4>
+<p>Como tenta lidar com os dados de forma mais performática, é importante:</p>
+<ul>
+<li>Gerenciador de armazenamento - HD → RAM</li>
+<li>Gerenciador de Buffer - RAM → HD</li>
+</ul>
+<h4 id="integracao">Integração</h4>
+<ul>
+<li>É possível usar mais de um BD na aplicação, unindo os benefícios de cada.</li>
+<li>Repositórios centralizados - Data Warehouses</li>
+<li>Mediadores - Middleware</li>
+</ul>
+<h3 id="sgbds-mais-utilizados-pelo-mercado">SGBDs mais utilizados pelo mercado</h3>
+<h4 id="ranking">Ranking</h4>
+<ol>
+<li>Oracle</li>
+<li>MySQL</li>
+<li>SQLServer</li>
+<li>PostgreeSQL</li>
+<li>MongoDB</li>
+<li>Redis</li>
+<li>ElasticServer</li>
+<li>IBM Db2</li>
+<li>Microsoft Access</li>
+<li>SQLite</li>
+<li>Snowflake</li>
+<li>Cassandra</li>
+<li>MariaDB</li>
+</ol>
+<p><code>Fonte: https://db-engines.com/en/ranking (Julho de 2023)</code></p>
+<h4 id="consideracoes-para-o-projeto-da-finatec">Considerações para o projeto da Finatec</h4>
+<ul>
+<li>MySQL é opensource, tem bastante conteúdo por ser um SGBD muito usado para iniciantes;</li>
+<li>PostgreeSQL é opensource é muito indicado para mexer com pyhton</li>
+<li>Redis é opensource não relacional com um bom desempenho, sendo bem escalável</li>
+<li>Cassandra é openssource,  não relacional, distribuído, altamente escalável e eventualmente consistente</li>
+</ul>
+<h2 id="sistemas-de-gerenciamento-de-banco-de-dados">Sistemas de Gerenciamento de Banco de Dados</h2>
+<h3 id="abordagem-de-sgbds-versus-abordagem-tradicional">Abordagem de SGBDs versus Abordagem Tradicional</h3>
+<p>Por que utilizar o SGBDs?
+Quando tiver um dado modificado, a aplicação devem ser alteradas
+Mantém a estrutura de dados no sistema</p>
+<table class="no-border">
+  <thead>
+    <tr>
+      <td><b>Tradicinal</td>
+      <td><b>SGBD</td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><li>Mantém a estrutura de dados no próprio sistema</td>
+      <td><li>Faz uma consulta ao Banco de dados</td>
+    </tr>
+    <tr>
+      <td><li>Um dado modificada implica na alteração da aplicação</td>
+      <td><li>Não faz modificação da aplicação</td>
+    </tr>
+    <tr>
+      <td><li>Gera redundância e esforço repetido</td>
+      <td><li>Permite o acesso concorrente</td>
+    </tr>
+    <tr>
+    <tr>
+      <td><img src="../assets/fundBD/Untitled13.png" width=450px></img></td>
+      <td><img src="../assets/fundBD/Untitled15.png" width=425px></img></td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="caracteristicas-principais-do-sgbd">Características principais do SGBD</h4>
+<ul>
+<li>Abstração</li>
+<li>Autodescrição</li>
+<li>Isolamento</li>
+<li>Compartilhamento</li>
+<li>Múltiplas visões</li>
+<li>Transação multiuser</li>
+</ul>
+<h3 id="natureza-auto-descritiva-da-abordagem-de-banco-de-dados">Natureza Auto-descritiva da Abordagem de Banco de Dados</h3>
+<ul>
+<li>“Descrição de mim mesmo”</li>
+<li>Descrição da sua estrurura e regra</li>
+<li><strong>Schema</strong> - Estrutura bem definida sem a inserção dos dados</li>
+</ul>
+<p><center>
+<img src="../assets/fundBD/Untitled16.png" width=800px> 
+</center></p>
+<p><strong>NoSQL</strong> </p>
+<ul>
+<li>Não possuem uma estrutura específica, por já possuirem uma descrição</li>
+</ul>
+<p><strong>SQL</strong> </p>
+<ul>
+<li>Precisa dos metadados e o schema</li>
+</ul>
+<h3 id="isolamento-programdata-e-abstracao">Isolamento Program/data e Abstração</h3>
+<h3 id="isolamento">Isolamento</h3>
+<ul>
+<li>Importante para a manutenção do sistema</li>
+<li>Evita as alterações na aplicação</li>
+<li>Vem pela estruturação dos catálogos</li>
+</ul>
+<p><center></p>
+<table class="no-border">
+  <thead>
+    <tr>
+      <td></td>
+      <td></td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="../assets/fundBD/Untitled17.png" width=500px></td>
+      <td><img src="../assets/fundBD/Untitled18.png" width=500px></td>
+    </tr>
+  </tbody>
+</table>
+<p><img src="../assets/fundBD/Untitled19.png" width=800px>
+</center></p>
+<h3 id="abstracao">Abstração</h3>
+<ul>
+<li>Generalizar os objetos e contexto</li>
+</ul>
+<p><center></p>
+<table class="no-border">
+  <thead>
+    <tr>
+      <td></td>
+      <td></td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="../assets/fundBD/Untitled20.png" width=500px></td>
+      <td><img src="../assets/fundBD/Untitled21.png" width=500px></td>
+    </tr>
+  </tbody>
+</table>
+<p><img src="../assets/fundBD/Untitled22.png" width=800px>
+<img src="../assets/fundBD/Untitled23.png" width=800px>
+<img src="../assets/fundBD/Untitled24.png" width=800px>
+</center></p>
+<h2 id="suporte-a-multiplas-visoes-dos-dados">Suporte à Múltiplas Visões dos Dados</h2>
+<ul>
+<li>“Perspectivas distintas de um mesmo conjunto de dados”</li>
+<li>Cada setor esta interessado em um tipo de informação</li>
+</ul>
+<h3 id="compartilhamento-de-dados-e-processamento-de-transacoes-multiusuarios">Compartilhamento de dados e Processamento de Transações Multiusuários</h3>
+<ul>
+<li>Controle de concorrência (Concurrency Control) </li>
+<li>Mecanismo de controle de acesso de <strong>várias pessoas</strong></li>
+<li>Múltiplos acessos - Proteção para evitar a alteração de dados “ao mesmo tempo”</li>
+</ul>
+<h4 id="oltp">OLTP</h4>
+<ul>
+<li>Processamento de Transações Online </li>
+<li>É um tipo de processamento de dados que consiste na execução de várias transações que ocorrem simultaneamente</li>
+<li>Gerencia as trransações concorrentes<ul>
+<li>Não pode travar</li>
+<li>Ou executa tudo ou <strong>volta</strong> e executa nada - Precisa ser capaz de retroceder</li>
+</ul>
+</li>
+<li>Decisões orientados a translações</li>
+<li>Ex: Transações bancárias online, compras, entrada de pedidos ou envio de mensagens de texto</li>
+</ul>
+<p><center></p>
+<table class="no-border">
+  <thead>
+    <tr>
+      <td></td>
+      <td></td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="../assets/fundBD/Untitled25.png" width=500px></td>
+      <td><img src="../assets/fundBD/Untitled26.png" width=500px></td>
+    </tr>
+    <tr>
+      <td><img src="../assets/fundBD/Untitled27.png" width=500px></td>
+      <td><img src="../assets/fundBD/Untitled28.png" width=500px></td>
+    </tr>
+  </tbody>
+</table>
+
+<p></center></p>
+<h4 id="olap">OLAP</h4>
+<ul>
+<li>Online Analytical Processing</li>
+<li>É uma tecnologia usada para organizar bancos de dados de grandes empresas e dar suporte a business intelligence</li>
+<li>Ele pode ser usado para executar consultas analíticas complexas sem prejudicar sistemas transacionais.</li>
+</ul>
+<p><center>
+<img src="../assets/fundBD/Untitled29.png" width=800px> 
+</center></p>
+<h3 id="atores-em-banco-de-dados">Atores em Banco de Dados</h3>
+<h4 id="cenario">Cenário</h4>
+<ul>
+<li>BDs simples → 1 ou poucos pessoas</li>
+<li>Big Organizations → +10k</li>
+</ul>
+<h4 id="atores">Atores</h4>
+<ol>
+<li>
+<p>Designer</p>
+<ul>
+<li>Identificar dados e requisitos</li>
+<li>Representação e Estrutura</li>
+<li>Fase preliminar - Elaboração do banco</li>
+</ul>
+</li>
+<li>
+<p>Administradores (DBA)</p>
+<ul>
+<li>Gerencia os recursos (base de dados, SGBD, softwares adicionais)</li>
+<li>Orquestração os sistema</li>
+<li>Autorização de acesso</li>
+</ul>
+</li>
+<li>
+<p>Usuários Finais</p>
+<ul>
+<li>Propósito do SGBDs (atender a estes usuários)</li>
+<li>Acesso → Querying (uipdate, reports)</li>
+<li>Categorizados</li>
+</ul>
+</li>
+</ol>
+<h4 id="categorias-de-usuarios-finais">Categorias de Usuários Finais</h4>
+<ol>
+<li>
+<p>Casuais</p>
+<ul>
+<li>Acesso ocasionais</li>
+<li>Diferentes informações</li>
+<li>Uso de APIs</li>
+</ul>
+</li>
+<li>
+<p>Sofisticados</p>
+<ul>
+<li>Cientistas, engenheiros e analistas</li>
+<li>Puxam as informações dos BD</li>
+</ul>
+</li>
+<li>
+<p>Standalone</p>
+<ul>
+<li>BD pessoal</li>
+</ul>
+</li>
+<li>
+<p>Ingênuos</p>
+<ul>
+<li>Considerável porção - Não possui noção de BD</li>
+<li>Erro: raro</li>
+<li>Canned Transactions: Encapsulados por programção (API gráfica)<ul>
+<li>EngenheiroS de Software - desenvolve o sistema que acessa o BD (análise de sistema, desenvolvimento da aplicação, teste e produção da aplicação)</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="workers-em-background-banco-de-dados">Workers em background - Banco de Dados</h3>
+<p>Atores do sistema que da suporte ao BD quem mantém o SGBD disponível para usarem.</p>
+<ol>
+<li>
+<p>Designer do Sistema de SGBD e Implementação do SGBD</p>
+<ul>
+<li>Fornecem o ambiente e suporte para BD</li>
+<li>Implementação dos módulos e interfaces do SGBD como um software package</li>
+<li>Base</li>
+</ul>
+</li>
+<li>
+<p>Pessoal de operação e manutenção</p>
+<ul>
+<li>Responsável pelo ambiente de hardware e software para o SGBD</li>
+</ul>
+</li>
+<li>
+<p>Desenvolvedores de ferramentas</p>
+<ul>
+<li>Ferramentas opcionais para diversos fins</li>
+<li>Performance, modelagem (segurança), análise</li>
+</ul>
+</li>
+</ol>
+<h3 id="vantagens-de-utilizar-a-abordagem-de-sgbds">Vantagens de Utilizar a Abordagem de SGBDs</h3>
+<ul>
+<li>Controle de redundância</li>
+<li>Restrição de acesso</li>
+<li>Provendo persistência</li>
+<li>Estrutura de armazenamento e técnicas de busca<ul>
+<li>intuitivas</li>
+<li>Técnicas de performace: Caching, buffering e indexação (dados recorrentes)</li>
+</ul>
+</li>
+<li>Backup e Recovery<ul>
+<li>Recuperam recursos perdidos</li>
+<li>Confiança e disponibilidade</li>
+</ul>
+</li>
+<li>Multiusuário<ul>
+<li>Interfaces adaptadas ao tipo de usuário</li>
+</ul>
+</li>
+<li>Representação de relações complexas</li>
+<li>Integridade de dados<ul>
+<li>restrições</li>
+</ul>
+</li>
+</ul>
+<h3 id="ganhos-em-utilizar-sgbds"><strong>Ganhos em utilizar SGBDs</strong></h3>
+<ul>
+<li>
+<p>Padronização</p>
+</li>
+<li>
+<p>Redução de tempo no desenvolvimento da aplicação</p>
+</li>
+<li>Flexibilidade</li>
+<li>Disponibilidade de info up-to-date</li>
+<li>Economia de escala</li>
+</ul>
+<h3 id="quando-nao-usar-sgbds"><strong>Quando não usar SGBDs</strong></h3>
+<ul>
+<li>Custo x Benefício</li>
+<li>Investimento</li>
+<li>Generalidade na definição e processamento</li>
+<li>Segurança, controle de concorrência, recovery, funções de integridade</li>
+</ul>
+<h2 id="modelagem-de-dados-para-banco-de-dados">Modelagem de Dados para Banco de Dados</h2>
+<p><center>
+<img src="../assets/fundBD/Untitled31.png" width=600px> 
+</center></p>
+<h3 id="introducao-a-modelagem-de-dados">Introdução à Modelagem de dados</h3>
+<h4 id="modelagem">Modelagem</h4>
+<p>Possui foco na descrição e relacionamento dos elementos que compõem a representação do contexto (mini-mundo)</p>
+<p><center>
+<img src="../assets/fundBD/Untitled32.png" width=600px> 
+</center></p>
+<h4 id="modelos-de-alto-nivel">Modelos de alto nível</h4>
+<h5 id="entidade-relacionamento">Entidade-Relacionamento</h5>
+<ul>
+<li>Mais fácil do cliente entender</li>
+</ul>
+<p><center>
+<img src="../assets/fundBD/Untitled33.png" width=600px> 
+</center></p>
+<h5 id="uml-linguagem-de-modelagem-unificada">UML (Linguagem de modelagem unificada)</h5>
+<ul>
+<li>Mais descritivo para o desenvolvimento</li>
+</ul>
+<p><center></p>
+<table class="no-border">
+  <thead>
+    <tr>
+      <td></td>
+      <td></td>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><img src="../assets/fundBD/Untitled34.png" width=300px></td>
+      <td><img src="../assets/fundBD/Untitled35.png" width=600px></td>
+    </tr>
+  </tbody>
+</table>
+
+<p></center></p>
+<h4 id="inserindo-as-informacoes">Inserindo as informações</h4>
+<p>Linguagem declarativa - SQL
+<center>
+<img src="../assets/fundBD/Untitled36.png" width=600px> 
+</center></p>
+<h4 id="como-acessar">Como acessar?</h4>
+<ul>
+<li>Interface gráfica</li>
+<li>Terminal</li>
+<li>Linguagem de programação</li>
+</ul>
+<h4 id="instalando-mysql-no-ubuntu"><strong>Instalando MySQL no Ubuntu</strong></h4>
+<p>No terminal:</p>
+<ol>
+<li><code>sudo apt-get update</code></li>
+<li><code>sudo apt-get upgrade</code></li>
+<li><code>sudo apt-get install mysql-server</code></li>
+<li><code>sudo apt-get install mysql-client</code></li>
+<li><code>mysql --version</code> (verifica a instalação)</li>
+<li><code>sudo systemctl status mysql.service</code> (vendo o status se esta iniciado)</li>
+<li><code>sudo mysql</code> (acessa o mysql)</li>
+<li><code>show databases;</code> (visualiza os dados)</li>
+<li><code>exit</code></li>
+<li><code>sudo apt-get update</code></li>
+<li><code>sudo apt-get upgrade</code></li>
+<li>Reinicia o PC</li>
+</ol>
+<h2 id="qual-bd-escolher">Qual BD escolher?</h2>
+<p>Conforme o conteúdo estudo e colocado neste documento, o uso de um banco de dados é essencial, considerando que evitaria redundância e retrabalha no projeto.</p>
+<p>Acredito que as melhores opções são o MySQL e o PostegreSQL por serem BD de dados opensource, relacionais que permitem que tenhamos multiusuários ao BD. Considerando que teriamos um administrador e diferentes funcionários da FINATEC que fariam uma consulta. Além disso, esses sistemas relacionais já possuem controle de acesso e demais funções que iriam facilitar no desenvolvimento, além dadocumentação disponível que auxiliaria.</p>
+<p>Na última reunião o pessoal da TI passou a informação de que já existe um BD próprio, assim, não teríamos que construir um do zero mais. No dia 09/08 iremos visitar a FINATEC e conhecer os sistemas e o pessoal. Assim, o estudo do BD deve focar na requisição e não mais na construção.</p>
+<h2 id="historico-de-versao">Histórico de Versão</h2>
+<table>
+<thead>
+<tr>
+<th>Data</th>
+<th>Versão</th>
+<th>Descrição</th>
+<th>Autor</th>
+<th>Revisor</th>
+<th>Issue</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>30/06/2023</td>
+<td>1.0</td>
+<td>Criação do documento</td>
+<td><a href="https://github.com/raqueleucaria">Raquel</a></td>
+<td><a href="https://github.com/hemanoelbritoF">Hemanoel</a></td>
+<td><a href="https://github.com/ResidenciaTICBrisa/05_PipelineFinatec/issues/22">#22</a></td>
+</tr>
+</tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12Z"/></svg>
+  Voltar para o topo
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="Rodapé" >
+        
+          
+          <a href="../PipelinedeDados/" class="md-footer__link md-footer__link--prev" aria-label="Anterior: Pipeline de Dados">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12Z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Anterior
+              </span>
+              <div class="md-ellipsis">
+                Pipeline de Dados
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../treinamentos/postgresql/" class="md-footer__link md-footer__link--next" aria-label="Próximo: Instalação do PostgreSQL no Ubuntu 20.04 para Projetos Django">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                Próximo
+              </span>
+              <div class="md-ellipsis">
+                Instalação do PostgreSQL no Ubuntu 20.04 para Projetos Django
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4Z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    <script id="__config" type="application/json">{"base": "../../..", "features": ["toc.integrate", "toc.follow", "navigation.tabs", "navigation.tabs.sticky", "navigation.footer", "navigation.instant", "navigation.top"], "search": "../../../assets/javascripts/workers/search.b8dbb3d2.min.js", "translations": {"clipboard.copied": "Copiado para \u00e1rea de transfer\u00eancia", "clipboard.copy": "Copiar para \u00e1rea de transfer\u00eancia", "search.result.more.one": "mais 1 nesta p\u00e1gina", "search.result.more.other": "# mais nesta p\u00e1gina", "search.result.none": "Nenhum documento encontrado", "search.result.one": "1 documento encontrado", "search.result.other": "# documentos encontrados", "search.result.placeholder": "Digite para iniciar a busca", "search.result.term.missing": "Ausente", "select.version": "Selecione a vers\u00e3o"}}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.dd8806f2.min.js"></script>
+      
+    
+  </body>
+</html>
