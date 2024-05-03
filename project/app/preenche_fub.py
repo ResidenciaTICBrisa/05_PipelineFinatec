@@ -2,8 +2,9 @@ import oracledb
 from datetime import datetime,date
 import openpyxl
 import os
-from .estilo_fub import (estilo_conciliacoes_bancaria,estilo_rendimento_de_aplicacao,
-estilo_demonstrativoDeReceita,estiloGeral,estiloRelacaoBens)
+#from .estilo_fub import (estilo_conciliacoes_bancaria,estilo_rendimento_de_aplicacao,
+#estilo_demonstrativoDeReceita,estiloGeral,estiloRelacaoBens)
+from .estilo_fub import *
 from collections import defaultdict
 from .oracle_cruds import consultaPorID,getAnalistaDoProjetoECpfCoordenador
 
@@ -18,18 +19,37 @@ def check_format(time_data, format='%Y-%m-%d'):
     except ValueError:
         return False  # The time_data does not match the format
 
-def pegar_caminho(nome_arquivo):
+# def pegar_caminho(nome_arquivo):
 
-    # Obter o caminho absoluto do arquivo Python em execução
-    caminho_script = os.path.abspath(__file__)
+#     # Obter o caminho absoluto do arquivo Python em execução
+#     caminho_script = os.path.abspath(__file__)
 
-    # Obter o diretório da pasta onde o script está localizado
-    pasta_script = os.path.dirname(caminho_script)
+#     # Obter o diretório da pasta onde o script está localizado
+#     pasta_script = os.path.dirname(caminho_script)
 
-    # Combinar o caminho da pasta com o nome do arquivo Excel
-    caminho = os.path.join(pasta_script, nome_arquivo)
+#     # Combinar o caminho da pasta com o nome do arquivo Excel
+#     caminho = os.path.join(pasta_script, nome_arquivo)
 
-    return caminho
+#     return caminho
+
+def pegar_caminho(subdiretorio):
+    # Obtém o caminho do script atual
+    arq_atual = os.path.abspath(__file__)
+    
+    # Obtém o diretório do script
+    app = os.path.dirname(arq_atual)
+    
+    # Obtém o diretório pai do script
+    project = os.path.dirname(app)
+    
+    # Obtém o diretório pai do projeto
+    pipeline = os.path.dirname(project)
+    
+    # Junta o diretório pai do projeto com o subdiretório desejado
+    caminho_pipeline = os.path.join(pipeline, subdiretorio)
+    
+    return caminho_pipeline
+
 
 def convert_datetime_to_string(value):
     if isinstance(value, datetime):
@@ -38,8 +58,21 @@ def convert_datetime_to_string(value):
 #connection string in the format
 #<username>/<password>@<dBhostAddress>:<dbPort>/<dbServiceNam
 # def getCollumNames(IDPROJETO):
+
+def pegar_pass(chave):
+    arq_atual = os.path.abspath(__file__)
+    app = os.path.dirname(arq_atual)
+    project = os.path.dirname(app)
+    pipeline = os.path.dirname(project)
+    desktop = os.path.dirname(pipeline)
+    caminho_pipeline = os.path.join(desktop, chave)
+    
+    return caminho_pipeline
+
 def getCollumNames(IDPROJETO, DATA1, DATA2):
-    file_path = "/home/ubuntu/Desktop/devfront/devfull/pass.txt"
+
+    #file_path = "/home/ubuntu/Desktop/devfront/devfull/pass.txt"
+    file_path = pegar_pass("pass.txt")
     conStr = ''
     with open(file_path, 'r') as file:
             conStr = file.readline().strip()
@@ -290,11 +323,11 @@ def pessoaFisica(codigo,data1,data2,keys,planilha):
     # caminho = pegar_caminho(planilha)
 
     workb = openpyxl.load_workbook(tabela)
-    worksheet5 = workb['Outros Serviços Terceiros - PF']
+    worksheet555 = workb['Outros Serviços Terceiros - PF']
 
     for i in range(1,maior+1):
         valor_coluna = 9 + i
-        worksheet5.cell(row=valor_coluna, column=1, value=i)  # column index starts from 1
+        worksheet555.cell(row=valor_coluna, column=1, value=i)  # column index starts from 1
 
 
     for i in keys:
@@ -307,9 +340,14 @@ def pessoaFisica(codigo,data1,data2,keys,planilha):
                 return None  # or handle the case accordingly
         valores_preenchimento = retornavalores(categorized_data[87],li)
         
-        n = len(valores_preenchimento)  
+     
         for rowkek, cell_data in enumerate(valores_preenchimento, start=10):
-            worksheet5.cell(row=rowkek, column=coluna, value=cell_data)  
+            worksheet555.cell(row=rowkek, column=coluna, value=cell_data)
+            print(cell_data)
+            print(f'row :')
+            print(rowkek)
+            print(f'coluna :')
+            print(coluna)  
         if coluna == 5 or coluna == 7 :
                 coluna = coluna + 1  
         coluna = coluna + 1
@@ -670,7 +708,7 @@ def conciliacao_bancaria(codigo,data1,data2,planilha):
        
 
         workb = openpyxl.load_workbook(tabela)
-        worksheet3 = workb["Conciliação Bancária"]
+        worksheet333 = workb["Conciliação Bancária"]
         i = 16
         j=0
         estorno_valor = 0
@@ -713,9 +751,9 @@ def conciliacao_bancaria(codigo,data1,data2,planilha):
             # print(cell_data)
             # print(valor_lancado)
             if(valor_lancado != 0):
-                worksheet3.cell(row=i, column=1, value=cell_data)
-                worksheet3.cell(row=i,column=2,value=valor_lancado)
-                worksheet3.cell(row=i,column=4,value= item['HIS_LANCAMENTO'])
+                worksheet333.cell(row=i, column=1, value=cell_data)
+                worksheet333.cell(row=i,column=2,value=valor_lancado)
+                worksheet333.cell(row=i,column=4,value= item['HIS_LANCAMENTO'])
             else:
                  i = i - 1
             # print(estorno_valor)
@@ -724,8 +762,8 @@ def conciliacao_bancaria(codigo,data1,data2,planilha):
             # print(estorno_dia)
 
             if(estorno_valor != 0):       
-                worksheet3.cell(row=16+tamanho+j+4, column=1, value=cell_data)
-                worksheet3.cell(row=16+tamanho+j+4, column=2, value=estorno_valor)
+                worksheet333.cell(row=16+tamanho+j+4, column=1, value=cell_data)
+                worksheet333.cell(row=16+tamanho+j+4, column=2, value=estorno_valor)
                
                 j = j +1
                     
@@ -781,7 +819,7 @@ def rendimentodeaplicacao(codigo,data1,data2,planilha):
        
 
         workb = openpyxl.load_workbook(tabela)
-        worksheet3 = workb["Rendimento de Aplicação"]
+        worksheet344 = workb["Rendimento de Aplicação"]
         i = 14
        
         for (ano, mes,dia), items in sorted(grupos_por_ano_mes.items()):  
@@ -811,8 +849,8 @@ def rendimentodeaplicacao(codigo,data1,data2,planilha):
             # print(cell_data)
             # print(valor_lancado)
             
-            worksheet3.cell(row=i, column=1, value=cell_data)
-            worksheet3.cell(row=i,column=8,value=soma_valor_lancado)
+            worksheet344.cell(row=i, column=1, value=cell_data)
+            worksheet344.cell(row=i,column=8,value=soma_valor_lancado)
            
             i = i + 1
            
@@ -921,7 +959,7 @@ def demonstrativo(codigo,data1,data2,planilha):
 
 def preencher_fub_teste(codigo,data1,data2,keys,tabela):
     criaout(tabela,codigo,data1,data2)
-    preencherCapa(codigo,tabela)
+    #preencherCapa(codigo,tabela)
     pessoaFisica(codigo,data1,data2,keys,tabela)
     pessoa_juridica(codigo,data1,data2,keys,tabela)
     #iss(codigo,data1,data2,keys,tabela)
@@ -933,7 +971,7 @@ def preencher_fub_teste(codigo,data1,data2,keys,tabela):
     diaria(codigo,data1,data2,tabela)
     auxilio(codigo,data1,data2,tabela)
     bolsaExtensao(codigo,data1,data2,tabela)
-    estagiario(codigo,data1,data2,tabela)
+    #estagiario(codigo,data1,data2,tabela)
     custoIndireto(codigo,data1,data2,tabela)
     materialDeConsumo(codigo,data1,data2,tabela)
     equipamentoMaterialPermanente(codigo,data1,data2,tabela)

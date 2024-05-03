@@ -159,7 +159,7 @@ def inserir_round_retangulo(planilha,data1,data2,dicionariofin):
         'gerente_branco.png',#17
         'periodo.png',#18
         'periodo_branco.png',#19
-        'prestaçãodecontasparcial.png',#20
+        'prestacaodecontaparcial.png',#20
         'processo.png',#21
         'processo_branco.png',#22
         'projeto.png',#23
@@ -173,7 +173,7 @@ def inserir_round_retangulo(planilha,data1,data2,dicionariofin):
     # List to hold Image objects
     images = []
 
-    nomePasta = "imagensCapa"
+    nomePasta = "../../imagensCapa"
     diretorio = os.path.dirname(__file__)
 
     # Loop through the list of image names and create Image objects

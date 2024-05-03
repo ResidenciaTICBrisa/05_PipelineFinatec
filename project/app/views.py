@@ -93,7 +93,7 @@ def projeto(request):
     #     return HttpResponse('Projetos')
     # else:
         
-        global tabe
+       
         lista_append_db_sql = []
         result = {}
         current_key = None
@@ -267,17 +267,40 @@ def projeto(request):
             dict_final[key] = [(k, v) for k, v in combined_values.items()]
 
         #print(dict_final)
-        tabe = None
+        
+
+
+
+        # caminho_pasta_planilhas = pegar_caminho("planilhas")   
+        # #caminhoPastaPlanilhasPreenchidas = "../../planilhas_preenchidas/"
+        # caminhoPastaPlanilhasPreenchidas = pegar_caminho("planilhas_preenchidas") 
+        caminho_pasta_planilhas = "../../planilhas/"    
+        caminhoPastaPlanilhasPreenchidas = "../../planilhas_preenchidas/"
+
+        # Obtém o diretório atual do script
+        diretorio_atual = os.path.dirname(os.path.abspath(__file__))
+
+        # Combina o diretório atual com o caminho para a pasta "planilhas_preenchidas" e o nome do arquivo
+       
+
+        # print(teste_caminho)
+
         if nome.nome_template == "fundep":
-            tabe = preenche_planilha("planilhas/ModeloFUNDEP.xlsx",dict_final)
+            testeCaminhoFundep = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"ModeloFUNDEP.xlsx")
+            preenche_planilha(testeCaminhoFundep,dict_final)
         if nome.nome_template == "fub":
-            tabe = preenche_planilha("planilhas/Modelo_Fub.xlsx",dict_final)
+            testeCaminhoFub = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"Modelo_Fub.xlsx")
+            print(testeCaminhoFub)
+            preenche_planilha(testeCaminhoFub,dict_final)
         if nome.nome_template == "opas":
-            tabe = preenche_planilha("planilhas/ModeloOPAS.xlsx",dict_final)
+            opas = os.path.join(caminho_pasta_planilhas, "ModeloOPAS.xlsx")
+            preenche_planilha(opas,dict_final)
         if nome.nome_template == "fap":
-            tabe = preenche_planilha("planilhas/ModeloFAP.xlsx",dict_final)
+            fap = os.path.join(caminho_pasta_planilhas, "ModeloFAP.xlsx")
+            preenche_planilha(fap,dict_final)
         if nome.nome_template == "finep":
-            tabe = preenche_planilha("planilhas/ModeloFINEP.xlsx",dict_final)
+            finep = os.path.join(caminho_pasta_planilhas, "ModeloFINEP.xlsx")
+            preenche_planilha(finep,dict_final)
         
        
         
@@ -288,7 +311,8 @@ def projeto(request):
         print(f"download{template_id}")
         if template_id == '1':
             keys = ['NOME_FAVORECIDO','CNPJ_FAVORECIDO','TIPO_LANCAMENTO','HIS_LANCAMENTO','DATA_EMISSAO','DATA_PAGAMENTO', 'VALOR_PAGO']
-            file_path = pegar_caminho('planilhas_preenchidas/planilhas/Modelo_Fub.xlsx')
+            file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"planilhaPreenchidaModelo_Fub.xlsx")
+            #file_path = pegar_caminho('/home/ubuntu/Desktop/05_PipelineFinatec/planilhas_preenchidas/planilhaPreenchidaModelo_Fub.xlsx')
             # data_obj = datetime.strptime(data1, "%Y-%m-%d")
             # data1 = data_obj.strftime("%d/%m/%Y")
             # data_obj2 = datetime.strptime(data2, "%Y-%m-%d")
@@ -297,17 +321,18 @@ def projeto(request):
             inserir_round_retangulo(file_path,data1,data2,db_fin)
         elif template_id == '2':
             keys = ['NOME_FAVORECIDO','CNPJ_FAVORECIDO','NOME_RUBRICA','DATA_EMISSAO','DATA_PAGAMENTO', 'VALOR_PAGO']
-            file_path = pegar_caminho('planilhas_preenchidas/planilhas/ModeloFUNDEP.xlsx')
+            file_path = os.path.join(diretorio_atual, caminhoPastaPlanilhasPreenchidas, f"planilhaPreenchidaModeloFUNDEP.xlsx")
+            #file_path = pegar_caminho('/home/ubuntu/Desktop/05_PipelineFinatec/planilhas_preenchidas/planilhaPreenchidaModeloFUNDEP.xlsx')
             preenche_fundep(coduaigo,convert_datetime_to_string(data1),convert_datetime_to_string(data2),keys,file_path)
         elif template_id == '3':
-            
-            file_path = pegar_caminho('planilhas_preenchidas/planilhas/ModeloOPAS.xlsx')
+            p_opas = os.path.join(caminhoPastaPlanilhasPreenchidas, "ModeloOPAS.xlsx")
+            file_path = p_opas
         elif template_id == '4':
-            
-            file_path = pegar_caminho('planilhas_preenchidas/planilhas/ModeloFAP.xlsx')
+            p_fap = os.path.join(caminhoPastaPlanilhasPreenchidas, "ModeloFAP.xlsx")
+            file_path = pegar_caminho(p_fap)
         elif template_id == '5':
-            
-            file_path = pegar_caminho('planilhas_preenchidas/planilhas/ModeloFINEP.xlsx')
+            p_finep = os.path.join(caminhoPastaPlanilhasPreenchidas, "ModeloFINEP.xlsx")
+            file_path = pegar_caminho(p_finep)
         else:
             # Handle cases where 'download' doesn't match any expected values
             return HttpResponse("Invalid download request", status=400)

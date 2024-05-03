@@ -1,19 +1,38 @@
 import openpyxl
 from openpyxl.styles import Font, PatternFill, Alignment,NamedStyle,Border, Side
 import os
+import random
 #pegar o caminho do arquivo
-def pegar_caminho(nome_arquivo):
+# def pegar_caminho(nome_arquivo):
 
-    # Obter o caminho absoluto do arquivo Python em execução
-    caminho_script = os.path.abspath(__file__)
+#     # Obter o caminho absoluto do arquivo Python em execução
+#     caminho_script = os.path.abspath(__file__)
 
-    # Obter o diretório da pasta onde o script está localizado
-    pasta_script = os.path.dirname(caminho_script)
+#     # Obter o diretório da pasta onde o script está localizado
+#     pasta_script = os.path.dirname(caminho_script)
 
-    # Combinar o caminho da pasta com o nome do arquivo Excel
-    caminho = os.path.join(pasta_script, nome_arquivo)
+#     # Combinar o caminho da pasta com o nome do arquivo Excel
+#     caminho = os.path.join(pasta_script, nome_arquivo)
 
-    return caminho
+#     return caminho
+
+def pegar_caminho(subdiretorio):
+    # Obtém o caminho do script atual
+    arq_atual = os.path.abspath(__file__)
+    
+    # Obtém o diretório do script
+    app = os.path.dirname(arq_atual)
+    
+    # Obtém o diretório pai do script
+    project = os.path.dirname(app)
+    
+    # Obtém o diretório pai do projeto
+    pipeline = os.path.dirname(project)
+    
+    # Junta o diretório pai do projeto com o subdiretório desejado
+    caminho_pipeline = os.path.join(pipeline, subdiretorio)
+    
+    return caminho_pipeline
 
 def create_variable(name1, name2):
     # Create a dictionary to store values with keys based on inputs
@@ -25,7 +44,10 @@ def create_variable(name1, name2):
     return variables
 
 def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela):
+    
     nomeSheet=nomeVariavel
+    random_number = random.randint(1, 10000)
+    nomeVariavel = f'{nomeVariavel}{random_number}'
     caminho = pegar_caminho(tabela)
     workbook = openpyxl.load_workbook(caminho)
     worksheet = workbook[nomeTabela]
@@ -364,11 +386,11 @@ def estiloGeral(tabela,tamanho,nomeVariavel,nomeTabela):
 
 def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2):
     
-  
+    
     caminho = pegar_caminho(tabela)
     workbook = openpyxl.load_workbook(caminho)
     worksheet = workbook['Conciliação Bancária']
-
+    
    
     size = tamanho + 16
     #worksheet.row_dimensions[27].height = 50
@@ -453,10 +475,12 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2):
         sttring = f"D{i}:F{i}"
         worksheet.merge_cells(sttring)
 
+    random_number = random.randint(1, 10000)
+
     custom_number_format_conciliacoes = []
     # MASCARA R$
     if custom_number_format_conciliacoes!= False: 
-        custom_number_format_conciliacoes = NamedStyle(name='custom_number_format_conciliacoes')
+        custom_number_format_conciliacoes = NamedStyle(name=f'custom_number_format_conciliacoes{random_number}')
         custom_number_format_conciliacoes.number_format = 'R$ #,##0.00'
         custom_number_format_conciliacoes.font = Font(name="Arial", size=12, color="000000")
         custom_number_format_conciliacoes.alignment = Alignment(horizontal="general",vertical="bottom",wrap_text=True)
@@ -558,7 +582,7 @@ def estilo_conciliacoes_bancaria(tabela,tamanho,tamanho2):
     string_merge_saldo_disponivel = f'E{size+3+tamanho2+3}:F{size+3+tamanho2+3}'
     celula_string_total = f'E{size+tamanho2+6}'
     worksheet.merge_cells(string_merge_saldo_disponivel)
-    saldodiposnivelformat_conciliacoes = NamedStyle(name='saldodiposnivelformat_conciliacoes')
+    saldodiposnivelformat_conciliacoes = NamedStyle(name=f'saldodiposnivelformat_conciliacoes{random_number}')
     saldodiposnivelformat_conciliacoes.number_format = 'R$ #,##0.00'
     saldodiposnivelformat_conciliacoes.font = Font(name="Arial", size=12, color="000000")
     saldodiposnivelformat_conciliacoes.alignment = Alignment(horizontal="general",vertical="bottom",wrap_text=True)
@@ -651,8 +675,8 @@ def estilo_rendimento_de_aplicacao(tabela,tamanho):
     caminho = pegar_caminho(tabela)
     workbook = openpyxl.load_workbook(caminho)
     worksheet = workbook['Rendimento de Aplicação']
-
-   
+    
+    random_number = random.randint(1, 10000)    
     size = tamanho + 16
     worksheet.row_dimensions[10].height = 2
     worksheet.row_dimensions[9].height = 20
@@ -886,7 +910,9 @@ def estilo_rendimento_de_aplicacao(tabela,tamanho):
     workbook.close()
 
 def estiloRelacaoBens(tabela,tamanho,nomeVariavel,nomeTabela):
-    nomeVariavel = f'material'
+    random_number = random.randint(1, 10000)
+    
+    nomeVariavel = f'material{random_number}'
     caminho = pegar_caminho(tabela)
     workbook = openpyxl.load_workbook(caminho)
     worksheet = workbook[nomeTabela]
@@ -895,7 +921,7 @@ def estiloRelacaoBens(tabela,tamanho,nomeVariavel,nomeTabela):
     cinza_escuro = "bfbfbf"
     azul = "336394"
     azul_claro = '1c8cbc'
-
+    
     borda = Border(right=Side(border_style="medium"))
     worksheet.sheet_view.showGridLines = False
     # 
@@ -1188,6 +1214,7 @@ def estiloRelacaoBens(tabela,tamanho,nomeVariavel,nomeTabela):
 
 def estilo_demonstrativoDeReceita(tabela,tamanho):
     caminho = pegar_caminho(tabela)
+    
     workbook = openpyxl.load_workbook(caminho)
     worksheet = workbook['Demonstrativo de Receita']
     size = tamanho + 10
@@ -1195,7 +1222,7 @@ def estilo_demonstrativoDeReceita(tabela,tamanho):
     cinza_escuro = "bfbfbf"
     azul = "336394"
     azul_claro = '1c8cbc'
-
+    random_number = random.randint(1, 10000)
     borda = Border(right=Side(border_style="medium"))
     worksheet.sheet_view.showGridLines = False
     # 
@@ -1243,7 +1270,7 @@ def estilo_demonstrativoDeReceita(tabela,tamanho):
     worksheet['A7'].alignment = Alignment(horizontal="left",vertical="center")
 
     #colunas azul cabecario
-    row_style_demonstrativo = NamedStyle(name='row_style_demonstrativo')
+    row_style_demonstrativo = NamedStyle(name=f'row_style_demonstrativo{random_number}')
     row_style_demonstrativo.font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
     row_style_demonstrativo.fill = openpyxl.styles.PatternFill(start_color=azul_claro, end_color=azul_claro, fill_type='solid')
     row_style_demonstrativo.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
@@ -1270,7 +1297,7 @@ def estilo_demonstrativoDeReceita(tabela,tamanho):
     custom_number_format_demonstrativo = []
     # MASCARA R$
     if custom_number_format_demonstrativo!= False: 
-        custom_number_format_demonstrativo = NamedStyle(name='custom_number_format_demonstrativo')
+        custom_number_format_demonstrativo = NamedStyle(name=f'custom_number_format_demonstrativo{random_number}')
         custom_number_format_demonstrativo.number_format = 'R$ #,##0.00'
         custom_number_format_demonstrativo.font = Font(name="Arial", size=12, color="000000")
         custom_number_format_demonstrativo.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
@@ -1329,7 +1356,7 @@ def estilo_demonstrativoDeReceita(tabela,tamanho):
     worksheet.row_dimensions[restituicoes].height = 30
 
     #estilo colunas restitucoes creditadas
-    row_style_demonstrativo_append = NamedStyle(name='row_style_demonstrativo_append')
+    row_style_demonstrativo_append = NamedStyle(name=f'row_style_demonstrativo_append{random_number}')
     row_style_demonstrativo_append.font = Font(name="Arial", size=12, color="FFFFFF",bold=True)
     row_style_demonstrativo_append.fill = openpyxl.styles.PatternFill(start_color=azul_claro, end_color=azul_claro, fill_type='solid')
     row_style_demonstrativo_append.alignment = Alignment(horizontal="center",vertical="center",wrap_text=True)
@@ -3794,5 +3821,4 @@ def estilo_demonstrativoDeReceita(tabela,tamanho):
 
 #     workbook.save(tabela)
 #     workbook.close()
-
 
