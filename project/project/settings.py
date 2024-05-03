@@ -6,7 +6,6 @@ load_dotenv()                    #for python-dotenv method
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -28,10 +27,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_admin_logs',
     'app',
     'backend',
-    
+    'bootstrap_modal_forms',    
 ]
+
+PGHISTORY_CONFIG = {
+    'schema_name': 'automatec',
+    'history_table_suffix': '_history',
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -57,7 +62,13 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+                
+            'libraries':{
+                'first_letters': 'app.templatetags.custom_filters',
+                
+                }
         },
+        
     },
 ]
 
@@ -70,20 +81,25 @@ file_path = "/home/ubuntu/Desktop/devfront/devfull/postgre.txt"
 with open(file_path, 'r') as file:
         password_database = file.readline().strip()
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'automatec',
-#         'USER': 'automauser',
-#         'PASSWORD': password_database,
-#         'HOST': '146.235.46.122',
-#         'PORT': '5432',
-#     },
-#     # 'default': {
-#     #     'ENGINE': 'django.db.backends.sqlite3',
-#     #     'NAME': BASE_DIR / 'db.sqlite3',
-#     # }
-# }
+file_path = "/home/ubuntu/Desktop/devfront/devfull/passemail.txt"
+with open(file_path, 'r') as file:
+        password_email = file.readline().strip()
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'automatec',
+        'USER': 'automauser',
+        'PASSWORD': password_database,
+        'HOST': '0.0.0.0',
+        'PORT': '5432',
+    },
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
+}
+
 
 # DATABASES = {
 # 'default': {
@@ -141,7 +157,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'pt-br'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Sao_Paulo'
 
 USE_I18N = True
 
@@ -151,12 +167,27 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'assets/'
-STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "app/static")
-]
+# STATIC_URL = 'assets/'
+# STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, "app/static")
+# ]
+
+STATIC_URL = '/static/'
+STATIC_ROOT = '/home/05_PipelineFinatec/sites/public/static'
+MEDIA_ROOT = 'home/05_PipelineFinatec/sites/public/static/imagem'
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# configurando email de recuperacao
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 465
+EMAIL_USE_SSL = True
+EMAIL_HOST_USER = "sistemas.finatec@finatec.org.br"
+EMAIL_HOST_PASSWORD = password_email
+
+

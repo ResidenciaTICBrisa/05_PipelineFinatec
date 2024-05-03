@@ -3,25 +3,92 @@ import datetime
 import os
 
 
-def pegar_caminho(nome_arquivo):
+# def pegar_caminho(nome_arquivo):
 
-    # Obter o caminho absoluto do arquivo Python em execução
-    caminho_script = os.path.abspath(__file__)
+#     # Obter o caminho absoluto do arquivo Python em execução
+#     caminho_script = os.path.abspath(__file__)
 
-    # Obter o diretório da pasta onde o script está localizado
-    pasta_script = os.path.dirname(caminho_script)
+#     # Obter o diretório da pasta onde o script está localizado
+#     pasta_script = os.path.dirname(caminho_script)
 
-    # Combinar o caminho da pasta com o nome do arquivo Excel
-    caminho = os.path.join(pasta_script, nome_arquivo)
+#     # Combinar o caminho da pasta com o nome do arquivo Excel
+#     caminho = os.path.join(pasta_script, nome_arquivo)
 
-    return caminho
+#     return caminho
 
-def preenche_planilha(planilha, dicionario):
+# def pegar_caminho(nome_arquivo, diretorio=''):
+#     # Obter o caminho absoluto do diretório onde este script está localizado
+#     pasta_script = os.path.dirname(os.path.abspath(__file__))
 
-    caminho = pegar_caminho(planilha)
-    Plan = planilha
+#     # Navegar para o diretório do projeto
+#     pasta_projeto = os.path.dirname(os.path.dirname(pasta_script))
+
+#     # Combinar o caminho do diretório fornecido com o nome do arquivo Excel
+#     caminho = os.path.join(pasta_projeto, diretorio, nome_arquivo)
+
+#     return caminho
+
+# caminho2 = pegar_caminho("planilhas_preenchidas.txt")
+# print(caminho2)
+
+import os
+
+def pegar_caminho(subdiretorio):
+    # Obtém o caminho do script atual
+    arq_atual = os.path.abspath(__file__)
+    
+    # Obtém o diretório do script
+    app = os.path.dirname(arq_atual)
+    
+    # Obtém o diretório pai do script
+    project = os.path.dirname(app)
+    
+    # Obtém o diretório pai do projeto
+    pipeline = os.path.dirname(project)
+    
+    # Junta o diretório pai do projeto com o subdiretório desejado
+    caminho_pipeline = os.path.join(pipeline, subdiretorio)
+    
+    return caminho_pipeline
+
+# caminho = pegar_caminho("planilhas")
+# print(caminho)
+
+
+# def preenche_planilha(planilha, dicionario):
+
+#     caminho = pegar_caminho(planilha)
+    
+#     # carrega a planilha de acordo com o caminho
+#     workbook = op.load_workbook(caminho)
+
+#    # planilha_preenchida = pegar_caminho('preenchido-' + planilha)
+#     for nomePlanilha, entradaDados in dicionario.items():
+#         planilhaAtual = workbook[nomePlanilha]
+
+#         for intervaloCelula, entradaCelula in entradaDados:
+#             if ":" in intervaloCelula:  
+#                 inicioCelula, fimCelula = intervaloCelula.split(":")
+#                 planilhaAtual = workbook[nomePlanilha]
+#                 planilhaAtual[inicioCelula] = entradaCelula
+#                 # planilhaAtual[inicioCelula].fill = color   <--- teste com cores
+#             else:  
+#                 planilhaAtual[intervaloCelula] = entradaCelula
+#                 # planilhaAtual[intervaloCelula].fill = color  <--- teste com cores
+
+#     caminho_planilha = os.path.join(caminho, planilha)
+#     workbook.save(caminho_planilha)
+
+#     print(f"arquivo salvo como  planilhas_preenchidas/{planilha}")
+#     return caminho_planilha
+
+def preenche_planilha(planilha, dicionario,codigo,template_id,consultaInicio,consultaFim,stringNomeFinanciador):
+
+
+    filename = os.path.basename(planilha)
     # carrega a planilha de acordo com o caminho
-    workbook = op.load_workbook(caminho)
+    workbook = op.load_workbook(planilha)
+    #print("Nomes das Planilhas no Excel:", workbook.sheetnames)
 
    # planilha_preenchida = pegar_caminho('preenchido-' + planilha)
     for nomePlanilha, entradaDados in dicionario.items():
@@ -38,15 +105,20 @@ def preenche_planilha(planilha, dicionario):
                 # planilhaAtual[intervaloCelula].fill = color  <--- teste com cores
 
 
-    workbook.save(f"app/planilhas_preenchidas/{planilha}")
+    caminho_pasta_planilhas = "../../planilhas_preenchidas/"
 
-    print(f"arquivo salvo como  planilhas_preenchidas/{planilha}")
-    return f"app/planilhas_preenchidas/{planilha}"
+    # Obtém o diretório atual do script
+    diretorio_atual = os.path.dirname(os.path.abspath(__file__))
 
-# workbook = op.load_workbook('Modelo_Fub.xlsm')
-# number = 3108
+    # Combina o diretório atual com o caminho para a pasta "planilhas_preenchidas" e o nome do arquivo
+    #salvar = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"planilhaPreenchida{filename}")
+    salvar = os.path.join(diretorio_atual, caminho_pasta_planilhas, f"PC - {stringNomeFinanciador} - {codigo} - {consultaInicio} a {consultaFim}.xlsx")
 
-# value = datetime.datetime.strptime("2014-06-23", "%Y-%m-%d")
+
+    workbook.save(salvar)
+    workbook.close()
+    print(f"arquivo salvo como {salvar}")
+
 def extrair(text_list):
     start_delimiter = "@@"
     end_delimiter = "@@"
